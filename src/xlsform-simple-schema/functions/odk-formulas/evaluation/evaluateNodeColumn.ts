@@ -18,12 +18,17 @@ import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpressio
 export default function evaluateNodeColumn(
   node: ODKNode,
   context: ODKFormulaEvaluationContext,
-  columnName: "calculation" | "relevant",
+  columnName: "calculation" | "relevant" | "required",
   fallback: unknown
 ): ODKFormulaEvaluationResult {
   const formula = node.row?.[columnName]?.trim();
   if (formula === "" || formula === undefined) {
-    const value = fallback;
+    const fallbackValue = fallback;
+    const isMultiSelectResult = node.type === "select_multiple";
+    const value =
+      isMultiSelectResult && fallbackValue instanceof Array
+        ? fallbackValue.join(" ")
+        : fallbackValue;
     return {
       state: "success",
       result: value,

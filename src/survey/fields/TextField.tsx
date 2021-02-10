@@ -6,10 +6,11 @@ type Props = FieldProps & {
   onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
   labelElement: React.ReactNode;
   value: unknown;
+  defaultValue: unknown;
 };
 
 export default function TextField(props: Props) {
-  const { value, schemaKey } = props;
+  const { value, schemaKey, relevant } = props;
 
   if (value !== undefined && typeof value !== "string") {
     return (
@@ -24,10 +25,14 @@ export default function TextField(props: Props) {
   return (
     <InputGroup
       id="text-input"
+      disabled={relevant === false}
       name={schemaKey}
       placeholder=""
       large={true}
       onChange={props.onInputChange}
+      defaultValue={
+        typeof props.defaultValue === "string" ? props.defaultValue : undefined
+      }
     />
   );
 }

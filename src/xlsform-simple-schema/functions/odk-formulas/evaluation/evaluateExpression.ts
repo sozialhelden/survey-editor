@@ -42,7 +42,7 @@ export default function evaluateExpression(
   context.stackDepth += 1;
   if (context.stackDepth > 10000) {
     throw new EvaluationError(
-      `Stack overflow while evaluating \`${expression}\``,
+      `Stack overflow while evaluating \`${JSON.stringify(expression)}\``,
       "stackOverflow",
       expression,
       scope

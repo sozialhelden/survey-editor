@@ -7,16 +7,18 @@ import { FieldProps } from "./FieldProps";
 import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
 import ValueField from "./fields/ValueField";
-import CheckboxGroupField from "./fields/CheckboxGroupField";
+import evaluateNodeColumn from "../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
 
 export function FieldSetForKey(props: {
   onChange: (value: unknown, fieldProps: FieldProps) => void;
   schemaKey: string;
+  relevant?: boolean;
 }) {
   const { schemaKey, onChange } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
   const quickType = schema.getQuickTypeForKey(schemaKey);
   const schemaKeyPath = [".", ...schemaKey.replace(/\.\$/g, "").split(".")];
+
   const node = findNodeByPathRelativeToScope(
     schemaKeyPath,
     context,
@@ -52,13 +54,35 @@ export function FieldSetForKey(props: {
     );
   }
 
+  let relevant = props.relevant;
+  if (typeof relevant !== "boolean" || relevant === true) {
+    const relevanceEvaluationResult = evaluateNodeColumn(
+      node,
+      context,
+      "relevant",
+      true
+    );
+
+    relevant =
+      typeof relevanceEvaluationResult.result === "boolean"
+        ? relevanceEvaluationResult.result
+        : true;
+  }
+
+  // TODO: Add warning for evaluation failure
+
   const fieldProps: FieldProps = {
     schema,
     node,
     schemaKey,
     quickType,
     onChange,
+    relevant,
   };
+
+  if (!debug && !relevant) {
+    return null;
+  }
 
   switch (quickType) {
     case "object":

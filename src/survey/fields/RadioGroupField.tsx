@@ -6,11 +6,12 @@ import { ODKSurveyContext } from "../XLSFormSurvey";
 type Props = FieldProps & {
   onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
   value: unknown;
+  defaultValue: unknown;
   allowedValues: string[];
 };
 
 export default function RadioGroupField(props: Props) {
-  const { value, onInputChange, allowedValues, node } = props;
+  const { value, onInputChange, allowedValues, node, relevant } = props;
   const context = React.useContext(ODKSurveyContext);
 
   if (value !== undefined && typeof value !== "string") {
@@ -29,6 +30,7 @@ export default function RadioGroupField(props: Props) {
       onChange={onInputChange}
       selectedValue={value}
       inline={true}
+      disabled={relevant === false}
     >
       {allowedValues.map((value) => {
         const choiceListName = node.typeParameters[0];

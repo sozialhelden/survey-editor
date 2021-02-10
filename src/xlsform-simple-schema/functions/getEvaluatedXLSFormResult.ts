@@ -1,7 +1,11 @@
+import { ITreeNode } from "@blueprintjs/core";
 import { ODKNode } from "../types/ODKNode";
+import { QuestionRow } from "../types/RowTypes";
 import XLSForm from "../types/XLSForm";
 import evaluateNodeColumn from "./odk-formulas/evaluation/evaluateNodeColumn";
 import ODKFormulaEvaluationContext from "./odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import ODKFormulaEvaluationResult from "./odk-formulas/evaluation/ODKFormulaEvaluationResult";
+import { getNodeAbsolutePath } from "./odk-formulas/evaluation/XPath";
 
 export type NodeToValueFunctionOptions = {
   key: string;
@@ -15,46 +19,73 @@ export type NodeToValueFunction = (
   options: NodeToValueFunctionOptions
 ) => Record<string, unknown>;
 
+type ColumnName = "relevant" | "calculation" | "required";
+const columnNames: ColumnName[] = ["calculation", "required", "relevant"];
+
+// export interface ITreeNode {
+//   name: string;
+//   childNodes: Array<IResultNode>;
+//   results?: Record<ColumnName, ODKFormulaEvaluationResult>;
+// }
+
 export function getEvaluatedNodeResult(
   node: ODKNode,
-  context: ODKFormulaEvaluationContext
-) {
+  context: ODKFormulaEvaluationContext,
+  transform: (result: ITreeNode<ODKNode>) => ITreeNode<ODKNode>
+): ITreeNode<ODKNode> {
   if (node.children.length === 0) {
-    if (node.resultsThatNeedReevaluation.answer !== true) {
+    const fallbacks = {
+      relevant: true,
+      calculation: node.answer,
+      required: false,
+    };
+
+    columnNames.forEach((columnName) => {
       const evaluatedResult = evaluateNodeColumn(
         node,
         context,
-        "calculation",
-        node.answer
+        columnName,
+        fallbacks[columnName]
       );
+      node.evaluatedResults[columnName] = evaluatedResult;
       if (evaluatedResult.state === "success") {
-        const result = evaluatedResult.result;
-        node.evaluatedResults.answer = evaluatedResult;
-        if (
-          typeof result === "string" ||
-          typeof result === "number" ||
-          typeof result === "boolean" ||
-          result === undefined ||
-          result instanceof Date
-        ) {
-          node.answer = result;
+        node.evaluatedResults[columnName] = evaluatedResult;
+        if (columnName === "calculation") {
+          const result = evaluatedResult.result;
+          if (
+            typeof result === "string" ||
+            typeof result === "number" ||
+            typeof result === "boolean" ||
+            result === undefined ||
+            result instanceof Date
+          ) {
+            node.answer = evaluatedResult.result;
+          }
         }
       }
-      node.resultsThatNeedReevaluation.answer = false;
-    }
-    return node.evaluatedResults;
+    });
+
+    return transform({
+      id: getNodeAbsolutePath(node).join("."),
+      label: node.row.name,
+      childNodes: [],
+      nodeData: node,
+    });
   }
 
-  const result: Record<string, unknown> = {};
-  node.children.forEach((childNode) => {
-    result[childNode.row.name] = getEvaluatedNodeResult(childNode, context);
+  return transform({
+    id: getNodeAbsolutePath(node).join("."),
+    label: node.row.name,
+    childNodes: node.children.map((childNode) =>
+      getEvaluatedNodeResult(childNode, context, transform)
+    ),
   });
-  return result;
 }
 
 export default function getEvaluatedXLSFormResult(
   xlsForm: XLSForm,
-  context: ODKFormulaEvaluationContext
+  context: ODKFormulaEvaluationContext,
+  transform: (result: ITreeNode<ODKNode>) => ITreeNode<ODKNode>
 ) {
-  return getEvaluatedNodeResult(xlsForm.rootSurveyGroup, context);
+  return getEvaluatedNodeResult(xlsForm.rootSurveyGroup, context, transform);
 }

@@ -9,7 +9,7 @@ type Props = FieldProps & {
 };
 
 export default function CheckboxGroupField(props: Props) {
-  const { value, allowedValues, node } = props;
+  const { value, allowedValues, node, relevant } = props;
   const context = React.useContext(ODKSurveyContext);
   const valueIsInvalid =
     value !== undefined &&
@@ -62,6 +62,7 @@ export default function CheckboxGroupField(props: Props) {
           definedLabel === "undefined" ? choiceRow?.name : definedLabel;
         return (
           <Checkbox
+            disabled={relevant === false}
             label={shownLabel}
             checked={typeof value === "string" && choices.has(value)}
             name={value}

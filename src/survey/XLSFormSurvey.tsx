@@ -1,17 +1,13 @@
 import * as React from "react";
 import SimpleSchema from "simpl-schema";
 import PaddedContainer from "../components/PaddedContainer";
-// import { SimpleSchema2Bridge } from 'uniforms-bridge-simple-schema-2';
-// import { AutoForm } from 'uniforms-unstyled';
 import XLSForm from "../xlsform-simple-schema";
 import ODKFormulaEvaluationContext, {
   getEmptyContext,
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { createSurveySchemaFromXLSForm } from "../xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 import { FieldSetForKey } from "./FieldSetForKey";
-import { AppToaster } from "../toaster";
 import { FieldProps } from "./FieldProps";
-import { Code } from "@blueprintjs/core";
 
 interface IODKSurveyContext {
   schema: SimpleSchema;

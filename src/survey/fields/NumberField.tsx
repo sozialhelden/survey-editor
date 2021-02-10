@@ -6,10 +6,11 @@ type Props = FieldProps & {
   onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
   labelElement: React.ReactNode;
   value: unknown;
+  defaultValue: unknown;
 };
 
 export default function NumberField(props: Props) {
-  const { value, schemaKey } = props;
+  const { value, schemaKey, relevant } = props;
   const onChange = React.useCallback(
     (valueAsNumber: number) => {
       props.onChange(valueAsNumber, props);
@@ -34,12 +35,19 @@ export default function NumberField(props: Props) {
   return (
     <NumericInput
       id="text-input"
+      disabled={relevant === false}
       name={schemaKey}
       large={true}
       allowNumericCharactersOnly={false}
       placeholder="Enter a number…"
       value={value}
       onValueChange={onChange}
+      defaultValue={
+        typeof props.defaultValue === "number" ||
+        typeof props.defaultValue === "string"
+          ? props.defaultValue
+          : undefined
+      }
     />
   );
 }

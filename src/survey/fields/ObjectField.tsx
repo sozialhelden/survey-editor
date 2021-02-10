@@ -1,4 +1,13 @@
-import { Classes, ControlGroup, H1, H2, H3, H4, H5 } from "@blueprintjs/core";
+import {
+  Callout,
+  Classes,
+  ControlGroup,
+  H1,
+  H2,
+  H3,
+  H4,
+  H5,
+} from "@blueprintjs/core";
 import * as React from "react";
 import DetailsPopover from "../DetailsPopover";
 import { FieldProps } from "../FieldProps";
@@ -19,15 +28,12 @@ export default function ObjectField(props: FieldProps) {
     <code className={Classes.TEXT_MUTED}>{node.row.name}</code>
   );
 
-  // const onChange = React.useCallback((value: unknown, fieldProps: FieldProps) => {
-  //   const newValue =
-  //   props.onChange(newValue, props);
-  // }, [props]);
+  const hintString = node.row.hint?.[context.language];
 
   return (
     <ControlGroup
       vertical={true}
-      style={{ marginTop: `${8 / (node.indentationLevel + 1)}rem` }}
+      style={{ margin: `${6 / (node.indentationLevel + 1)}rem 0` }}
     >
       <ControlGroup fill={true} style={{ alignItems: "baseline" }}>
         {label && label !== "" && (
@@ -35,13 +41,17 @@ export default function ObjectField(props: FieldProps) {
         )}
         {debug && <DetailsPopover {...{ ...props, detailsButtonCaption }} />}
       </ControlGroup>
+
       {subKeys.map((subkey) => (
         <FieldSetForKey
           key={subkey}
           schemaKey={[schemaKey, subkey].join(".")}
           onChange={props.onChange}
+          relevant={props.relevant}
         />
       ))}
+
+      {hintString && <Callout intent={"primary"}>{hintString}</Callout>}
     </ControlGroup>
   );
 }

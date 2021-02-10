@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useMemo } from "react";
+import React, { FormEvent } from "react";
 import styled from "styled-components";
 import * as ExcelJS from "exceljs";
 import {
@@ -9,7 +9,6 @@ import {
   FocusStyleManager,
   Navbar,
   NonIdealState,
-  Pre,
   Switch,
 } from "@blueprintjs/core";
 import XLSForm from "./xlsform-simple-schema/index";
@@ -21,11 +20,9 @@ import XLSFormSurvey from "./survey/XLSFormSurvey";
 import LanguageSelector from "./components/LanguageSelector";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import XLSFormWorksheet from "./table/XLSFormWorksheet";
-import getEvaluatedXLSFormResult from "./xlsform-simple-schema/functions/getEvaluatedXLSFormResult";
-import { knownLiteralsWithoutDollarSign } from "./xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { FieldProps } from "./survey/FieldProps";
 import { AppToaster } from "./toaster";
-import { findNodeByPathRelativeToScope } from "./xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import ResultCodeTree from "./code/ResultCodeTree";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -57,21 +54,9 @@ const StyledXLSFormSurvey = styled(XLSFormSurvey)`
 
 function App() {
   const [xlsForm, setXLSForm] = React.useState<XLSForm>();
-  const [evaluatedXLSFormResult, setEvaluatedXLSFormResult] = React.useState<
-    Record<string, unknown> | undefined
-  >();
-  const [lastEvaluationDate, setLastEvaluationDate] = React.useState<Date>();
-
-  useEffect(() => {
-    const result = xlsForm
-      ? getEvaluatedXLSFormResult(xlsForm, {
-          survey: xlsForm?.rootSurveyGroup,
-          stackDepth: 0,
-          knownLiteralsWithoutDollarSign: knownLiteralsWithoutDollarSign,
-        })
-      : undefined;
-    setEvaluatedXLSFormResult(result);
-  }, [xlsForm, lastEvaluationDate]);
+  const [lastEvaluationDate, setLastEvaluationDate] = React.useState<Date>(
+    new Date()
+  );
 
   const [language, setLanguage] = React.useState<string>();
   const [debug, setDebug] = React.useState<boolean>(true);
@@ -121,12 +106,12 @@ function App() {
     <Button className="bp3-minimal" icon="reset" text="Reset" onClick={reset} />
   );
 
-  const resultCodeElement = (
+  const resultCodeElement = lastEvaluationDate && xlsForm && (
     <OverflowScrollContainer
       className={"bp3-code-block"}
       style={{ padding: "1rem", margin: "0", whiteSpace: "pre" }}
     >
-      {JSON.stringify(evaluatedXLSFormResult, null, 4)}
+      <ResultCodeTree {...{ lastEvaluationDate, xlsForm }} />
     </OverflowScrollContainer>
   );
 

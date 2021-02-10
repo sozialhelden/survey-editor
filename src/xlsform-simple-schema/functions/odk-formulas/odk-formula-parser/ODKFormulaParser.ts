@@ -1,4 +1,4 @@
-import Lexer from './ODKFormulaLexer';
+import Lexer from "./ODKFormulaLexer";
 import {
   default as PrattParser,
   TokenType,
@@ -10,10 +10,10 @@ import {
   NameParselet,
   PostfixOperatorParselet,
   PrefixOperatorParselet,
-} from '../pratt-parser-base/index';
-import Precedence from './ODKFormulaPrecedence';
-import LiteralParselet from '../pratt-parser-base/parselets/LiteralParselet';
-import SelectorParselet from '../pratt-parser-base/parselets/SelectorParselet';
+} from "../pratt-parser-base/index";
+import Precedence from "./ODKFormulaPrecedence";
+import LiteralParselet from "../pratt-parser-base/parselets/LiteralParselet";
+import SelectorParselet from "../pratt-parser-base/parselets/SelectorParselet";
 
 /**
  * Extends the generic Parser class with support for parsing the actual ODK formula grammar.
@@ -32,32 +32,43 @@ export default class ODKFormulaParser extends PrattParser {
     // Register the ones that need special parselets.
     this.register(
       TokenType.NAME,
-      new NameParselet((name) => (name.startsWith('$') ? name.slice(2, name.length - 1) : name))
+      new NameParselet((name) =>
+        name.startsWith("$") ? name.slice(2, name.length - 1) : name
+      )
     );
-    this.register(TokenType.SELECTOR, new SelectorParselet((text) => text.split('/')));
+    this.register(
+      TokenType.SELECTOR,
+      new SelectorParselet((text) => text.split("/"))
+    );
     this.register(
       TokenType.FLOAT_LITERAL,
       new LiteralParselet(
         (t) => parseFloat(t.text),
-        () => 'float'
+        () => "float"
       )
     );
     this.register(
       TokenType.INT_LITERAL,
       new LiteralParselet(
         (t) => parseInt(t.text, 10),
-        () => 'int'
+        () => "int"
       )
     );
     this.register(
       TokenType.STRING_LITERAL,
       new LiteralParselet(
         (t) => t.text.slice(1, t.text.length - 1),
-        () => 'string'
+        () => "string"
       )
     );
-    this.register(TokenType.QUESTION, new ConditionalParselet(Precedence.CONDITIONAL));
-    this.register(TokenType.LEFT_PAREN, new GroupParselet(TokenType.RIGHT_PAREN));
+    this.register(
+      TokenType.QUESTION,
+      new ConditionalParselet(Precedence.CONDITIONAL)
+    );
+    this.register(
+      TokenType.LEFT_PAREN,
+      new GroupParselet(TokenType.RIGHT_PAREN)
+    );
     this.register(
       TokenType.LEFT_PAREN,
       new CallParselet(TokenType.RIGHT_PAREN, TokenType.COMMA, Precedence.CALL)

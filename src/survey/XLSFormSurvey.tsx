@@ -8,6 +8,8 @@ import ODKFormulaEvaluationContext, {
 import { createSurveySchemaFromXLSForm } from "../xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 import { FieldSetForKey } from "./FieldSetForKey";
 import { FieldProps } from "./FieldProps";
+import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
+import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 
 interface IODKSurveyContext {
   schema: SimpleSchema;
@@ -35,6 +37,7 @@ export default function XLSFormSurvey(props: {
   debug: boolean;
   className?: string;
   onChange: (value: unknown, fieldProps: FieldProps) => void;
+  onChangeRow: (node: ODKNode, row: QuestionRow) => void;
 }) {
   const { language, debug } = props;
   const [, languageName, languageCode] = language.match(/\w+ \((\w+)\)/) || [];
@@ -57,7 +60,12 @@ export default function XLSFormSurvey(props: {
   const fieldSets = schema
     .objectKeys()
     .map((k) => (
-      <FieldSetForKey key={k} schemaKey={k} onChange={props.onChange} />
+      <FieldSetForKey
+        key={k}
+        schemaKey={k}
+        onChange={props.onChange}
+        onChangeRow={props.onChangeRow}
+      />
     ));
   return (
     <ODKSurveyContext.Provider

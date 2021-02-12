@@ -1,6 +1,14 @@
 import * as React from "react";
 import { Popover2, Classes as PopoverClasses } from "@blueprintjs/popover2";
-import { Button, Code, ControlGroup, Pre, Tab, Tabs } from "@blueprintjs/core";
+import {
+  Button,
+  Classes,
+  Code,
+  ControlGroup,
+  Pre,
+  Tab,
+  Tabs,
+} from "@blueprintjs/core";
 import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 
@@ -46,12 +54,12 @@ export default function DetailsPopover(props: {
 
   const detailsContent = (
     <div lang="en">
-      <header>
+      <header className={Classes.TEXT_OVERFLOW_ELLIPSIS}>
         <code>{path}</code>
       </header>
 
       <Tabs onChange={setTabId} selectedTabId={tabId}>
-        <Tab id="row" title="Row" panel={rowPanel} />
+        <Tab id="row" title={<Code>row</Code>} panel={rowPanel} />
         <Tabs.Expander />
         {Object.keys(node.evaluatedResults).map((k) => getPanel(k))}
       </Tabs>
@@ -77,6 +85,7 @@ export default function DetailsPopover(props: {
               {...targetProps}
               elementRef={ref}
               minimal={true}
+              // outlined={true}
               small={true}
               lang="en"
             >

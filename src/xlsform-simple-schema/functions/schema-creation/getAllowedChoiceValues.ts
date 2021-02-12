@@ -44,9 +44,9 @@ export default function getAllowedChoiceValues(
 
   if (!choiceObject) {
     throw new SemanticError(
-      `Node ${
-        options.key
-      } references to list name \`${choiceListName}\`. This list is either not defined in the ‘choices’ worksheet, or could not be loaded correctly. Found list names:\n\n${availableListNames
+      `Node \`${options.key}\` (row #${
+        options.node.rowIndex + 2
+      }) refers to list name \`${choiceListName}\`. This list is either not defined in the ‘choices’ worksheet, or could not be loaded correctly. Found list names:\n\n${availableListNames
         .map((n) => `\`${n}\``)
         .join(", ")}`
     );

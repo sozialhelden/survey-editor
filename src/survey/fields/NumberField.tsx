@@ -34,7 +34,7 @@ export default function NumberField(props: Props) {
 
   return (
     <NumericInput
-      id="text-input"
+      id={schemaKey}
       disabled={relevant === false}
       name={schemaKey}
       large={true}

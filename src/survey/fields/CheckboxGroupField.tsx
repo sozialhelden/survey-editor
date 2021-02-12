@@ -19,7 +19,7 @@ export default function CheckboxGroupField(props: Props) {
 
   const choices = React.useMemo<Set<string>>(() => {
     if (typeof value === "string") {
-      return new Set<string>(value?.split(" "));
+      return new Set<string>(value === "" ? [] : value?.split(" "));
     }
     if (value instanceof Array || value instanceof Set) {
       return new Set<string>(value);

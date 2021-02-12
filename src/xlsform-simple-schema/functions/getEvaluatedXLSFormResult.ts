@@ -79,6 +79,7 @@ export function getEvaluatedNodeResult(
     childNodes: node.children.map((childNode) =>
       getEvaluatedNodeResult(childNode, context, transform)
     ),
+    nodeData: node,
   });
 }
 

@@ -23,6 +23,10 @@ import XLSFormWorksheet from "./table/XLSFormWorksheet";
 import { FieldProps } from "./survey/FieldProps";
 import { AppToaster } from "./toaster";
 import ResultCodeTree from "./code/ResultCodeTree";
+import { QuestionRow } from "./xlsform-simple-schema/types/RowTypes";
+import { ODKNode } from "./xlsform-simple-schema/types/ODKNode";
+import { getNodeAbsolutePath } from "./xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -117,7 +121,6 @@ function App() {
 
   const onChange = React.useCallback(
     (value: unknown, fieldProps: FieldProps) => {
-      console.log("Change", value, fieldProps);
       AppToaster.clear();
       AppToaster.show({
         message: (
@@ -133,6 +136,20 @@ function App() {
     },
     [xlsForm]
   );
+
+  const onChangeRow = React.useCallback(
+    (node: ODKNode, newRow: QuestionRow) => {
+      if (!xlsForm) {
+        return;
+      }
+      node.row = newRow;
+      xlsForm.flatNodes[node.rowIndex] = { node, row: newRow };
+      setXLSForm({ ...xlsForm });
+      setLastEvaluationDate(new Date());
+    },
+    [xlsForm]
+  );
+
   return (
     <>
       {xlsForm && (
@@ -234,6 +251,7 @@ function App() {
               language={language}
               debug={debug}
               onChange={onChange}
+              onChangeRow={onChangeRow}
             />
           </OverflowScrollContainer>
         )}

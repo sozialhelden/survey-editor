@@ -14,7 +14,7 @@ function assertNoEndMarker(
   if (row.type.match(/^end[ _](?:group|repeat)$/)) {
     throw new SemanticError(
       `Found '${row.type}' without a matching start marker in row ${
-        i + 1
+        i + 2
       }. Please check that the group/repeat nesting is correct. The row: ${row}`
     );
   }
@@ -30,11 +30,13 @@ export default function nestSurvey({
   defaultLanguage,
   formRootNameFromSettings = "data",
   titleFromSettings = "",
+  onRow,
 }: {
   rows: (QuestionRow | BeginOrEndMarkerRow)[];
   defaultLanguage: string;
   formRootNameFromSettings?: string;
   titleFromSettings?: string;
+  onRow?: (row: QuestionRow | BeginOrEndMarkerRow, node: ODKNode) => void;
 }): ODKNode {
   const root: ODKNode = {
     children: [] as ODKNode[],
@@ -62,11 +64,13 @@ export default function nestSurvey({
 
     if (currentGroup.type === "begin_group" && type === "end_group") {
       stack.pop();
+      onRow?.(row, currentGroup);
     } else if (
       currentGroup.type === "begin_repeat" &&
       row.type === "end_repeat"
     ) {
       stack.pop();
+      onRow?.(row, currentGroup);
     } else if (type.match(/^begin_(?:repeat|group)$/)) {
       // Found the beginning of a nested group or repeat
       const newGroup: ODKNode = {
@@ -82,6 +86,7 @@ export default function nestSurvey({
       };
       currentGroup.children.push(newGroup);
       stack.push(newGroup);
+      onRow?.(row, newGroup);
     } else {
       // Found a 'normal' survey question
       assertNoEndMarker(row, i);
@@ -97,6 +102,7 @@ export default function nestSurvey({
         resultsThatNeedReevaluation: {},
       };
       currentGroup.children.push(newChild);
+      onRow?.(row, newChild);
     }
 
     i += 1;

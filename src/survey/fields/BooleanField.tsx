@@ -1,6 +1,7 @@
-import { Callout, Checkbox, Code } from "@blueprintjs/core";
+import { Callout, Checkbox, Code, ControlGroup } from "@blueprintjs/core";
 import * as React from "react";
 import { FieldProps } from "../FieldProps";
+import { ODKSurveyContext } from "../XLSFormSurvey";
 
 type Props = FieldProps & {
   onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
@@ -12,12 +13,14 @@ type Props = FieldProps & {
 export default function BooleanField(props: Props) {
   const { value, labelElement, relevant } = props;
 
+  const { debug } = React.useContext(ODKSurveyContext);
+
   //   const context = React.useContext(ODKSurveyContext);
   if (value !== undefined && typeof value !== "boolean") {
     return (
       <Callout intent="warning">
         <h4>
-          Value must be a <Code>Date</Code> for this field to work
+          Value must be a <Code>boolean</Code> for this field to work
         </h4>
       </Callout>
     );

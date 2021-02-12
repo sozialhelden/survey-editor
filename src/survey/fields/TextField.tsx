@@ -24,7 +24,7 @@ export default function TextField(props: Props) {
 
   return (
     <InputGroup
-      id="text-input"
+      id={schemaKey}
       disabled={relevant === false}
       name={schemaKey}
       placeholder=""

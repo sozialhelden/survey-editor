@@ -1,6 +1,12 @@
-import Excel from 'exceljs';
-import { SyntaxError } from '../types/Errors';
-import { questionRowSchema, choiceRowSchema, settingsRowSchema } from '../types/RowSchemas';
+import Excel from "exceljs";
+import { BeginOrEndMarkerRow } from "../types/BeginOrEndMarkerRow";
+import { SyntaxError } from "../types/Errors";
+import { ODKNode } from "../types/ODKNode";
+import {
+  questionRowSchema,
+  choiceRowSchema,
+  settingsRowSchema,
+} from "../types/RowSchemas";
 import {
   QuestionRow,
   ChoiceRow,
@@ -8,18 +14,19 @@ import {
   assertValidQuestionRow,
   assertValidChoiceRow,
   assertValidSettingsRow,
-} from '../types/RowTypes';
+} from "../types/RowTypes";
 import XLSForm, {
   ChoiceRowsByListNameAndName,
   ChoicesWorksheet,
-} from '../types/XLSForm';
-import nestSurvey from './nestSurvey';
+  FlatNode,
+} from "../types/XLSForm";
+import nestSurvey from "./nestSurvey";
 
 export function nestDoubleColonFields(
   row: Record<string, unknown>,
   namespacePrefixes: string[],
   defaultSuffix?: string
-): { result: Record<string, unknown>, foundSuffixes: Set<string> } {
+): { result: Record<string, unknown>; foundSuffixes: Set<string> } {
   const result: Record<string, unknown> = {
     ...row,
   };
@@ -42,12 +49,14 @@ export function nestDoubleColonFields(
       .forEach((k) => {
         const [prefix, suffix] = k.split(/::/);
         /* Example { 'label::English (en)': 'A label!' } */
-        const objectToExtend = result[prefix] as Record<string, string> | string;
+        const objectToExtend = result[prefix] as
+          | Record<string, string>
+          | string;
         const value = String(result[k]);
         if (objectToExtend === undefined) {
           result[prefix] = { [suffix]: value };
           foundSuffixes.add(suffix);
-        } else if (typeof objectToExtend === 'object') {
+        } else if (typeof objectToExtend === "object") {
           objectToExtend[suffix] = value;
           foundSuffixes.add(suffix);
         } else {
@@ -67,16 +76,16 @@ export function nestDoubleColonFields(
 export function normalizeColumnNames(headerRow: Excel.CellValue[]): string[] {
   const result: string[] = [];
   for (let i = 0; i < headerRow.length; i += 1) {
-    const columnName = headerRow[i]?.toString() || '';
+    const columnName = headerRow[i]?.toString() || "";
     result.push(
       columnName
-        .replace(/^constraint-msg\B/, 'constraint_message')
-        .replace(/^requiredMsg\B/, 'required_message')
-        .replace(/^bind::required$/, 'required')
-        .replace(/^repeat-count$/, 'repeat_count')
-        .replace(/^media::(image|audio|video)\B/, '$1')
-        .replace(/^photo\B/, 'image')
-        .replace(/^list_name$/, 'list name')
+        .replace(/^constraint-msg\B/, "constraint_message")
+        .replace(/^requiredMsg\B/, "required_message")
+        .replace(/^bind::required$/, "required")
+        .replace(/^repeat-count$/, "repeat_count")
+        .replace(/^media::(image|audio|video)\B/, "$1")
+        .replace(/^photo\B/, "image")
+        .replace(/^list_name$/, "list name")
     );
   }
   return result;
@@ -86,21 +95,19 @@ export function normalizeColumnNames(headerRow: Excel.CellValue[]): string[] {
 
 export function normalizeType(type: string): string {
   return type
-    .replace(/^media::(image|audio|video)\B/, '$1')
-    .replace(/^imei$/, 'deviceid')
-    .replace(/^phone_number$/, 'phonenumber')
-    .replace(/^select one\B/, 'select_one')
-    .replace(/^select multiple\B/, 'select_multiple')
-    .replace(/^location$/, 'geopoint')
-    .replace(/^photo\B/, 'image')
-    .replace(/^trigger$/, 'acknowledge')
-    .replace(/^begin group$/, 'begin_group')
-    .replace(/^end group$/, 'end_group')
-    .replace(/^begin repeat$/, 'begin_repeat')
-    .replace(/^end repeat$/, 'end_repeat')
+    .replace(/^media::(image|audio|video)\B/, "$1")
+    .replace(/^imei$/, "deviceid")
+    .replace(/^phone_number$/, "phonenumber")
+    .replace(/^select one\B/, "select_one")
+    .replace(/^select multiple\B/, "select_multiple")
+    .replace(/^location$/, "geopoint")
+    .replace(/^photo\B/, "image")
+    .replace(/^trigger$/, "acknowledge")
+    .replace(/^begin group$/, "begin_group")
+    .replace(/^end group$/, "end_group")
+    .replace(/^begin repeat$/, "begin_repeat")
+    .replace(/^end repeat$/, "end_repeat");
 }
-
-
 
 const autoCleanOptions = {
   getAutoValues: true,
@@ -108,19 +115,22 @@ const autoCleanOptions = {
   mutate: false,
 };
 
-function loadQuestionRow(row: Record<string, unknown>): QuestionRow {
+export function loadQuestionRow(row: Record<string, unknown>): QuestionRow {
   const cleanRow = questionRowSchema.clean(row, autoCleanOptions);
   assertValidQuestionRow(cleanRow);
   return cleanRow;
 }
 
-function loadChoicesRow(row: Record<string, unknown>): ChoiceRow {
-  const cleanRow = choiceRowSchema.clean(row, {...autoCleanOptions, filter: false });
+export function loadChoicesRow(row: Record<string, unknown>): ChoiceRow {
+  const cleanRow = choiceRowSchema.clean(row, {
+    ...autoCleanOptions,
+    filter: false,
+  });
   assertValidChoiceRow(cleanRow);
   return cleanRow;
 }
 
-function loadSettingsRow(row: Record<string, unknown>): SettingsRow {
+export function loadSettingsRow(row: Record<string, unknown>): SettingsRow {
   const cleanRow = settingsRowSchema.clean(row, autoCleanOptions);
   assertValidSettingsRow(cleanRow);
   return cleanRow;
@@ -128,20 +138,25 @@ function loadSettingsRow(row: Record<string, unknown>): SettingsRow {
 
 type LoadRowFunction<T> = (row: Record<string, unknown>) => T;
 
+export const localizableColumnNames = [
+  "label",
+  "hint",
+  "constraint_message",
+  "required_message",
+  "image",
+  "audio",
+  "video",
+];
 
-export const localizableColumnNames = ['label', 'hint', 'constraint_message', 'required_message', 'image', 'audio', 'video'];
-
-function loadRowIntoResult<RowT>({
+function loadRow<RowT>({
   row,
   columnNames,
   defaultLanguage,
-  result,
   loadRowFn,
 }: {
   row: Excel.Row;
   columnNames: string[];
   defaultLanguage: string | undefined;
-  result: RowT[];
   loadRowFn: LoadRowFunction<RowT>;
 }) {
   const rowRawData: Record<string, unknown> = {};
@@ -154,13 +169,15 @@ function loadRowIntoResult<RowT>({
     localizableColumnNames,
     defaultLanguage
   );
-  const { result: rowDataWithNamespacedFields } = nestDoubleColonFields(rowDataWithLocalizedStrings, [
-    'instance',
-    'bind',
-    'body',
+  const {
+    result: rowDataWithNamespacedFields,
+  } = nestDoubleColonFields(rowDataWithLocalizedStrings, [
+    "instance",
+    "bind",
+    "body",
   ]);
   try {
-    result.push(loadRowFn(rowDataWithNamespacedFields));
+    return loadRowFn(rowDataWithNamespacedFields);
   } catch (error) {
     throw new SyntaxError(
       `Could not load row ${JSON.stringify(
@@ -172,9 +189,14 @@ function loadRowIntoResult<RowT>({
   }
 }
 
-function findLanguagesInColumnNames(columnNames: string[], defaultLanguage?: string): Set<string> {
+function findLanguagesInColumnNames(
+  columnNames: string[],
+  defaultLanguage?: string
+): Set<string> {
   const columnNamesToTrues: Record<string, unknown> = {};
-  columnNames.forEach((name) => { columnNamesToTrues[name] = true; });
+  columnNames.forEach((name) => {
+    columnNamesToTrues[name] = true;
+  });
   const { foundSuffixes } = nestDoubleColonFields(
     columnNamesToTrues,
     localizableColumnNames,
@@ -187,7 +209,7 @@ function loadChoices(worksheet: ChoicesWorksheet): ChoiceRowsByListNameAndName {
   const map: ChoiceRowsByListNameAndName = {};
 
   worksheet.rows.forEach((row) => {
-    const listName = row['list name'];
+    const listName = row["list name"];
     const { name } = row;
     const list = map[listName] || {};
     list[name] = row;
@@ -214,35 +236,55 @@ function loadWorksheet<RowT>(
   }
 
   // console.log('Column names before normalization:', firstRow.values.slice(1));
-  const columnNames = firstRow.values.slice(1).map(cellValue => cellValue?.toString() || '');
+  const columnNames = firstRow.values
+    .slice(1)
+    .map((cellValue) => cellValue?.toString() || "");
   const columnNamesNormalized = normalizeColumnNames(columnNames);
-  const languages = findLanguagesInColumnNames(columnNamesNormalized, defaultLanguage);
+  const languages = findLanguagesInColumnNames(
+    columnNamesNormalized,
+    defaultLanguage
+  );
   excelWorksheet.eachRow((row, rowIndex) => {
     if (rowIndex === 1) {
       return;
     }
-    loadRowIntoResult<RowT>({ row, columnNames: columnNamesNormalized, defaultLanguage, result: rows, loadRowFn });
+    rows.push(
+      loadRow<RowT>({
+        row,
+        columnNames: columnNamesNormalized,
+        defaultLanguage,
+        loadRowFn,
+      })
+    );
   });
 
-  return { rows, languages, columnNames, columnNamesNormalized }
+  return { rows, languages, columnNames, columnNamesNormalized };
 }
 
-
-export async function loadFormFromExcelWorkbook(workbook: Excel.Workbook): Promise<XLSForm> {
-  const settings = loadWorksheet(workbook, 'settings', loadSettingsRow);
-  const defaultLanguage = settings.rows[0].default_language || 'English (en)';
+export async function loadFormFromExcelWorkbook(
+  workbook: Excel.Workbook
+): Promise<XLSForm> {
+  const settings = loadWorksheet(workbook, "settings", loadSettingsRow);
+  const defaultLanguage = settings.rows[0].default_language || "English (en)";
   const choices = loadWorksheet(
     workbook,
-    'choices',
+    "choices",
     loadChoicesRow,
     defaultLanguage
   );
   const survey = loadWorksheet(
     workbook,
-    'survey',
+    "survey",
     loadQuestionRow,
     defaultLanguage
   );
+
+  const flatNodes: FlatNode[] = [];
+  const rootSurveyGroup = nestSurvey({
+    rows: survey.rows,
+    defaultLanguage,
+    onRow: (row, node) => flatNodes.push({ row, node }),
+  });
 
   const xlsForm: XLSForm = {
     worksheets: {
@@ -250,9 +292,10 @@ export async function loadFormFromExcelWorkbook(workbook: Excel.Workbook): Promi
       choices,
       survey,
     },
-    rootSurveyGroup: nestSurvey({ rows: survey.rows, defaultLanguage }),
+    rootSurveyGroup,
     choicesByName: loadChoices(choices),
     languages: survey.languages,
+    flatNodes,
   };
 
   // console.log(xlsForm);
@@ -261,8 +304,9 @@ export async function loadFormFromExcelWorkbook(workbook: Excel.Workbook): Promi
   return xlsForm;
 }
 
-
-export default async function loadFormFromXLSXFile(filename: string): Promise<XLSForm> {
+export default async function loadFormFromXLSXFile(
+  filename: string
+): Promise<XLSForm> {
   const workbook = new Excel.Workbook();
   await workbook.xlsx.readFile(filename);
   return loadFormFromExcelWorkbook(workbook);

@@ -8,13 +8,16 @@ import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
 import ValueField from "./fields/ValueField";
 import evaluateNodeColumn from "../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
+import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
+import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 
 export function FieldSetForKey(props: {
   onChange: (value: unknown, fieldProps: FieldProps) => void;
+  onChangeRow: (node: ODKNode, row: QuestionRow) => void;
   schemaKey: string;
   relevant?: boolean;
 }) {
-  const { schemaKey, onChange } = props;
+  const { schemaKey, onChange, onChangeRow } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
   const quickType = schema.getQuickTypeForKey(schemaKey);
   const schemaKeyPath = [".", ...schemaKey.replace(/\.\$/g, "").split(".")];
@@ -77,6 +80,7 @@ export function FieldSetForKey(props: {
     schemaKey,
     quickType,
     onChange,
+    onChangeRow,
     relevant,
   };
 

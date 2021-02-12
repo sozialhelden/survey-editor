@@ -26,13 +26,17 @@ export default function XLSFormWorksheet(props: Props) {
   const columnNames = React.useMemo(
     () =>
       uniq(worksheet.columnNamesNormalized.map((n) => n.replace(/::.*$/, ""))),
-    [worksheet]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [xlsForm, worksheet]
   );
   const cellRenderer = React.useMemo(() => {
     return (rowIndex: number, columnIndex: number) => {
       const row = xlsForm.worksheets[worksheetName].rows[rowIndex];
       const key = columnNames[columnIndex];
       const value = row[key];
+      if (row.name === "start" && key === "label") {
+        debugger;
+      }
       if (value !== undefined && typeof value !== "string") {
         if (localizableColumnNames.includes(key)) {
           return <Cell>{value[language]}</Cell>;
@@ -44,7 +48,20 @@ export default function XLSFormWorksheet(props: Props) {
           );
         }
       }
-      return <Cell>{row[key]}</Cell>;
+
+      const node = xlsForm.flatNodes[rowIndex];
+
+      return (
+        <Cell
+          style={
+            ["type", "name"].includes(key)
+              ? { paddingLeft: `${4 + node.node.indentationLevel * 8}px` }
+              : {}
+          }
+        >
+          {["type", "name"].includes(key) ? <code>{value}</code> : value}
+        </Cell>
+      );
     };
   }, [xlsForm, worksheetName, columnNames, language]);
 

@@ -10,7 +10,9 @@ function SecondaryLabel(props: { node: ODKNode }) {
   const { node } = props;
   const results = node.evaluatedResults;
   const keysWithErrors = Object.keys(results).filter((k) => results[k].error);
-  const caption = <span>{JSON.stringify(node.answer)}</span>;
+  const valueString =
+    node.answer === undefined ? null : JSON.stringify(node.answer);
+  const caption = <span>{valueString}</span>;
   const error = `Node has errors in the following columns: ${keysWithErrors
     .map((k) => `‘${k}’`)
     .join(", ")}`;
@@ -18,14 +20,10 @@ function SecondaryLabel(props: { node: ODKNode }) {
     <Icon icon="error" intent="danger" title={error} htmlTitle={error} />
   ) : null;
   return (
-    <DetailsPopover
-      node={node}
-      detailsButtonCaption={
-        <>
-          {caption}&nbsp;{icon}
-        </>
-      }
-    />
+    <>
+      {caption}
+      {icon}
+    </>
   );
 }
 
@@ -45,15 +43,31 @@ export default function ResultCodeTree(props: {
             knownLiteralsWithoutDollarSign: knownLiteralsWithoutDollarSign,
           },
           (result) => {
+            if (!result.nodeData) {
+              debugger;
+              throw new Error(
+                "Encountered a tree node that is not assciated with a node. Please fix this."
+              );
+            }
             const relevant =
-              result.nodeData?.evaluatedResults.relevant.result === true;
+              result.nodeData.evaluatedResults.relevant?.result === true;
+
+            const label = (
+              <DetailsPopover
+                node={result.nodeData}
+                detailsButtonCaption={
+                  relevant ? (
+                    result.label
+                  ) : (
+                    <span className="bp3-text-disabled">{result.label}</span>
+                  )
+                }
+              />
+            );
+
             return {
               ...result,
-              label: relevant ? (
-                result.label
-              ) : (
-                <span className="bp3-text-disabled">{result.label}</span>
-              ),
+              label,
               key: result.nodeData?.row.name,
               isExpanded: true,
               hasCaret: !(result.childNodes?.length === 0),

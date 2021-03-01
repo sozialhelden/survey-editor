@@ -1,14 +1,13 @@
 import {
   Alignment,
   Button,
-  Code,
   FocusStyleManager,
   Navbar,
   NonIdealState,
   Switch,
 } from "@blueprintjs/core";
 import * as ExcelJS from "exceljs";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent } from "react";
 import styled from "styled-components";
 import "./App.css";
 import ResultCodeTree from "./code/ResultCodeTree";
@@ -18,20 +17,11 @@ import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import useChangeHooks from "./lib/useChangeHooks";
 import { SheetTabs } from "./SheetTabs";
-import { FieldProps } from "./survey/FieldProps";
 import XLSFormSurvey from "./survey/XLSFormSurvey";
 import XLSFormWorksheet from "./table/XLSFormWorksheet";
-import { AppToaster } from "./toaster";
-import getEvaluatedXLSFormResult from "./xlsform-simple-schema/functions/evaluateNodeAndChildren";
 import { loadFormFromExcelWorkbook } from "./xlsform-simple-schema/functions/loadSurveyFromXLSX";
-import ODKFormulaEvaluationContext, {
-  getEmptyContext,
-  knownLiteralsWithoutDollarSign,
-} from "./xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import patchXLSForm from "./xlsform-simple-schema/functions/patchXLSForm";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 import XLSForm, { WorksheetName } from "./xlsform-simple-schema/index";
-import { ODKNode } from "./xlsform-simple-schema/types/ODKNode";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 

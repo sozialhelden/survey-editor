@@ -15,6 +15,21 @@ function TokenElement({
   token: Token;
   expression?: Expression;
 }) {
+  if (
+    token.type === TokenType.NAME &&
+    expression?.kind === "call" &&
+    token === expression.tokens[0]
+  ) {
+    return (
+      <a
+        href={`https://getodk.github.io/xforms-spec/#fn:${token.text}`}
+        className={`token token-${TokenType[token.type]}`}
+        target="docs"
+      >
+        {token.text}
+      </a>
+    );
+  }
   return (
     <span className={`token token-${TokenType[token.type]}`}>{token.text}</span>
   );
@@ -23,12 +38,25 @@ function TokenElement({
 const StyledCode = styled.code`
   padding: 4px;
 
+  &.expression-call > .token:first-child,
+  .expression-call > .token:first-child {
+    color: ${Colors.BLUE3};
+  }
+
   .expression-name {
     font-weight: bold;
   }
 
   .token-NAME {
-    color: ${Colors.BLUE2};
+    color: ${Colors.GREEN3};
+  }
+
+  .token-STRING_LITERAL {
+    color: ${Colors.ORANGE3};
+  }
+
+  .token-NUMBER_LITERAL {
+    color: ${Colors.ORANGE4};
   }
 
   .token-COMMA {
@@ -37,7 +65,7 @@ const StyledCode = styled.code`
 
   .token-LEFT_PAREN,
   .token-RIGHT_PAREN {
-    color: ${Colors.SEPIA2};
+    color: ${Colors.BLUE2};
     font-weight: bold;
   }
 
@@ -79,7 +107,7 @@ export default function HighlightedExpression(props: {
         className={`${props.className} expression expression-invalid`}
       >
         {tokens.map((token) => (
-          <TokenElement token={token} />
+          <TokenElement token={token} key={token.index} />
         ))}
         <span className={Classes.TEXT_DISABLED}>
           {props.code?.slice(indexAfterLastToken)}

@@ -6,14 +6,17 @@ import {
   Code,
   Colors,
   ControlGroup,
+  Icon,
   Tab,
   Tabs,
+  Text,
 } from "@blueprintjs/core";
 import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import styled from "styled-components";
 import HighlightedExpression from "../components/HighlightedExpression";
 import StyledMarkdown from "../components/StyledMarkdown";
+import { alpha } from "../lib/colors";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import { typesToIcons } from "../lib/typesToIcons";
 import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
@@ -67,7 +70,6 @@ export default function DetailsPopover(props: {
   const [tabId, setTabId] = React.useState<string | number>(
     firstColumnNameWithError || "calculation"
   );
-  const { row } = node;
   if (!context.context) {
     return null;
   }
@@ -84,11 +86,19 @@ export default function DetailsPopover(props: {
           backgroundColor: Colors.LIGHT_GRAY5,
           margin: "-20px",
           padding: "20px",
+          background: `linear-gradient(${alpha(
+            Colors.DARK_GRAY5,
+            0.12
+          )}, ${alpha(Colors.DARK_GRAY5, 0.07)} 5px, ${alpha(
+            Colors.DARK_GRAY5,
+            0.03
+          )} 10px, transparent 30px)`,
+          borderTop: `solid 1px ${Colors.LIGHT_GRAY3}`,
         }}
       >
         {!cellIsEmpty && (
           <>
-            <h4>Code</h4>
+            <h4>Formula</h4>
             <StyledCodeBlock>
               <HighlightedExpression
                 state={results?.state}
@@ -98,7 +108,7 @@ export default function DetailsPopover(props: {
                 parser={results?.parser}
               />
             </StyledCodeBlock>
-            <h4>Results</h4>
+            <h4>Result</h4>
           </>
         )}
 
@@ -112,9 +122,26 @@ export default function DetailsPopover(props: {
           </Callout>
         )}
 
-        {cellIsEmpty && <h4>Default value</h4>}
-        {results?.result !== undefined && (
-          <StyledCodeBlock>{JSON.stringify(results.result)}</StyledCodeBlock>
+        <StyledCodeBlock>
+          {results?.result === undefined
+            ? "undefined"
+            : JSON.stringify(results.result)}
+        </StyledCodeBlock>
+        {cellIsEmpty && (
+          <Text className={Classes.TEXT_MUTED}>
+            {k === "calculation" && (
+              <>
+                Using the answer value as the <code>{k}</code> cell contains no
+                formula.
+                {}
+              </>
+            )}
+            {k !== "calculation" && (
+              <>
+                Using the default value as the <code>{k}</code> cell is empty.
+              </>
+            )}
+          </Text>
         )}
       </StyledPanel>
     );
@@ -135,13 +162,14 @@ export default function DetailsPopover(props: {
   const detailsContent = (
     <>
       <header>
+        <Icon icon={typesToIcons[node.type] || "blank"} color={Colors.GRAY3} />
+        &nbsp;
         <code className={Classes.TEXT_MUTED}>{node.row.type}</code>
       </header>
       <header style={{ marginBottom: "16px" }}>
         <Breadcrumbs
           items={path.map((k, i) => ({
             href: `#//${path.slice(0, i + 1).join("/")}`,
-            icon: i === path.length - 1 ? typesToIcons[node.type] : false,
             text: k,
           }))}
           collapseFrom="start"
@@ -151,7 +179,11 @@ export default function DetailsPopover(props: {
           }}
         />
       </header>
-      <Tabs onChange={setTabId} selectedTabId={tabId}>
+      <Tabs
+        onChange={setTabId}
+        selectedTabId={tabId}
+        renderActiveTabPanelOnly={true}
+      >
         {evaluatableColumnNames.map((k) => getPanel(k))}
       </Tabs>
     </>

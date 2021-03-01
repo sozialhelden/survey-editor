@@ -1,4 +1,4 @@
-import { Classes, FormGroup } from "@blueprintjs/core";
+import { Callout, Classes, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
 import { FieldProps } from "../FieldProps";
 import { internalFields } from "../internalFields";
@@ -77,7 +77,9 @@ export default function ValueField(props: FieldProps) {
   const detailsButton = (
     <DetailsPopover {...{ ...props, detailsButtonCaption }} />
   );
-  const hintString = node.row.hint?.[language];
+  const hintString = node.row.hint?.[language] && (
+    <Callout intent="primary">{node.row.hint?.[language]}</Callout>
+  );
   const labelElement = (
     <Label {...{ ...props, debug, isEditable: !isBoolean && !isInternalField }}>
       {props.quickType !== "boolean" && debug && detailsButton}
@@ -101,12 +103,13 @@ export default function ValueField(props: FieldProps) {
   if (isBoolean) {
     return (
       <FormGroup
-        helperText={hintString}
+        // helperText={hintString}
         labelFor={node.row.name}
         style={{ display: "flex" }}
       >
         {debug && detailsButton}
         {input}
+        {hintString}
       </FormGroup>
     );
   }
@@ -116,11 +119,12 @@ export default function ValueField(props: FieldProps) {
   }
   return (
     <FormGroup
-      helperText={hintString}
+      // helperText={hintString}
       label={labelElement}
       labelFor={node.row.name}
     >
       {input}
+      {hintString}
     </FormGroup>
   );
 }

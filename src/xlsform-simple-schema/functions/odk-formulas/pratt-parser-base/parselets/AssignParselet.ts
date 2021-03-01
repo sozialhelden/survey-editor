@@ -1,9 +1,9 @@
-import AssignExpression from '../expressions/AssignExpression';
-import NameExpression from '../expressions/NameExpression';
-import ParseError from '../ParseError';
-import Parser from '../Parser';
-import { Expression, Token } from '../types';
-import InfixParselet from './InfixParselet';
+import { ParseError } from "../../../../types/Errors";
+import AssignExpression from "../expressions/AssignExpression";
+import NameExpression from "../expressions/NameExpression";
+import Parser from "../Parser";
+import { Expression, Token } from "../types";
+import InfixParselet from "./InfixParselet";
 
 /**
  * Parses assignment expressions like "a = b". The left side of an assignment
@@ -15,15 +15,21 @@ export default class AssignParselet extends InfixParselet {
     super();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  parse(parser: Parser, left: Expression, _token: Token): Expression {
+  parse(parser: Parser, left: Expression, operatorToken: Token): Expression {
     const right = parser.parseExpression(this.precedence - 1);
 
     if (!(left instanceof NameExpression))
-      throw new ParseError('The left-hand side of an assignment must be a name.');
+      throw new ParseError(
+        "leftHandOfAssignmentNotAName",
+        "The left-hand side of an assignment must be a name.",
+        left.tokens
+      );
 
-    const name = left.name;
-    return new AssignExpression(name, right);
+    return new AssignExpression(
+      [...left.tokens, operatorToken, ...right.tokens],
+      left,
+      right
+    );
   }
 
   getPrecedence(): number {

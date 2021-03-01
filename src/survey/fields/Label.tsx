@@ -1,11 +1,9 @@
 import { Classes, ControlGroup, EditableText } from "@blueprintjs/core";
 import * as React from "react";
+import StyledMarkdown from "../../components/StyledMarkdown";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import { FieldProps } from "../FieldProps";
-import { ODKSurveyContext } from "../XLSFormSurvey";
-import {
-  QuestionRow,
-  LocalizedString,
-} from "../../xlsform-simple-schema/types/RowTypes";
 
 export function Label(
   props: FieldProps & {
@@ -21,27 +19,23 @@ export function Label(
     node,
     debug,
     relevant,
-    onChangeRow,
+    onChangeCell,
     isEditable,
     children,
   } = props;
-  const context = React.useContext(ODKSurveyContext);
   const label = schema.get(schemaKey, "label");
+  const context = React.useContext(ODKSurveyContext);
+  const path =
+    context.context && getNodeAbsolutePath(node, context.context).join("/");
 
   const onChangeLabel = React.useCallback(
     (text: string) => {
       if (text === label || (label === undefined && text === "")) {
         return;
       }
-      const newLabel: LocalizedString = {
-        ...node.row.label,
-        [context.language]: text,
-      };
-      const newRow: QuestionRow = { ...node.row };
-      newRow.label = newLabel;
-      onChangeRow(node, newRow);
+      onChangeCell("survey", node.rowIndex, "label", text, node);
     },
-    [node, context.language, onChangeRow, label]
+    [node, onChangeCell, label]
   );
 
   let labelInput =
@@ -63,10 +57,11 @@ export function Label(
       <ControlGroup style={{ alignItems: "center" }}>
         {
           <span
+            id={path}
             className={relevant ? "" : Classes.TEXT_DISABLED}
             style={{ flex: 1 }}
           >
-            {debug ? labelInput : label}
+            {debug ? labelInput : <StyledMarkdown>{label}</StyledMarkdown>}
           </span>
         }
         {children}
@@ -75,10 +70,11 @@ export function Label(
   } else {
     return (
       <span
+        id={path}
         className={relevant ? "" : Classes.TEXT_DISABLED}
         style={{ flex: 1 }}
       >
-        {debug ? labelInput : label}
+        {debug ? labelInput : <StyledMarkdown>{label}</StyledMarkdown>}
       </span>
     );
   }

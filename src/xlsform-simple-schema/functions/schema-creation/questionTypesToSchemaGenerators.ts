@@ -41,7 +41,7 @@ export const questionTypesToSchemaGenerators: Record<
   geoshape: (o) => getPolygonGeometrySchema(o.key),
   date: (o) => ({ [o.key]: { type: Date } }),
   time: (o) => ({ [o.key]: { type: Date } }),
-  dateTime: (o) => ({ [o.key]: { type: Date } }),
+  datetime: (o) => ({ [o.key]: { type: Date } }),
   image: (o) => getImageObjectSchema(o.key),
   audio: (o) => getAudioObjectSchema(o.key),
   video: (o) => getVideoObjectSchema(o.key),

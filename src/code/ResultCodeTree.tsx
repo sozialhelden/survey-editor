@@ -1,17 +1,27 @@
-import { Classes, Code, Icon, ITreeNode, Text, Tree } from "@blueprintjs/core";
+import { Icon, ITreeNode, Tree } from "@blueprintjs/core";
 import * as React from "react";
+import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import DetailsPopover from "../survey/DetailsPopover";
 import XLSForm from "../xlsform-simple-schema";
-import getEvaluatedXLSFormResult from "../xlsform-simple-schema/functions/getEvaluatedXLSFormResult";
-import { knownLiteralsWithoutDollarSign } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import ODKFormulaEvaluationContext from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import {
+  isNodeRelevant,
+  ODKNode,
+} from "../xlsform-simple-schema/types/ODKNode";
 
 function SecondaryLabel(props: { node: ODKNode }) {
   const { node } = props;
-  const results = node.evaluatedResults;
-  const keysWithErrors = Object.keys(results).filter((k) => results[k].error);
-  const valueString =
-    node.answer === undefined ? null : JSON.stringify(node.answer);
+  const context = React.useContext(ODKSurveyContext);
+  const results = context.context?.evaluationResults.get(node);
+  if (!results) {
+    return <Icon icon="calculator" intent="none" />;
+  }
+  const keysWithErrors = Object.keys(results).filter(
+    (k) => results.get(k)?.error
+  );
+  const answer = context.context?.nodesToAnswers.get(node);
+  const valueString = answer === undefined ? null : JSON.stringify(answer);
   const caption = <span>{valueString}</span>;
   const error = `Node has errors in the following columns: ${keysWithErrors
     .map((k) => `‘${k}’`)
@@ -27,59 +37,63 @@ function SecondaryLabel(props: { node: ODKNode }) {
   );
 }
 
-export default function ResultCodeTree(props: {
-  lastEvaluationDate: Date;
-  xlsForm: XLSForm;
-}) {
-  const { xlsForm, lastEvaluationDate } = props;
+export function getNodeTree(
+  node: ODKNode,
+  context: ODKFormulaEvaluationContext,
+  transform: (result: ITreeNode<ODKNode>) => ITreeNode<ODKNode>
+): ITreeNode<ODKNode> {
+  if (node.children.length === 0) {
+    return transform({
+      id: getNodeAbsolutePath(node, context).join("."),
+      label: node.row.name,
+      childNodes: [],
+      nodeData: node,
+    });
+  }
 
+  return transform({
+    id: getNodeAbsolutePath(node, context).join("."),
+    label: node.row.name,
+    childNodes: node.children.map((childNode) =>
+      getNodeTree(childNode, context, transform)
+    ),
+    nodeData: node,
+  });
+}
+
+export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
+  const { xlsForm } = props;
+  const context = React.useContext(ODKSurveyContext);
+  const evaluationContext = context.context;
   const result = React.useMemo(() => {
-    return xlsForm
-      ? getEvaluatedXLSFormResult(
-          xlsForm,
-          {
-            survey: xlsForm?.rootSurveyGroup,
-            stackDepth: 0,
-            knownLiteralsWithoutDollarSign: knownLiteralsWithoutDollarSign,
-          },
-          (result) => {
-            if (!result.nodeData) {
-              debugger;
-              throw new Error(
-                "Encountered a tree node that is not assciated with a node. Please fix this."
-              );
-            }
-            const relevant =
-              result.nodeData.evaluatedResults.relevant?.result === true;
-
-            const label = (
-              <DetailsPopover
-                node={result.nodeData}
-                detailsButtonCaption={
-                  relevant ? (
-                    result.label
-                  ) : (
-                    <span className="bp3-text-disabled">{result.label}</span>
-                  )
-                }
-              />
+    return xlsForm && evaluationContext
+      ? getNodeTree(xlsForm.rootSurveyGroup, evaluationContext, (result) => {
+          const node = result.nodeData;
+          if (!node) {
+            debugger;
+            throw new Error(
+              "Encountered a tree node that is not assciated with a node. Please fix this."
             );
-
-            return {
-              ...result,
-              label,
-              key: result.nodeData?.row.name,
-              isExpanded: true,
-              hasCaret: !(result.childNodes?.length === 0),
-              secondaryLabel: result.nodeData && (
-                <SecondaryLabel node={result.nodeData} />
-              ),
-            } as ITreeNode<ODKNode>;
           }
-        )
+
+          const label = (
+            <DetailsPopover
+              node={node}
+              detailsButtonCaption={<span>{result.label}</span>}
+            />
+          );
+
+          return {
+            ...result,
+            label,
+            key: node.row.name,
+            isExpanded: true,
+            hasCaret: !(result.childNodes?.length === 0),
+            secondaryLabel: node && <SecondaryLabel node={node} />,
+          } as ITreeNode<ODKNode>;
+        })
       : null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xlsForm, lastEvaluationDate]);
+  }, [evaluationContext, xlsForm]);
 
   return result ? <Tree contents={[result]} /> : <div></div>;
 }

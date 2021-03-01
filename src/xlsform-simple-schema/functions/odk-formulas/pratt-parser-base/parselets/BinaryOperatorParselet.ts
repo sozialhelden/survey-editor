@@ -1,7 +1,7 @@
-import OperatorExpression from '../expressions/OperatorExpression';
-import Parser from '../Parser';
-import { Expression, Token } from '../types';
-import InfixParselet from './InfixParselet';
+import OperatorExpression from "../expressions/OperatorExpression";
+import Parser from "../Parser";
+import { Expression, Token } from "../types";
+import InfixParselet from "./InfixParselet";
 
 /**
  * Generic infix parselet for a binary arithmetic operator. The only
@@ -13,14 +13,25 @@ export default class BinaryOperatorParselet extends InfixParselet {
     super();
   }
 
-  public parse(parser: Parser, left: Expression, token: Token): Expression {
+  public parse(
+    parser: Parser,
+    left: Expression,
+    operatorToken: Token
+  ): Expression {
     // To handle right-associative operators like "^", we allow a slightly
     // lower precedence when parsing the right-hand side. This will let a
     // parselet with the same precedence appear on the right, which will then
     // take *this* parselet's result as its left-hand argument.
-    const right = parser.parseExpression(this.precedence - (this.isRight ? 1 : 0));
+    const right = parser.parseExpression(
+      this.precedence - (this.isRight ? 1 : 0)
+    );
 
-    return new OperatorExpression(left, token.text, right);
+    return new OperatorExpression(
+      [...left.tokens, operatorToken, ...right.tokens],
+      left,
+      operatorToken.text,
+      right
+    );
   }
 
   public getPrecedence(): number {

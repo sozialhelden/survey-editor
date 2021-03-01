@@ -1,31 +1,33 @@
-import SimpleSchema, { SchemaDefinition } from 'simpl-schema';
+import { SchemaDefinition } from "simpl-schema";
 
 /**
  * [GeoJSON](https://tools.ietf.org/html/rfc7946) `Point` object.
  */
 export interface PointGeometry {
-  type: 'Point';
+  type: "Point";
   coordinates: [number, number];
 }
 
 export interface LineStringGeometry {
-  type: 'LineString';
+  type: "LineString";
   coordinates: [[number, number]];
 }
 
 export interface PolygonGeometry {
-  type: 'Polygon';
+  type: "Polygon";
   coordinates: [[[number, number]]];
 }
 
-export const getPointGeometrySchema = (key: string): Record<string, SchemaDefinition<unknown>> => ({
+export const getPointGeometrySchema = (
+  key: string
+): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
     type: Object,
   },
   [`${key}.type`]: {
     type: String,
-    allowedValues: ['Point'],
-    defaultValue: 'Point'
+    allowedValues: ["Point"],
+    defaultValue: "Point",
   },
   [`${key}.coordinates`]: {
     type: Array,
@@ -39,14 +41,16 @@ export const getPointGeometrySchema = (key: string): Record<string, SchemaDefini
   },
 });
 
-export const getLineStringGeometrySchema = (key: string): Record<string, SchemaDefinition<unknown>> => ({
+export const getLineStringGeometrySchema = (
+  key: string
+): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
     type: Object,
   },
   [`${key}.type`]: {
     type: String,
-    allowedValues: ['LineString'],
-    defaultValue: 'LineString'
+    allowedValues: ["LineString"],
+    defaultValue: "LineString",
   },
   [`${key}.coordinates`]: {
     type: Array,
@@ -64,14 +68,16 @@ export const getLineStringGeometrySchema = (key: string): Record<string, SchemaD
   },
 });
 
-export const getPolygonGeometrySchema = (key: string): Record<string, SchemaDefinition<unknown>> => ({
+export const getPolygonGeometrySchema = (
+  key: string
+): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
     type: Object,
   },
   type: {
     type: String,
-    allowedValues: ['Polygon'],
-    defaultValue: 'Polygon'
+    allowedValues: ["Polygon"],
+    defaultValue: "Polygon",
   },
   [`${key}.coordinates`]: {
     // rings, outer rings first, holes in the outer ring from 2nd to n-th index

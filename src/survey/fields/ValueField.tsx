@@ -2,7 +2,7 @@ import { Classes, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
 import { FieldProps } from "../FieldProps";
 import { internalFields } from "../internalFields";
-import { ODKSurveyContext } from "../XLSFormSurvey";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import evaluateNodeColumn from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
 import { Label } from "./Label";
 import RadioGroupField from "./RadioGroupField";
@@ -40,6 +40,7 @@ export function AutoField(
   if (allowedValues instanceof Array) {
     return <RadioGroupField {...{ ...props, allowedValues }} />;
   }
+
   return <TextField {...props} />;
 }
 
@@ -47,7 +48,7 @@ export default function ValueField(props: FieldProps) {
   const { node } = props;
   const isBoolean = props.quickType === "boolean";
   const context = React.useContext(ODKSurveyContext);
-  const { language, debug } = context;
+  const { language, debug, context: evaluationContext } = context;
   const onInputChange = React.useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
       const target = event.currentTarget;
@@ -55,6 +56,7 @@ export default function ValueField(props: FieldProps) {
         checkbox: target.checked,
         date: target.valueAsDate,
         number: target.valueAsNumber,
+        text: target.value,
       };
       const value = values[target.type];
       props.onChange(value, props);
@@ -62,27 +64,30 @@ export default function ValueField(props: FieldProps) {
     [props]
   );
 
-  if (internalFields.includes(node.type) && !context.debug) {
+  if (!language || !evaluationContext) {
     return null;
   }
 
-  const detailsButtonCaption = (
-    <code className={Classes.TEXT_MUTED}>{node.row.name}</code>
-  );
+  const isInternalField = internalFields.includes(node.type);
+  if (isInternalField && !context.debug) {
+    return null;
+  }
+
+  const detailsButtonCaption = <code>{node.row.name}</code>;
   const detailsButton = (
     <DetailsPopover {...{ ...props, detailsButtonCaption }} />
   );
   const hintString = node.row.hint?.[language];
   const labelElement = (
-    <Label {...{ ...props, debug, isEditable: !isBoolean }}>
+    <Label {...{ ...props, debug, isEditable: !isBoolean && !isInternalField }}>
       {props.quickType !== "boolean" && debug && detailsButton}
     </Label>
   );
   const evaluationResult = evaluateNodeColumn(
     node,
-    context.context,
+    evaluationContext,
     "calculation",
-    node.answer
+    evaluationContext.nodesToAnswers.get(node)
   );
   const autoFieldProps = {
     ...props,
@@ -104,6 +109,10 @@ export default function ValueField(props: FieldProps) {
         {input}
       </FormGroup>
     );
+  }
+
+  if (node.type === "note") {
+    return labelElement;
   }
   return (
     <FormGroup

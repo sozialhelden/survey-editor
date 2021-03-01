@@ -9,7 +9,7 @@ import ODKFormulaLexer from "../odk-formula-parser/ODKFormulaLexer";
 
 function parse(input: string) {
   const lexer = new ODKFormulaLexer(input);
-  const parser = new ODKFormulaParser(lexer);
+  const parser = new ODKFormulaParser({ tokens: lexer });
 
   const result = parser.parseExpression();
   let actualString = "";
@@ -63,10 +63,7 @@ describe("ODKFormulaParser", () => {
   expectResult("a(e + f)", "a((e + f))");
 
   // Unary and binary predecence.
-  expectParserError(
-    "-a * b",
-    /Could not parse "-", no method found to parse token type - as prefix./
-  );
+  expectParserError("-a * b", /prefix/);
 
   // Binary precedence.
   expectResult(

@@ -19,6 +19,7 @@ export function evaluateDynamicChoiceListName(
       `Error evaluating \`${choiceListString}\` to determine available selection choices.`,
       "invalidDynamicChoices",
       evaluationResult.expression,
+      options.context,
       options.node
     );
   }
@@ -27,6 +28,7 @@ export function evaluateDynamicChoiceListName(
       `Evaluating \`${choiceListString}\` did not yield a \`string\`. Please ensure the referenced field returns a string.`,
       "invalidDynamicChoices",
       evaluationResult.expression,
+      options.context,
       options.node
     );
   }
@@ -36,6 +38,7 @@ export function evaluateDynamicChoiceListName(
       `Evaluating \`${choiceListString}\` yielded string \`'${choiceListName}'\`, but the according choices list does not exist. Please ensure that the field calculates an existing list name.`,
       "invalidDynamicChoices",
       evaluationResult.expression,
+      options.context,
       options.node
     );
   }

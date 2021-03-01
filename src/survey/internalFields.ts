@@ -1,4 +1,6 @@
 export const internalFields = [
+  undefined,
+  "",
   "start",
   "end",
   "today",

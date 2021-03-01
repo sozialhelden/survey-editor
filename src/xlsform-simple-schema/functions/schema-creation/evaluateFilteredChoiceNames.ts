@@ -5,7 +5,8 @@ import evaluateExpression from "../odk-formulas/evaluation/evaluateExpression";
 import ODKFormulaEvaluationContext, {
   knownLiteralsWithoutDollarSign,
 } from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import { parseODKFormula } from "../odk-formulas/evaluation/parseODKFormula";
+import ODKFormulaLexer from "../odk-formulas/odk-formula-parser/ODKFormulaLexer";
+import ODKFormulaParser from "../odk-formulas/odk-formula-parser/ODKFormulaParser";
 import { Expression } from "../odk-formulas/pratt-parser-base";
 
 export function evaluateFilteredChoiceNames(
@@ -14,9 +15,9 @@ export function evaluateFilteredChoiceNames(
   node: ODKNode,
   context: ODKFormulaEvaluationContext
 ) {
-  const choiceFilterExpression: Expression = parseODKFormula(
-    choiceFilterString
-  );
+  const lexer = new ODKFormulaLexer(choiceFilterString);
+  const parser = new ODKFormulaParser({ tokens: lexer });
+  const choiceFilterExpression: Expression = parser.parseExpression();
   const result = function filteredChoiceValues() {
     return Object.values(choiceObject)
       .filter((choiceRow) => {
@@ -35,6 +36,7 @@ export function evaluateFilteredChoiceNames(
             `\`choice_filter\` formula did not evaluate to a \`boolean\`. Please ensure the formula returns a \`boolean\`.`,
             "invalidDynamicChoices",
             choiceFilterExpression,
+            context,
             node
           );
         }

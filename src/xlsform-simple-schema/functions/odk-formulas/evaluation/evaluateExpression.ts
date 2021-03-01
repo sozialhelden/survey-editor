@@ -18,6 +18,8 @@ import {
   findNodeByNameInCurrentAndAncestorScopes,
 } from "./XPath";
 import { EvaluationError } from "../../../types/Errors";
+import { ordinalize } from "inflection";
+import { isEqual, isNumber } from "lodash";
 
 /**
  * Evaluates a parsed expression / AST, returning the end result as JavaScript value.
@@ -35,36 +37,42 @@ import { EvaluationError } from "../../../types/Errors";
 export default function evaluateExpression(
   expression: Expression,
   context: ODKFormulaEvaluationContext,
-  scope: ODKNode
+  scope: Readonly<ODKNode>
 ): unknown {
   let result: unknown;
 
-  context.stackDepth += 1;
   if (context.stackDepth > 10000) {
     throw new EvaluationError(
       `Stack overflow while evaluating \`${JSON.stringify(expression)}\``,
       "stackOverflow",
       expression,
+      context,
       scope
     );
   }
+
+  const deeperContext = {
+    ...context,
+    stackDepth: context.stackDepth + 1,
+  };
 
   // XXX: This could be caseless, for example by having Expression subclasses that have their own evaluator
   if (expression instanceof LiteralExpression) {
     result = evaluateLiteralExpression(expression);
   } else if (expression instanceof NameExpression) {
-    result = evaluateNameExpression(expression, context, scope);
+    result = evaluateNameExpression(expression, deeperContext, scope);
   } else if (expression instanceof SelectorExpression) {
-    result = evaluateSelectorExpression(expression, context, scope);
+    result = evaluateSelectorExpression(expression, deeperContext, scope);
   } else if (expression instanceof OperatorExpression) {
-    result = evaluateOperatorExpression(expression, context, scope);
+    result = evaluateOperatorExpression(expression, deeperContext, scope);
   } else if (expression instanceof CallExpression) {
-    result = evaluateCallExpression(expression, context, scope);
+    result = evaluateCallExpression(expression, deeperContext, scope);
   } else {
     throw new EvaluationError(
       `Don’t know how to evaluate \`${expression}\`.`,
       "unsupportedExpressionType",
       expression,
+      deeperContext,
       scope
     );
   }
@@ -78,6 +86,15 @@ function evaluateLiteralExpression(
   expression: LiteralExpression<ODKNodeValue>
 ): ODKNodeValue {
   return expression.value;
+}
+
+function stringFromStringOrExpression(n: string | Expression) {
+  if (typeof n === "string") {
+    return n;
+  }
+  let string = "";
+  n.print((str: string) => (string += str));
+  return string;
 }
 
 function evaluateCallExpression(
@@ -102,34 +119,89 @@ function evaluateCallExpression(
     fn = functions[nameExpressionOrString];
   } else {
     throw new EvaluationError(
-      `Can’t call a function without knowing its name — the name must be either defined as string returne name string nor a function reference.`,
+      `Can’t call a function without knowing its name — the name must be either defined as string, return a name string or a function reference.`,
       "functionNotFound",
       expression,
+      context,
       scope
     );
   }
 
   if (!fn) {
     throw new EvaluationError(
-      `Could not find a function named \`${nameExpressionOrString}\`.`,
+      `Could not find a function named \`${stringFromStringOrExpression(
+        nameExpressionOrString
+      )}\`.`,
       "functionNotFound",
       expression,
+      context,
       scope
     );
   }
 
-  const evaluatedArgs = expression.args.map((arg) =>
-    evaluateExpression(arg, context, scope)
-  );
+  const evaluatedArgs = expression.args.map((arg, i) => {
+    try {
+      return evaluateExpression(arg, context, scope);
+    } catch (e) {
+      const number = ordinalize(String(i + 1));
+
+      throw new EvaluationError(
+        `Error in ${number} argument \`${stringFromStringOrExpression(
+          nameExpressionOrString
+        )}()\`: ${e.message}`,
+        "functionEvalError",
+        expression,
+        context,
+        scope,
+        e
+      );
+    }
+  });
   if (typeof fn !== "function") {
     throw new EvaluationError(
       `Found name \`${fn}\`, but it is not a function.`,
       "functionNotFound",
       expression,
+      context,
       scope
     );
   }
-  return fn.apply(context, evaluatedArgs);
+
+  try {
+    const result = fn.apply(context, evaluatedArgs);
+    return result;
+  } catch (e) {
+    let string = "";
+    expression.print((s) => (string += s));
+    throw new EvaluationError(
+      `Error while calling \`${string}\`: ${e.message}`,
+      "functionEvalError",
+      expression,
+      context,
+      scope,
+      e
+    );
+  }
+}
+
+function assertBoolean(
+  value: unknown,
+  valueBeforeCasting: unknown,
+  expression: Expression | undefined,
+  context: ODKFormulaEvaluationContext,
+  scope: ODKNode
+): asserts value is boolean {
+  if (typeof value !== "boolean") {
+    throw new EvaluationError(
+      `Found operand \`${JSON.stringify(
+        valueBeforeCasting
+      )}\` that is no boolean value. Boolean operators only work with values that are \`true\` or \`false\`.`,
+      "invalidOperandType",
+      expression,
+      context,
+      scope
+    );
+  }
 }
 
 function evaluateOperatorExpression(
@@ -137,33 +209,40 @@ function evaluateOperatorExpression(
   context: ODKFormulaEvaluationContext,
   scope: ODKNode
 ): ODKNodeValue {
-  const left = evaluateExpression(expression.left, context, scope);
-  const right = evaluateExpression(expression.right, context, scope);
+  const leftBeforeCasting = evaluateExpression(expression.left, context, scope);
+  const rightBeforeCasting = evaluateExpression(
+    expression.right,
+    context,
+    scope
+  );
 
   if (expression.operator === "=") {
-    return left === right;
+    return leftBeforeCasting == rightBeforeCasting;
   }
   if (expression.operator === "!=") {
-    return left !== right;
+    return leftBeforeCasting != rightBeforeCasting;
   }
 
+  let left;
+  let right;
   if (expression.operator === "and" || expression.operator === "or") {
-    if (typeof left !== "boolean") {
-      throw new EvaluationError(
-        `Found left operand \`${left}\` that is no boolean value. Boolean operators only work with values that are \`true\` or \`false\`.`,
-        "invalidOperandType",
-        expression,
-        scope
-      );
+    if (typeof leftBeforeCasting === "boolean") {
+      left = leftBeforeCasting;
     }
-    if (typeof right !== "boolean") {
-      throw new EvaluationError(
-        `Found right operand \`${right}\` that is no boolean value. Boolean operators only work with operands that are \`true\` or \`false\`.`,
-        "invalidOperandType",
-        expression,
-        scope
-      );
+    if (typeof leftBeforeCasting === "number") {
+      left = Boolean(leftBeforeCasting);
     }
+
+    if (typeof rightBeforeCasting === "boolean") {
+      right = rightBeforeCasting;
+    }
+    if (typeof rightBeforeCasting === "number") {
+      right = Boolean(rightBeforeCasting);
+    }
+
+    assertBoolean(left, leftBeforeCasting, expression, context, scope);
+    assertBoolean(right, rightBeforeCasting, expression, context, scope);
+
     switch (expression.operator) {
       case "or":
         return left || right;
@@ -172,19 +251,39 @@ function evaluateOperatorExpression(
     }
   }
 
+  if (typeof leftBeforeCasting === "number") {
+    left = leftBeforeCasting;
+  }
+  if (typeof leftBeforeCasting === "string") {
+    left = parseFloat(leftBeforeCasting);
+  }
+
+  if (typeof rightBeforeCasting === "number") {
+    right = rightBeforeCasting;
+  }
+  if (typeof rightBeforeCasting === "string") {
+    right = parseFloat(rightBeforeCasting);
+  }
+
   if (typeof left !== "number") {
     throw new EvaluationError(
-      `Found left operand \`${left}\` that is no number. Arithmetic and relative comparison operators only work with operands that are numbers.`,
+      `Found left operand \`${JSON.stringify(
+        leftBeforeCasting
+      )}\` that is no number. Arithmetic and relative comparison operators only work with operands that are numeric.`,
       "invalidOperandType",
       expression,
+      context,
       scope
     );
   }
   if (typeof right !== "number") {
     throw new EvaluationError(
-      `Found right operand \`${right}\` that is no number. Arithmetic and relative comparison operators only work with operands that are numbers.`,
+      `Found right operand \`${JSON.stringify(
+        rightBeforeCasting
+      )}\` that is no number. Arithmetic and relative comparison operators only work with operands that are numeric.`,
       "invalidOperandType",
       expression,
+      context,
       scope
     );
   }
@@ -210,9 +309,10 @@ function evaluateOperatorExpression(
       return left <= right;
     default:
       throw new EvaluationError(
-        `The ${expression.operator} operator is not supported`,
+        `The \`${expression.operator}\` operator is not supported`,
         "unsupportedOperator",
         expression,
+        context,
         scope
       );
   }
@@ -237,25 +337,32 @@ function evaluateNameExpression(
         `Could not find a node with name \`${expression.name}\`.`,
         "nodeNotFound",
         expression,
+        context,
         scope
       );
     }
     if (nodeOrNodes instanceof Array) {
       return nodeOrNodes.map((node) =>
-        evaluateNodeColumn(node, context, "calculation", node.answer)
+        evaluateNodeColumn(
+          node,
+          context,
+          "calculation",
+          context.nodesToAnswers.get(node)
+        )
       );
     }
     const evaluationResult = evaluateNodeColumn(
       nodeOrNodes,
       context,
       "calculation",
-      nodeOrNodes.answer
+      context.nodesToAnswers.get(nodeOrNodes)
     );
     if (evaluationResult.error) {
       throw new EvaluationError(
-        `Error while evaluating ${expression.text}.`,
+        `Error in expression ${expression.text}.`,
         "unsupportedNameExpression",
         expression,
+        context,
         scope,
         evaluationResult.error instanceof EvaluationError
           ? evaluationResult.error
@@ -274,6 +381,7 @@ function evaluateNameExpression(
       `Unknown name \`${expression.text}\` — did you mean to use \`\${${expression.name}}\` instead of \`${expression.name}\`?`,
       "unknownNameWithoutDollarSign",
       expression,
+      context,
       scope
     );
   }
@@ -281,6 +389,7 @@ function evaluateNameExpression(
     `Don’t know how to evaluate ${expression}.`,
     "unsupportedNameExpression",
     expression,
+    context,
     scope
   );
 }
@@ -291,11 +400,24 @@ export function evaluateSelectorExpression(
   scope: ODKNode
 ): unknown {
   const selector = expression.selector;
-  const ref = findNodeByPathRelativeToScope(selector, context, scope);
-  if (ref instanceof Array) {
-    return ref.map((node) =>
-      evaluateNodeColumn(node, context, "calculation", node.answer)
+  const node = findNodeByPathRelativeToScope(selector, context, scope);
+  if (node instanceof Array) {
+    return node.map((childNode) =>
+      evaluateNodeColumn(
+        childNode,
+        context,
+        "calculation",
+        context.nodesToAnswers.get(childNode)
+      )
     );
   }
-  return ref && evaluateNodeColumn(ref, context, "calculation", ref.answer);
+  return (
+    node &&
+    evaluateNodeColumn(
+      node,
+      context,
+      "calculation",
+      context.nodesToAnswers.get(node)
+    )
+  );
 }

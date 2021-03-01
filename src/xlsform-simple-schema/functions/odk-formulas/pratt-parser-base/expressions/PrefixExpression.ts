@@ -1,11 +1,23 @@
-import { Expression, punctuator, TokenType, StringBuilder } from "../types";
+import {
+  Expression,
+  punctuator,
+  TokenType,
+  StringBuilder,
+  Token,
+} from "../types";
 
 /**
  * A prefix unary arithmetic expression like "!a" or "-b".
  */
 export default class PrefixExpression implements Expression {
   kind = "prefix";
-  constructor(readonly operator: TokenType, readonly right: Expression) {}
+  children = [this.right];
+
+  constructor(
+    readonly tokens: Token[],
+    readonly operator: TokenType,
+    readonly right: Expression
+  ) {}
 
   public print(builder: StringBuilder): void {
     builder("(");

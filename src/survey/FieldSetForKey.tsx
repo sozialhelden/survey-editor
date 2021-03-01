@@ -1,24 +1,32 @@
 import { Callout, Code, H4 } from "@blueprintjs/core";
 import * as React from "react";
-
-import { ODKSurveyContext } from "./XLSFormSurvey";
+import { ODKSurveyContext } from "../lib/ODKSurveyContext";
+import { WorksheetName } from "../xlsform-simple-schema";
 import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { FieldProps } from "./FieldProps";
 import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
 import ValueField from "./fields/ValueField";
-import evaluateNodeColumn from "../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
-import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 
 export function FieldSetForKey(props: {
   onChange: (value: unknown, fieldProps: FieldProps) => void;
-  onChangeRow: (node: ODKNode, row: QuestionRow) => void;
+  onChangeCell: (
+    worksheetName: WorksheetName,
+    rowIndex: number,
+    columnName: string,
+    value: unknown,
+    node?: ODKNode
+  ) => void;
   schemaKey: string;
   relevant?: boolean;
+  disabled?: boolean;
 }) {
-  const { schemaKey, onChange, onChangeRow } = props;
+  const { schemaKey, onChange, onChangeCell } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
+  if (!context || !schema) {
+    return null;
+  }
   const quickType = schema.getQuickTypeForKey(schemaKey);
   const schemaKeyPath = [".", ...schemaKey.replace(/\.\$/g, "").split(".")];
 
@@ -59,19 +67,25 @@ export function FieldSetForKey(props: {
 
   let relevant = props.relevant;
   if (typeof relevant !== "boolean" || relevant === true) {
-    const relevanceEvaluationResult = evaluateNodeColumn(
-      node,
-      context,
-      "relevant",
-      true
-    );
-
+    const evaluationResult = context.evaluationResults
+      .get(node)
+      ?.get("relevant");
     relevant =
-      typeof relevanceEvaluationResult.result === "boolean"
-        ? relevanceEvaluationResult.result
+      typeof evaluationResult?.result === "boolean"
+        ? evaluationResult.result
         : true;
   }
 
+  let disabled = props.disabled;
+  if (typeof disabled !== "boolean" || disabled === true) {
+    const evaluationResult = context.evaluationResults
+      .get(node)
+      ?.get("disabled");
+    disabled =
+      typeof evaluationResult?.result === "boolean"
+        ? evaluationResult.result
+        : false;
+  }
   // TODO: Add warning for evaluation failure
 
   const fieldProps: FieldProps = {
@@ -80,8 +94,9 @@ export function FieldSetForKey(props: {
     schemaKey,
     quickType,
     onChange,
-    onChangeRow,
+    onChangeCell,
     relevant,
+    disabled,
   };
 
   if (!debug && !relevant) {

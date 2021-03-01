@@ -17,7 +17,7 @@ const jsDateFormatter: IDateFormatProps = {
 };
 
 export default function DateField(props: Props) {
-  const { value, relevant } = props;
+  const { value, relevant, disabled } = props;
 
   const onChange = React.useCallback(
     (selectedDate: Date, isUserChange: boolean) => {
@@ -50,7 +50,7 @@ export default function DateField(props: Props) {
       {...jsDateFormatter}
       onChange={onChange}
       defaultValue={defaultValue || undefined}
-      disabled={relevant === false}
+      disabled={relevant === false || disabled}
     />
   );
 }

@@ -1,12 +1,14 @@
-import { Expression, StringBuilder } from "../types";
+import { Expression, StringBuilder, Token } from "../types";
 
 /**
  * A binary arithmetic expression like "a + b" or "c ^ d".
  */
 export default class OperatorExpression implements Expression {
   kind = "operator";
+  children = [this.left, this.right];
 
   constructor(
+    readonly tokens: Token[],
     readonly left: Expression,
     readonly operator: string,
     readonly right: Expression

@@ -6,7 +6,7 @@ import ODKFormulaEvaluationContext from "../odk-formulas/evaluation/ODKFormulaEv
 import { getStringInterpolationFunctionOrString } from "./getStringInterpolationFunctionOrString";
 import { getNodeOptionalFunction } from "./getNodeOptionalFunction";
 
-export default function createGroupNodeSchemaDefinition(options: {
+export default function createRecursiveNodeSchemaDefinition(options: {
   node: ODKNode;
   language: string;
   xlsForm: XLSForm;
@@ -23,7 +23,7 @@ export default function createGroupNodeSchemaDefinition(options: {
   if (node.row?.type.match(/^begin_repeat$/)) {
     // We're in a repeated section
     const childrenSchemaDefinitions = node.children.map((child) =>
-      createGroupNodeSchemaDefinition({
+      createRecursiveNodeSchemaDefinition({
         ...options,
         node: child,
         key: key + ".$." + child.row.name,
@@ -39,7 +39,7 @@ export default function createGroupNodeSchemaDefinition(options: {
   ) {
     // We're in a group section or in the root (a special case that has children, but is not of `begin_group` type)
     const childrenSchemaDefinitions = node.children.map((child) =>
-      createGroupNodeSchemaDefinition({
+      createRecursiveNodeSchemaDefinition({
         ...options,
         node: child,
         key: key + "." + child.row.name,
@@ -60,6 +60,6 @@ export default function createGroupNodeSchemaDefinition(options: {
     );
   }
 
-  console.log(`Schema for key \`${key}\`:`, schemaDefinitions);
+  // console.log(`Schema for key \`${key}\`:`, schemaDefinitions);
   return schemaDefinitions;
 }

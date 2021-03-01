@@ -1,16 +1,55 @@
-import * as React from "react";
-import { Popover2, Classes as PopoverClasses } from "@blueprintjs/popover2";
 import {
+  Breadcrumbs,
   Button,
+  Callout,
   Classes,
   Code,
+  Colors,
   ControlGroup,
-  Pre,
   Tab,
   Tabs,
 } from "@blueprintjs/core";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
+import * as React from "react";
+import styled from "styled-components";
+import HighlightedExpression from "../components/HighlightedExpression";
+import StyledMarkdown from "../components/StyledMarkdown";
+import { ODKSurveyContext } from "../lib/ODKSurveyContext";
+import { typesToIcons } from "../lib/typesToIcons";
 import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import {
+  evaluatableColumnNames,
+  isNodeRelevant,
+  ODKNode,
+} from "../xlsform-simple-schema/types/ODKNode";
+
+const StyledCodeBlock = styled(Code)`
+  overflow: auto;
+  word-break: break-all;
+  font-size: 20px;
+  line-height: 28px;
+  display: block;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+`;
+
+const StyledPanel = styled.div`
+  display: grid;
+  gap: 8px;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    margin: 0;
+    &:not(:first-child) {
+      margin-top: 8px;
+    }
+  }
+`;
 
 export default function DetailsPopover(props: {
   detailsButtonCaption: React.ReactNode;
@@ -18,52 +57,104 @@ export default function DetailsPopover(props: {
   node: ODKNode;
 }) {
   const { node } = props;
-  const { row, answer } = node;
-  const path = getNodeAbsolutePath(node).join("/");
-  const rowPanel = (
-    <pre style={{ overflow: "auto" }}>
-      {JSON.stringify({ row, answer }, null, 2)}
-    </pre>
+  const context = React.useContext(ODKSurveyContext);
+  const nodeEvaluationResults = context.context?.evaluationResults.get(node);
+  const firstColumnNameWithError =
+    nodeEvaluationResults &&
+    [...nodeEvaluationResults.keys()].find(
+      (k) => nodeEvaluationResults?.get(k)?.error
+    );
+  const [tabId, setTabId] = React.useState<string | number>(
+    firstColumnNameWithError || "calculation"
   );
+  const { row } = node;
+  if (!context.context) {
+    return null;
+  }
+  const path = getNodeAbsolutePath(node, context.context).slice(1);
 
   const getPanel = (k: string) => {
-    const results = node.evaluatedResults[k];
+    const results = nodeEvaluationResults?.get(k);
+    const cellValue = node.row[k];
+    const cellIsEmpty = cellValue === undefined;
     const panel = (
-      <>
-        <Pre style={{ overflow: "auto", whiteSpace: "normal" }}>
-          {node.row[k]}
-        </Pre>
-        <Pre style={{ overflow: "auto" }}>
-          {JSON.stringify(
-            {
-              state: results.state,
-              error: results.error?.toMarkdown(),
-              result: results.result,
-              expression: results.expression,
-            },
-            null,
-            2
-          )}
-        </Pre>
-      </>
+      <StyledPanel
+        lang="en"
+        style={{
+          backgroundColor: Colors.LIGHT_GRAY5,
+          margin: "-20px",
+          padding: "20px",
+        }}
+      >
+        {!cellIsEmpty && (
+          <>
+            <h4>Code</h4>
+            <StyledCodeBlock>
+              <HighlightedExpression
+                state={results?.state}
+                error={results?.error}
+                expression={results?.expression}
+                code={String(cellValue)}
+                parser={results?.parser}
+              />
+            </StyledCodeBlock>
+            <h4>Results</h4>
+          </>
+        )}
+
+        {!cellIsEmpty && !results && (
+          <Callout intent="none">Not calculated yet.</Callout>
+        )}
+
+        {results?.state === "error" && (
+          <Callout intent="danger">
+            <StyledMarkdown>{results.error.toMarkdown()}</StyledMarkdown>
+          </Callout>
+        )}
+
+        {cellIsEmpty && <h4>Default value</h4>}
+        {results?.result !== undefined && (
+          <StyledCodeBlock>{JSON.stringify(results.result)}</StyledCodeBlock>
+        )}
+      </StyledPanel>
     );
-    return <Tab id={k} title={<Code>{k}</Code>} panel={panel} />;
+    return (
+      <Tab
+        id={k}
+        title={
+          <>
+            {k}
+            {results?.state === "error" && " ⚠️"}
+          </>
+        }
+        panel={panel}
+      />
+    );
   };
 
-  const [tabId, setTabId] = React.useState<string | number>("row");
-
   const detailsContent = (
-    <div lang="en">
-      <header className={Classes.TEXT_OVERFLOW_ELLIPSIS}>
-        <code>{path}</code>
+    <>
+      <header>
+        <code className={Classes.TEXT_MUTED}>{node.row.type}</code>
       </header>
-
+      <header style={{ marginBottom: "16px" }}>
+        <Breadcrumbs
+          items={path.map((k, i) => ({
+            href: `#//${path.slice(0, i + 1).join("/")}`,
+            icon: i === path.length - 1 ? typesToIcons[node.type] : false,
+            text: k,
+          }))}
+          collapseFrom="start"
+          overflowListProps={{
+            observeParents: true,
+            minVisibleItems: 1,
+          }}
+        />
+      </header>
       <Tabs onChange={setTabId} selectedTabId={tabId}>
-        <Tab id="row" title={<Code>row</Code>} panel={rowPanel} />
-        <Tabs.Expander />
-        {Object.keys(node.evaluatedResults).map((k) => getPanel(k))}
+        {evaluatableColumnNames.map((k) => getPanel(k))}
       </Tabs>
-    </div>
+    </>
   );
 
   return (
@@ -88,6 +179,14 @@ export default function DetailsPopover(props: {
               // outlined={true}
               small={true}
               lang="en"
+              intent={firstColumnNameWithError ? "danger" : "none"}
+              icon={firstColumnNameWithError ? "error" : undefined}
+              className={
+                !firstColumnNameWithError &&
+                !isNodeRelevant(node, context.context)
+                  ? Classes.TEXT_MUTED
+                  : undefined
+              }
             >
               {props.detailsButtonCaption}
             </Button>

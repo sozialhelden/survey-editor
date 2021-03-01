@@ -1,4 +1,4 @@
-import { ODKNode as ODKNode } from "../types/ODKNode";
+import { NodesToAncestors, ODKNode } from "../types/ODKNode";
 import {
   BeginMarkerRow,
   BeginOrEndMarkerRow,
@@ -21,9 +21,7 @@ function assertNoEndMarker(
 }
 
 /**
- * Calculates a nested `QuestionGroupWithRuntimeInfo` survey model for an array of non-nested survey worksheet rows.
- *
- * `QuestionGroup` represents the root 'group' of the survey.
+ * Calculates a nested `Node` survey model for an array of non-nested survey worksheet rows.
  */
 export default function nestSurvey({
   rows,
@@ -37,23 +35,23 @@ export default function nestSurvey({
   formRootNameFromSettings?: string;
   titleFromSettings?: string;
   onRow?: (row: QuestionRow | BeginOrEndMarkerRow, node: ODKNode) => void;
-}): ODKNode {
+}): {
+  node: Readonly<ODKNode>;
+  nodesToAncestors: NodesToAncestors;
+} {
   const root: ODKNode = {
     children: [] as ODKNode[],
     type: "",
     typeParameters: [],
-    rowIndex: 0,
+    rowIndex: -1,
     indentationLevel: 0,
-    stack: [] as ODKNode[],
     row: {
       name: formRootNameFromSettings,
       type: "",
       label: { [defaultLanguage]: titleFromSettings },
     } as QuestionRow,
-    evaluatedResults: {},
-    resultsThatNeedReevaluation: {},
   };
-
+  const nodesToAncestors: NodesToAncestors = new Map();
   const stack: ODKNode[] = [root];
   let i = 0;
 
@@ -73,40 +71,50 @@ export default function nestSurvey({
       onRow?.(row, currentGroup);
     } else if (type.match(/^begin_(?:repeat|group)$/)) {
       // Found the beginning of a nested group or repeat
-      const newGroup: ODKNode = {
+      const newGroupNode: ODKNode = {
         row: row as BeginMarkerRow,
         type,
         typeParameters,
         children: [],
         indentationLevel: stack.length - 1,
         rowIndex: i,
-        stack: [...stack],
-        evaluatedResults: {},
-        resultsThatNeedReevaluation: {},
       };
-      currentGroup.children.push(newGroup);
-      stack.push(newGroup);
-      onRow?.(row, newGroup);
+      nodesToAncestors.set(newGroupNode, [...stack]);
+      currentGroup.children.push(newGroupNode);
+      stack.push(newGroupNode);
+      onRow?.(row, newGroupNode);
     } else {
       // Found a 'normal' survey question
       assertNoEndMarker(row, i);
-      const newChild: ODKNode = {
+      const newChildNode: ODKNode = {
         row,
         type,
         typeParameters,
         indentationLevel: stack.length - 1,
         rowIndex: i,
         children: [],
-        stack: [...stack],
-        evaluatedResults: {},
-        resultsThatNeedReevaluation: {},
       };
-      currentGroup.children.push(newChild);
-      onRow?.(row, newChild);
+      nodesToAncestors.set(newChildNode, [...stack]);
+      currentGroup.children.push(newChildNode);
+      onRow?.(row, newChildNode);
     }
 
     i += 1;
   }
 
-  return root;
+  return { nodesToAncestors, node: root };
+}
+
+export function calculateNodesToAncestorsMap(
+  node: ODKNode,
+  stack: ODKNode[] = [],
+  nodesToAncestors: NodesToAncestors = new Map()
+) {
+  nodesToAncestors.set(node, [...stack]);
+  stack.push(node);
+  node.children.forEach((child) =>
+    calculateNodesToAncestorsMap(child, stack, nodesToAncestors)
+  );
+  stack.pop();
+  return nodesToAncestors;
 }

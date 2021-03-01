@@ -1,15 +1,18 @@
-import ODKFormulaEvaluationContext from './ODKFormulaEvaluationContext';
-import evaluateExpression from './evaluateExpression';
-import { ODKNode } from '../../../types/ODKNode';
-import { parseODKFormula } from './parseODKFormula';
-import { ODKFormulaError, SemanticError } from '../../../types/Errors';
-import ODKFormulaEvaluationResult from './ODKFormulaEvaluationResult';
-import { Expression } from '../pratt-parser-base';
+import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
+import evaluateExpression from "./evaluateExpression";
+import { ODKNode } from "../../../types/ODKNode";
+import { ODKFormulaError, SemanticError } from "../../../types/Errors";
+import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
+import { Expression } from "../pratt-parser-base";
+import ODKFormulaLexer from "../odk-formula-parser/ODKFormulaLexer";
+import ODKFormulaParser from "../odk-formula-parser/ODKFormulaParser";
 
-function assertExpressionAfterEvaluation(expression: unknown): asserts expression is Expression {
+function assertExpressionAfterEvaluation(
+  expression: unknown
+): asserts expression is Expression {
   if (!expression) {
     throw new SemanticError(
-      'Formula was not evaluated to an expression, but no error was encountered. This means an error handler is missing for this case.'
+      "Formula was not evaluated to an expression, but no error was encountered. This means an error handler is missing for this case."
     );
   }
 }
@@ -37,8 +40,11 @@ export default function evaluateODKFormula(
   let error;
   let result;
   let expression;
+  const lexer = new ODKFormulaLexer(formula);
+  const parser = new ODKFormulaParser({ tokens: lexer });
   try {
-    expression = parseODKFormula(formula);
+    const expression = parser.parseExpression();
+
     if (!expression) {
       throw new Error(
         `Parsing given formula \`${formula}\` returned an empty expression. This should not happen, it means the underlying code should have thrown an exception earlier.`
@@ -47,7 +53,8 @@ export default function evaluateODKFormula(
     result = evaluateExpression(expression, context, scope);
     assertExpressionAfterEvaluation(expression);
     return {
-      state: 'success',
+      parser,
+      state: "success",
       expression,
       result,
       error: undefined,
@@ -61,7 +68,8 @@ export default function evaluateODKFormula(
   }
 
   return {
-    state: 'error',
+    parser,
+    state: "error",
     expression,
     error,
     result: null,

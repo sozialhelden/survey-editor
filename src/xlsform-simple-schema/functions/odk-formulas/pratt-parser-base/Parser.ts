@@ -1,26 +1,37 @@
-import ParseError from './ParseError';
-import InfixParselet from './parselets/InfixParselet';
-import PrefixParselet from './parselets/PrefixParselet';
-import { Expression, Token, TokenType } from './types';
+import { ParseError } from "../../../types/Errors";
+import InfixParselet from "./parselets/InfixParselet";
+import PrefixParselet from "./parselets/PrefixParselet";
+import { Expression, Token, TokenType } from "./types";
+
+export type TokenCallback = (expression: Token) => void;
+export type ExpressionCallback = (expression: Expression) => void;
+export interface ITokenizer {
+  next: () => { value: Token };
+}
+export type ParserOptions = {
+  tokens: ITokenizer;
+  onToken?: TokenCallback;
+  onExpression?: ExpressionCallback;
+};
 
 export default class Parser {
-  private mTokens: { next: () => { value: Token } };
-  private mRead: Token[] = [];
-  private mPrefixParselets: Map<TokenType, PrefixParselet> = new Map();
-  private mInfixParselets: Map<TokenType, InfixParselet> = new Map();
+  private readTokens: Token[] = [];
+  private prefixParselets: Map<TokenType, PrefixParselet> = new Map();
+  private infixParselets: Map<TokenType, InfixParselet> = new Map();
 
-  constructor(tokens: { next: () => { value: Token } }) {
-    this.mTokens = tokens;
-  }
+  constructor(readonly options: ParserOptions) {}
 
-  public register(token: TokenType, parselet: PrefixParselet | InfixParselet): void {
+  public register(
+    token: TokenType,
+    parselet: PrefixParselet | InfixParselet
+  ): void {
     if (parselet instanceof PrefixParselet) {
-      this.mPrefixParselets.set(token, parselet);
+      this.prefixParselets.set(token, parselet);
     } else if (parselet instanceof InfixParselet) {
-      this.mInfixParselets.set(token, parselet);
+      this.infixParselets.set(token, parselet);
     } else {
       throw new Error(
-        `Found a parselet that was neither an infix nor a prefix parselet: No idea what to do with it...`
+        `Found a parselet that was neither an infix nor a prefix parselet: No idea what to do with it…`
       );
     }
   }
@@ -28,12 +39,17 @@ export default class Parser {
   public parseExpression(precedence = 0): Expression {
     const token = this.consumeAnything();
     if (!token) {
-      throw new ParseError('Parser encountered end of tokens before EOF. This should not happen.');
+      throw new ParseError(
+        "prematureEOF",
+        "Parser encountered end of tokens. This should not happen."
+      );
     }
-    const prefix = this.mPrefixParselets.get(token.type);
+    const prefix = this.prefixParselets.get(token.type);
     if (!prefix)
       throw new ParseError(
-        `Could not parse "${token.text}", no method found to parse token type ${token.type} as prefix.`
+        "undefinedPrefix",
+        `Expected start of a new expression, but \`${token.text}\` is not an allowed prefix.`,
+        [token]
       );
 
     let left: Expression = prefix.parse(this, token);
@@ -42,59 +58,69 @@ export default class Parser {
       const token = this.consumeAnything();
       if (!token) {
         throw new ParseError(
-          'Parser encountered end of tokens before EOF. This should not happen.'
+          "prematureEndOfTokens",
+          "Parser encountered end of tokens. This should not happen."
         );
       }
-      const infix = this.mInfixParselets.get(token.type);
+      const infix = this.infixParselets.get(token.type);
       if (!infix)
         throw new ParseError(
-          `Could not parse "${token.text}", no method found to parse token type ${token.type} as infix.`
+          "undefinedInfix",
+          `\`${token.text}\` is not an allowed infix.`,
+          [token]
         );
       left = infix.parse(this, left, token);
     }
 
+    this.options.onExpression?.(left);
     return left;
   }
 
-  public match(expected: TokenType): boolean {
+  public match(expected: TokenType): Token | undefined {
     const token = this.lookAhead(0);
-    if (token.type != expected) {
-      return false;
-    }
-
-    this.consumeAnything();
-    return true;
-  }
-
-  public consume(expected: TokenType): Token | undefined {
-    const token = this.lookAhead(0);
-    if (token.type != expected) {
-      throw new Error('Expected token ' + expected + ' and found ' + token.type);
+    if (token.type !== expected) {
+      return undefined;
     }
 
     return this.consumeAnything();
+  }
+
+  public consume(expected: TokenType): Token {
+    const token = this.lookAhead(0);
+    if (token.type !== expected) {
+      throw new Error(
+        "Expected token " + expected + " and found " + token.type
+      );
+    }
+
+    const consumedToken = this.consumeAnything();
+    if (!consumedToken) {
+      throw new Error("Could not consume token " + expected);
+    }
+    return token;
   }
 
   public consumeAnything(): Token | undefined {
     // Make sure we've read the token.
     this.lookAhead(0);
 
-    return this.mRead.shift();
+    return this.readTokens.shift();
   }
 
   private lookAhead(distance: number): Token {
     // Read in as many as needed.
-    while (distance >= this.mRead.length) {
-      const nextToken = this.mTokens.next();
-      this.mRead.push(nextToken.value);
+    while (distance >= this.readTokens.length) {
+      const nextToken = this.options.tokens.next();
+      if (nextToken.value) this.options.onToken?.(nextToken.value);
+      this.readTokens.push(nextToken.value);
     }
 
     // Get the queued token.
-    return this.mRead[distance];
+    return this.readTokens[distance];
   }
 
   private getPrecedence(): number {
-    const parser = this.mInfixParselets.get(this.lookAhead(0).type);
+    const parser = this.infixParselets.get(this.lookAhead(0).type);
     if (parser) return parser.getPrecedence();
     return 0;
   }

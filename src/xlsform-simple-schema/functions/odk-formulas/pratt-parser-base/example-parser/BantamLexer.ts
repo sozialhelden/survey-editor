@@ -1,4 +1,4 @@
-import { punctuator, Token, TokenType, tokenTypes } from '../index';
+import { punctuator, Token, TokenType, tokenTypes } from "../index";
 
 function isLetter(char: string) {
   return !!char.match(/^[a-zA-Z0-9]$/);
@@ -28,7 +28,7 @@ export default class BantamLexer implements Iterator<Token> {
     // Register all of the TokenTypes that are explicit punctuators.
     for (const type of tokenTypes) {
       const p = punctuator(type);
-      if (typeof p !== 'undefined') {
+      if (typeof p !== "undefined") {
         this.mPunctuators.set(p, type);
       }
     }
@@ -41,10 +41,10 @@ export default class BantamLexer implements Iterator<Token> {
       if (this.mPunctuators.has(c)) {
         // Handle punctuation.
         const type = this.mPunctuators.get(c);
-        if (typeof type === 'undefined') {
+        if (typeof type === "undefined") {
           throw new Error(`Didnt find type ${type} in punctuators. Stopping.`);
         }
-        return { value: { type, text: c } };
+        return { value: { type, text: c, index: this.mIndex } };
       } else if (isLetter(c)) {
         // Handle names.
         const start = this.mIndex - 1;
@@ -56,6 +56,7 @@ export default class BantamLexer implements Iterator<Token> {
           value: {
             type: TokenType.NAME,
             text: this.mText.substring(start, this.mIndex),
+            index: this.mIndex,
           },
         };
       } else {
@@ -66,9 +67,9 @@ export default class BantamLexer implements Iterator<Token> {
     // Once we've reached the end of the string, just return EOF tokens. We'll
     // just keeping returning them as many times as we're asked so that the
     // parser's lookahead doesn't have to worry about running out of tokens.
-    return { value: { type: TokenType.EOF, text: '' } };
+    return { value: { type: TokenType.EOF, text: "", index: this.mIndex } };
   }
   public remove(): void {
-    throw new Error('Unsupported operation');
+    throw new Error("Unsupported operation");
   }
 }

@@ -10,37 +10,31 @@ import {
   H5,
 } from "@blueprintjs/core";
 import * as React from "react";
-import {
-  LocalizedString,
-  QuestionRow,
-} from "../../xlsform-simple-schema/types/RowTypes";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { isNodeRelevant } from "../../xlsform-simple-schema/types/ODKNode";
 import DetailsPopover from "../DetailsPopover";
 import { FieldProps } from "../FieldProps";
 import { FieldSetForKey } from "../FieldSetForKey";
-import { ODKSurveyContext } from "../XLSFormSurvey";
 
 export default function ObjectField(props: FieldProps) {
-  const { schema, schemaKey, node, onChangeRow } = props;
+  const { schema, schemaKey, node, onChangeCell } = props;
   const subKeys = schema.objectKeys(schemaKey);
   const context = React.useContext(ODKSurveyContext);
   const { debug } = context;
 
   const label = schema.get(schemaKey, "label");
+  const path =
+    context.context && getNodeAbsolutePath(node, context.context).join("/");
 
   const onChangeLabel = React.useCallback(
     (text: string) => {
       if (text === label || (label === undefined && text === "")) {
         return;
       }
-      const newLabel: LocalizedString = {
-        ...node.row.label,
-        [context.language]: text,
-      };
-      const newRow: QuestionRow = { ...node.row };
-      newRow.label = newLabel;
-      onChangeRow(node, newRow);
+      onChangeCell("survey", node.rowIndex, "label", text, node);
     },
-    [node, context.language, onChangeRow, label]
+    [node, onChangeCell, label]
   );
 
   const labelInput = (
@@ -55,19 +49,22 @@ export default function ObjectField(props: FieldProps) {
 
   const HeadingClass = [H1, H2, H3, H4, H5][node.indentationLevel] || H5;
 
-  const detailsButtonCaption = (
-    <code className={Classes.TEXT_MUTED}>{node.row.name}</code>
-  );
+  const detailsButtonCaption = <code>{node.row.name}</code>;
 
-  const hintString = node.row.hint?.[context.language];
+  const hintString =
+    typeof context.language === "string" && node.row.hint?.[context.language];
 
+  const isRelevant = isNodeRelevant(node, context.context);
+  if (!isRelevant && !debug) {
+    return null;
+  }
   return (
     <ControlGroup
       vertical={true}
       style={{ margin: `${6 / (node.indentationLevel + 1)}rem 0` }}
     >
       <ControlGroup fill={true} style={{ alignItems: "baseline" }}>
-        <HeadingClass style={{ flex: 1 }}>
+        <HeadingClass style={{ flex: 1 }} id={path}>
           {debug ? labelInput : label}
         </HeadingClass>
         {debug && <DetailsPopover {...{ ...props, detailsButtonCaption }} />}
@@ -78,8 +75,9 @@ export default function ObjectField(props: FieldProps) {
           key={subkey}
           schemaKey={[schemaKey, subkey].join(".")}
           onChange={props.onChange}
-          onChangeRow={props.onChangeRow}
+          onChangeCell={props.onChangeCell}
           relevant={props.relevant}
+          disabled={props.disabled}
         />
       ))}
 

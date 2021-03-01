@@ -1,4 +1,4 @@
-import ODKFormulaEvaluationResult from "../functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
+import ODKFormulaEvaluationContext from "../functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import {
   IBeginGroupMarkerRow,
   IBeginRepeatMarkerRow,
@@ -29,10 +29,6 @@ export type ODKNode =
       children: ODKNode[];
       indentationLevel: number;
       rowIndex: number;
-      stack: ODKNode[];
-      answer?: unknown;
-      evaluatedResults: Record<string, ODKFormulaEvaluationResult>;
-      resultsThatNeedReevaluation: Record<string, boolean>;
     }
   | {
       row: QuestionRow;
@@ -41,8 +37,48 @@ export type ODKNode =
       children: ODKNode[];
       indentationLevel: number;
       rowIndex: number;
-      stack: ODKNode[];
-      answer?: unknown;
-      evaluatedResults: Record<string, ODKFormulaEvaluationResult>;
-      resultsThatNeedReevaluation: Record<string, boolean>;
     };
+
+export type NodesToAncestors = Readonly<
+  Map<Readonly<ODKNode>, readonly ODKNode[]>
+>;
+
+export type NodesToValues<T = unknown> = Readonly<Map<Readonly<ODKNode>, T>>;
+
+export type EvaluatableColumnName =
+  | "relevant"
+  | "calculation"
+  | "required"
+  | "readonly";
+export const evaluatableColumnNames: EvaluatableColumnName[] = [
+  "calculation",
+  "required",
+  "relevant",
+  "readonly",
+];
+
+export function isNodeRelevant(
+  node: ODKNode,
+  context?: ODKFormulaEvaluationContext
+) {
+  if (!context) {
+    return false;
+  }
+  const isRelevantEvaluationResult = context.evaluationResults
+    .get(node)
+    ?.get("relevant")?.result;
+  return isRelevantEvaluationResult === undefined || isRelevantEvaluationResult;
+}
+
+export function isNodeReadonly(
+  node: ODKNode,
+  context?: ODKFormulaEvaluationContext
+) {
+  if (!context) {
+    return false;
+  }
+  const isReadonlyEvaluationResult = context.evaluationResults
+    .get(node)
+    ?.get("readonly")?.result;
+  return isReadonlyEvaluationResult === undefined || isReadonlyEvaluationResult;
+}

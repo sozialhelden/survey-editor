@@ -1,4 +1,3 @@
-import Lexer from "./ODKFormulaLexer";
 import {
   default as PrattParser,
   TokenType,
@@ -10,10 +9,13 @@ import {
   NameParselet,
   PostfixOperatorParselet,
   PrefixOperatorParselet,
+  Token,
+  Expression,
 } from "../pratt-parser-base/index";
 import Precedence from "./ODKFormulaPrecedence";
 import LiteralParselet from "../pratt-parser-base/parselets/LiteralParselet";
 import SelectorParselet from "../pratt-parser-base/parselets/SelectorParselet";
+import { ParserOptions } from "../pratt-parser-base/Parser";
 
 /**
  * Extends the generic Parser class with support for parsing the actual ODK formula grammar.
@@ -24,8 +26,15 @@ import SelectorParselet from "../pratt-parser-base/parselets/SelectorParselet";
  * http://journal.stuffwithstuff.com/2011/03/19/pratt-parsers-expression-parsing-made-easy/
  */
 export default class ODKFormulaParser extends PrattParser {
-  constructor(lexer: Lexer) {
-    super(lexer);
+  expressions: Expression[] = [];
+  tokens: Token[] = [];
+
+  constructor(options: ParserOptions) {
+    super({
+      onExpression: (e) => this.expressions.push(e),
+      onToken: (t) => this.tokens.push(t),
+      ...options,
+    });
 
     // Register all of the parselets for the grammar.
 

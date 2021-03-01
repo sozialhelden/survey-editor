@@ -1,10 +1,12 @@
-import SelectorExpression from '../expressions/SelectorExpression';
-import Parser from '../Parser';
-import { Expression, Token } from '../types';
-import PrefixParselet from './PrefixParselet';
+import SelectorExpression from "../expressions/SelectorExpression";
+import Parser from "../Parser";
+import { Expression, Token } from "../types";
+import PrefixParselet from "./PrefixParselet";
 
 /**
  * Simple parselet for a selector variable like "x > y > z" or "a/b/c[d='123']".
+ *
+ * Expects that the lexer recognizes the whole selector already completely as one token.
  */
 export default class SelectorParselet<T> extends PrefixParselet {
   constructor(readonly getSelector: (text: string) => T) {
@@ -12,6 +14,6 @@ export default class SelectorParselet<T> extends PrefixParselet {
   }
   public parse(_parser: Parser, token: Token): Expression {
     const selector = this.getSelector(token.text);
-    return new SelectorExpression(token.text, selector);
+    return new SelectorExpression([token], token.text, selector);
   }
 }

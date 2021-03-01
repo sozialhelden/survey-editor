@@ -1,32 +1,38 @@
-import React, { FormEvent } from "react";
-import styled from "styled-components";
-import * as ExcelJS from "exceljs";
 import {
   Alignment,
   Button,
-  ButtonGroup,
   Code,
   FocusStyleManager,
   Navbar,
   NonIdealState,
   Switch,
 } from "@blueprintjs/core";
-import XLSForm from "./xlsform-simple-schema/index";
-
+import * as ExcelJS from "exceljs";
+import React, { FormEvent, useEffect, useState } from "react";
+import styled from "styled-components";
 import "./App.css";
-import { loadFormFromExcelWorkbook } from "./xlsform-simple-schema/functions/loadSurveyFromXLSX";
+import ResultCodeTree from "./code/ResultCodeTree";
 import ExcelFileInput from "./components/ExcelFileInput";
-import XLSFormSurvey from "./survey/XLSFormSurvey";
 import LanguageSelector from "./components/LanguageSelector";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
-import XLSFormWorksheet from "./table/XLSFormWorksheet";
+import { ODKSurveyContext } from "./lib/ODKSurveyContext";
+import useChangeHooks from "./lib/useChangeHooks";
+import { SheetTabs } from "./SheetTabs";
 import { FieldProps } from "./survey/FieldProps";
+import XLSFormSurvey from "./survey/XLSFormSurvey";
+import XLSFormWorksheet from "./table/XLSFormWorksheet";
 import { AppToaster } from "./toaster";
-import ResultCodeTree from "./code/ResultCodeTree";
-import { QuestionRow } from "./xlsform-simple-schema/types/RowTypes";
-import { ODKNode } from "./xlsform-simple-schema/types/ODKNode";
-import { getNodeAbsolutePath } from "./xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import getEvaluatedXLSFormResult from "./xlsform-simple-schema/functions/evaluateNodeAndChildren";
+import { loadFormFromExcelWorkbook } from "./xlsform-simple-schema/functions/loadSurveyFromXLSX";
+import { calculateNodesToAncestorsMap } from "./xlsform-simple-schema/functions/nestSurvey";
+import ODKFormulaEvaluationContext, {
+  getEmptyContext,
+  knownLiteralsWithoutDollarSign,
+} from "./xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import patchXLSForm from "./xlsform-simple-schema/functions/patchXLSForm";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
+import XLSForm, { WorksheetName } from "./xlsform-simple-schema/index";
+import { ODKNode } from "./xlsform-simple-schema/types/ODKNode";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -56,25 +62,49 @@ const StyledXLSFormSurvey = styled(XLSFormSurvey)`
   }
 `;
 
+const AppBody = styled.div`
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+`;
+
+function NavbarSwitch(props: {
+  checked: boolean;
+  onChange: (event: React.FormEvent<HTMLInputElement>) => void;
+  label: string;
+}) {
+  return (
+    <Switch
+      checked={props.checked}
+      label={props.label}
+      onChange={props.onChange}
+      inline={true}
+      style={{ marginBottom: "0" }}
+    />
+  );
+}
+
 function App() {
   const [xlsForm, setXLSForm] = React.useState<XLSForm>();
-  const [lastEvaluationDate, setLastEvaluationDate] = React.useState<Date>(
-    new Date()
-  );
-
   const [language, setLanguage] = React.useState<string>();
   const [debug, setDebug] = React.useState<boolean>(true);
   const [showTable, setShowTable] = React.useState<boolean>(false);
   const [showResult, setShowResult] = React.useState<boolean>(false);
-  const [worksheetName, setWorksheetName] = React.useState<
-    keyof XLSForm["worksheets"]
-  >("survey");
+  const [worksheetName, setWorksheetName] = React.useState<WorksheetName>(
+    "survey"
+  );
 
   const onLoadWorkbook = React.useCallback(
     async (workbook: ExcelJS.Workbook) => {
       const xlsForm = await loadFormFromExcelWorkbook(workbook);
       setXLSForm(xlsForm);
-      setLanguage(xlsForm.worksheets.settings.rows[0].default_language);
+      setLanguage(
+        xlsForm.worksheets.settings?.rows[0].default_language ||
+          [...xlsForm.languages?.values()][0] ||
+          "English (en)"
+      );
     },
     []
   );
@@ -110,98 +140,63 @@ function App() {
     <Button className="bp3-minimal" icon="reset" text="Reset" onClick={reset} />
   );
 
-  const resultCodeElement = lastEvaluationDate && xlsForm && (
+  const resultCodeElement = xlsForm && (
     <OverflowScrollContainer
       className={"bp3-code-block"}
       style={{ padding: "1rem", margin: "0", whiteSpace: "pre" }}
     >
-      <ResultCodeTree {...{ lastEvaluationDate, xlsForm }} />
+      <ResultCodeTree {...{ xlsForm }} />
     </OverflowScrollContainer>
   );
 
-  const onChange = React.useCallback(
-    (value: unknown, fieldProps: FieldProps) => {
-      AppToaster.clear();
-      AppToaster.show({
-        message: (
-          <>
-            {fieldProps.schemaKey} → <Code>{JSON.stringify(value)}</Code>
-          </>
-        ),
-      });
-      if (xlsForm) {
-        fieldProps.node.answer = value;
-      }
-      setLastEvaluationDate(new Date());
-    },
-    [xlsForm]
-  );
+  const { context, onChange, onChangeCell } = useChangeHooks({
+    xlsForm,
+    language,
+    setXLSForm,
+  });
 
-  const onChangeRow = React.useCallback(
-    (node: ODKNode, newRow: QuestionRow) => {
-      if (!xlsForm) {
-        return;
-      }
-      node.row = newRow;
-      xlsForm.flatNodes[node.rowIndex] = { node, row: newRow };
-      setXLSForm({ ...xlsForm });
-      setLastEvaluationDate(new Date());
-    },
-    [xlsForm]
-  );
+  const [, languageName, languageCode] = language?.match(/\w+ \((\w+)\)/) || [];
+
+  const schema = React.useMemo(() => {
+    if (xlsForm && language && context) {
+      return createSurveySchemaFromXLSForm(xlsForm, context, language);
+    }
+    return undefined;
+  }, [xlsForm, language, context]);
 
   return (
-    <>
+    <ODKSurveyContext.Provider
+      value={{
+        schema,
+        context,
+        language,
+        languageCode,
+        languageName,
+        debug,
+        xlsForm,
+      }}
+    >
       {xlsForm && (
         <Navbar>
-          {showTable && (
-            <Navbar.Group align={Alignment.LEFT}>
-              <ButtonGroup>
-                <Button
-                  onClick={() => setWorksheetName("survey")}
-                  active={worksheetName === "survey"}
-                >
-                  Survey
-                </Button>
-                <Button
-                  onClick={() => setWorksheetName("choices")}
-                  active={worksheetName === "choices"}
-                >
-                  Choices
-                </Button>
-                <Button
-                  onClick={() => setWorksheetName("settings")}
-                  active={worksheetName === "settings"}
-                >
-                  Settings
-                </Button>
-              </ButtonGroup>
-            </Navbar.Group>
-          )}
+          {showTable && <SheetTabs {...{ setWorksheetName, worksheetName }} />}
 
           <Navbar.Group align={Alignment.RIGHT}>
             {resetButton}
             <Navbar.Divider />
-            <Switch
+            <NavbarSwitch
               checked={showTable === true}
               label="Table"
               onChange={onShowTableChange}
-              inline={true}
-              style={{ marginBottom: "0" }}
             />
-            <Switch
+            <NavbarSwitch
               checked={debug === false}
               label="Live View"
               onChange={onDebugChange}
-              inline={true}
-              style={{ marginBottom: "0" }}
             />
-            <Switch
+            <NavbarSwitch
               checked={showResult === true}
               label="JSON"
               onChange={onShowResultChange}
-              inline={true}
-              style={{ marginBottom: "0" }}
             />
             <Navbar.Divider />
             {xlsForm && language && (
@@ -215,15 +210,7 @@ function App() {
         </Navbar>
       )}
 
-      <div
-        style={{
-          flex: 1,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "stretch",
-        }}
-      >
+      <AppBody>
         {!xlsForm && (
           <OverflowScrollContainer>
             <NonIdealState
@@ -240,6 +227,7 @@ function App() {
             debug={debug}
             style={{ width: "50%" }}
             worksheetName={worksheetName}
+            onChangeCell={onChangeCell}
           />
         )}
         {xlsForm && language && (
@@ -251,13 +239,13 @@ function App() {
               language={language}
               debug={debug}
               onChange={onChange}
-              onChangeRow={onChangeRow}
+              onChangeCell={onChangeCell}
             />
           </OverflowScrollContainer>
         )}
         {xlsForm && language && showResult && resultCodeElement}
-      </div>
-    </>
+      </AppBody>
+    </ODKSurveyContext.Provider>
   );
 }
 

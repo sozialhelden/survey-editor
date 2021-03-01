@@ -18,7 +18,7 @@ import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpressio
 export default function evaluateNodeColumn(
   node: ODKNode,
   context: ODKFormulaEvaluationContext,
-  columnName: "calculation" | "relevant" | "required",
+  columnName: "calculation" | "relevant" | "required" | "readonly",
   fallback: unknown
 ): ODKFormulaEvaluationResult {
   const formula = node.row?.[columnName]?.trim();
@@ -33,6 +33,7 @@ export default function evaluateNodeColumn(
       state: "success",
       result: value,
       expression: new LiteralExpression(
+        [],
         value instanceof Array ? "array" : typeof value,
         value
       ),
@@ -45,9 +46,10 @@ export default function evaluateNodeColumn(
     evaluationResult = evaluateODKFormula(formula, context, node);
   } catch (error) {
     throw new EvaluationError(
-      `Error while evaluating \`${columnName}\` column of the ‘${row?.name}’ question (row #${node.rowIndex}). It contains the formula \`${row?.[columnName]}\`. Please ensure the formula is valid. The error was: ${error}`,
+      `Error in \`${columnName}\` column of the ‘${row?.name}’ question (row #${node.rowIndex}). It contains the formula \`${row?.[columnName]}\`. Please ensure the formula is valid. The error was: ${error}`,
       "calculationError",
       evaluationResult?.expression,
+      context,
       node,
       error
     );

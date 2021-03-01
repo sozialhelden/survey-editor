@@ -10,7 +10,7 @@ type Props = FieldProps & {
 };
 
 export default function NumberField(props: Props) {
-  const { value, schemaKey, relevant } = props;
+  const { value, schemaKey, relevant, disabled } = props;
   const onChange = React.useCallback(
     (valueAsNumber: number) => {
       props.onChange(valueAsNumber, props);
@@ -35,7 +35,7 @@ export default function NumberField(props: Props) {
   return (
     <NumericInput
       id={schemaKey}
-      disabled={relevant === false}
+      disabled={relevant === false || disabled}
       name={schemaKey}
       large={true}
       allowNumericCharactersOnly={false}

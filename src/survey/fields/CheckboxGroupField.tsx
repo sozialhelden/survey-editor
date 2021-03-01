@@ -1,7 +1,7 @@
 import { Callout, Checkbox, Code, ControlGroup } from "@blueprintjs/core";
 import * as React from "react";
 import { FieldProps } from "../FieldProps";
-import { ODKSurveyContext } from "../XLSFormSurvey";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 
 type Props = FieldProps & {
   value: unknown;
@@ -9,8 +9,10 @@ type Props = FieldProps & {
 };
 
 export default function CheckboxGroupField(props: Props) {
-  const { value, allowedValues, node, relevant } = props;
+  const { value, allowedValues, node, relevant, disabled } = props;
   const context = React.useContext(ODKSurveyContext);
+  const { language } = context;
+
   const valueIsInvalid =
     value !== undefined &&
     typeof value !== "string" &&
@@ -41,6 +43,10 @@ export default function CheckboxGroupField(props: Props) {
     [props, choices]
   );
 
+  if (typeof language !== "string") {
+    return null;
+  }
+
   if (valueIsInvalid) {
     return (
       <Callout intent="warning">
@@ -57,12 +63,12 @@ export default function CheckboxGroupField(props: Props) {
       {allowedValues.map((value) => {
         const choiceListName = node.typeParameters[0];
         const choiceRow = context.xlsForm?.choicesByName[choiceListName][value];
-        const definedLabel = choiceRow?.label?.[context.language];
+        const definedLabel = choiceRow?.label?.[language];
         const shownLabel =
           definedLabel === "undefined" ? choiceRow?.name : definedLabel;
         return (
           <Checkbox
-            disabled={relevant === false}
+            disabled={relevant === false || disabled}
             label={shownLabel}
             checked={typeof value === "string" && choices.has(value)}
             name={value}

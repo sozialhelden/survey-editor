@@ -1,5 +1,5 @@
-import { ODKNode } from '../../../types/ODKNode';
-import ODKFormulaEvaluationContext from './ODKFormulaEvaluationContext';
+import { ODKNode } from "../../../types/ODKNode";
+import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 
 /**
  * Recursively searches for a node by its name, starting from the given scope. Includes children of
@@ -57,11 +57,15 @@ export function findNodeByNameInCurrentAndAncestorScopes(
       }
     }
   }
-  const parentScope = scope.stack[scope.stack.length - 1];
+  const stack = context.nodesToAncestors.get(scope);
+  const parentScope = stack?.[stack.length - 1];
   if (!parentScope) {
     return undefined;
   }
-  return findNodeByNameInCurrentAndAncestorScopes(name, context, parentScope) || undefined;
+  return (
+    findNodeByNameInCurrentAndAncestorScopes(name, context, parentScope) ||
+    undefined
+  );
 }
 
 /**
@@ -82,15 +86,18 @@ export function findNodeByPathRelativeToScope(
   // console.log('Searching', pathComponent, 'in scope', scope.row?.name, 'stack', scope.stack);
   let result: ODKNode | undefined;
 
-  if (pathComponent === '.') {
+  if (pathComponent === ".") {
     result = scope;
-  } else if (pathComponent === '/') {
+  } else if (pathComponent === "/") {
     result = context.survey;
-  } else if (pathComponent === '..') {
+  } else if (pathComponent === "..") {
     if (scope === context.survey) {
-      throw new Error('Reached root - Can’t traverse further up the hierarchy.');
+      throw new Error(
+        "Reached root - Can’t traverse further up the hierarchy."
+      );
     }
-    result = scope.stack[scope.stack.length - 1];
+    const stack = context.nodesToAncestors.get(scope);
+    result = stack?.[stack.length - 1];
   } else if (pathComponent === scope.row.name) {
     result = scope;
   } else if (scope.children?.length) {
@@ -107,29 +114,63 @@ export function findNodeByPathRelativeToScope(
     return result;
   }
 
-  return findNodeByPathRelativeToScope(pathComponents.slice(1), context, result);
+  return findNodeByPathRelativeToScope(
+    pathComponents.slice(1),
+    context,
+    result
+  );
 }
 
-function getReverseNodeAbsolutePath(questionGroup: ODKNode | undefined): string[] {
-  if (!questionGroup) {
-    return ['/'];
+function getReverseNodeAbsolutePath(
+  node: ODKNode | undefined,
+  context: ODKFormulaEvaluationContext
+): string[] {
+  if (!node) {
+    return ["/"];
   }
 
-  if (!questionGroup?.row?.name) {
+  if (!node?.row?.name) {
     throw new Error(
-      `Encountered a row without a name (row #${questionGroup.rowIndex}). This should not happen. Please ensure the survey data is valid.`
+      `Encountered a row without a name (row #${node.rowIndex}). This should not happen. Please ensure the survey data is valid.`
     );
   }
+
+  const stack = context.nodesToAncestors.get(node);
   return [
-    questionGroup.row?.name,
-    ...getReverseNodeAbsolutePath(questionGroup.stack[questionGroup.stack.length - 1]),
+    node.row?.name,
+    ...getReverseNodeAbsolutePath(stack?.[stack.length - 1], context),
   ];
 }
 
-export function getNodeAbsolutePath(questionGroup: ODKNode): string[] {
-  return getReverseNodeAbsolutePath(questionGroup)?.reverse();
+export function getNodeAbsolutePath(
+  node: ODKNode,
+  context: ODKFormulaEvaluationContext
+): string[] {
+  return getReverseNodeAbsolutePath(node, context)?.reverse();
 }
 
 export function isXPath(string: string): boolean {
   return !!string.match(/^\/(\/?[\w*]+(?:\[[^]+?])?)$/);
+}
+
+function getReverseNodeIndexPath(
+  node: ODKNode,
+  context: ODKFormulaEvaluationContext
+): number[] {
+  const stack = context.nodesToAncestors.get(node);
+  const parentNode = stack?.[stack.length - 1];
+  if (!parentNode) {
+    return [];
+  }
+  return [
+    parentNode.children.indexOf(node),
+    ...getReverseNodeIndexPath(parentNode, context),
+  ];
+}
+
+export function getNodeIndexPath(
+  node: ODKNode,
+  context: ODKFormulaEvaluationContext
+): number[] {
+  return getReverseNodeIndexPath(node, context).reverse();
 }

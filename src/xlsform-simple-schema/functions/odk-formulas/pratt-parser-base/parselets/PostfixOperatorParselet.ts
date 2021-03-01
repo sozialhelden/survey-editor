@@ -1,7 +1,7 @@
-import PostfixExpression from '../expressions/PostfixExpression';
-import Parser from '../Parser';
-import { Expression, Token } from '../types';
-import InfixParselet from './InfixParselet';
+import PostfixExpression from "../expressions/PostfixExpression";
+import Parser from "../Parser";
+import { Expression, Token } from "../types";
+import InfixParselet from "./InfixParselet";
 
 /**
  * Generic infix parselet for an unary arithmetic operator. Parses postfix
@@ -13,7 +13,7 @@ export default class PostfixOperatorParselet extends InfixParselet {
   }
 
   public parse(_parser: Parser, left: Expression, token: Token): Expression {
-    return new PostfixExpression(left, token.type);
+    return new PostfixExpression([...left.tokens, token], left, token.type);
   }
 
   public getPrecedence(): number {

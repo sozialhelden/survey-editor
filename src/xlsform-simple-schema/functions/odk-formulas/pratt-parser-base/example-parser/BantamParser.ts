@@ -1,4 +1,4 @@
-import BantamLexer from './BantamLexer';
+import BantamLexer from "./BantamLexer";
 import {
   AssignParselet,
   BinaryOperatorParselet,
@@ -8,9 +8,9 @@ import {
   NameParselet,
   PostfixOperatorParselet,
   PrefixOperatorParselet,
-} from '..';
-import Parser, { TokenType } from '../index';
-import BantamPrecedence from './BantamPrecedence';
+} from "..";
+import Parser, { TokenType } from "../index";
+import BantamPrecedence from "./BantamPrecedence";
 
 /**
  * Extends the generic Parser class with support for parsing the actual Bantam
@@ -22,18 +22,31 @@ import BantamPrecedence from './BantamPrecedence';
  */
 export class BantamParser extends Parser {
   constructor(lexer: BantamLexer) {
-    super(lexer);
+    super({ tokens: lexer });
 
     // Register all of the parselets for the grammar.
 
     // Register the ones that need special parselets.
     this.register(TokenType.NAME, new NameParselet());
-    this.register(TokenType.ASSIGN, new AssignParselet(BantamPrecedence.ASSIGNMENT));
-    this.register(TokenType.QUESTION, new ConditionalParselet(BantamPrecedence.CONDITIONAL));
-    this.register(TokenType.LEFT_PAREN, new GroupParselet(TokenType.RIGHT_PAREN));
+    this.register(
+      TokenType.ASSIGN,
+      new AssignParselet(BantamPrecedence.ASSIGNMENT)
+    );
+    this.register(
+      TokenType.QUESTION,
+      new ConditionalParselet(BantamPrecedence.CONDITIONAL)
+    );
     this.register(
       TokenType.LEFT_PAREN,
-      new CallParselet(TokenType.RIGHT_PAREN, TokenType.COMMA, BantamPrecedence.CALL)
+      new GroupParselet(TokenType.RIGHT_PAREN)
+    );
+    this.register(
+      TokenType.LEFT_PAREN,
+      new CallParselet(
+        TokenType.RIGHT_PAREN,
+        TokenType.COMMA,
+        BantamPrecedence.CALL
+      )
     );
 
     // Register the simple operator parselets.

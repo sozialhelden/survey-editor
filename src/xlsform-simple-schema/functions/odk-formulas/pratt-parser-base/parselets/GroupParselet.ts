@@ -1,6 +1,6 @@
-import Parser from '../Parser';
-import { Expression, Token, TokenType } from '../types';
-import PrefixParselet from './PrefixParselet';
+import Parser from "../Parser";
+import { Expression, Token, TokenType } from "../types";
+import PrefixParselet from "./PrefixParselet";
 
 /**
  * Parses parentheses used to group an expression, like "a * (b + c)".
@@ -10,9 +10,10 @@ export default class GroupParselet extends PrefixParselet {
     super();
   }
 
-  public parse(parser: Parser, _token: Token): Expression {
+  public parse(parser: Parser, leftParenToken: Token): Expression {
     const expression = parser.parseExpression();
-    parser.consume(this.rightParenTokenType);
+    const rightParenToken = parser.consume(this.rightParenTokenType);
+    expression.tokens = [leftParenToken, ...expression.tokens, rightParenToken];
     return expression;
   }
 }

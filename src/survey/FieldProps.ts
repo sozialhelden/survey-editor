@@ -1,6 +1,6 @@
 import SimpleSchema from "simpl-schema";
+import { WorksheetName } from "../xlsform-simple-schema";
 import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
-import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
 
 export type FieldProps = {
   schema: SimpleSchema;
@@ -8,6 +8,13 @@ export type FieldProps = {
   schemaKey: string;
   node: ODKNode;
   onChange: (value: unknown, fieldProps: FieldProps) => void;
-  onChangeRow: (node: ODKNode, row: QuestionRow) => void;
+  onChangeCell: (
+    worksheetName: WorksheetName,
+    rowIndex: number,
+    columnName: string,
+    value: unknown,
+    node?: ODKNode
+  ) => void;
   relevant: boolean;
+  disabled: boolean;
 };

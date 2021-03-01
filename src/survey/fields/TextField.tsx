@@ -10,13 +10,18 @@ type Props = FieldProps & {
 };
 
 export default function TextField(props: Props) {
-  const { value, schemaKey, relevant } = props;
+  const { value, schemaKey, relevant, disabled } = props;
 
-  if (value !== undefined && typeof value !== "string") {
+  if (
+    value !== undefined &&
+    typeof value !== "string" &&
+    typeof value !== "number"
+  ) {
     return (
       <Callout intent="warning">
         <h4>
-          Value must be a <Code>string</Code> for this field to work.
+          Value must be a <Code>string</Code> or <Code>number</Code> for this
+          field to work.
         </h4>
       </Callout>
     );
@@ -25,7 +30,7 @@ export default function TextField(props: Props) {
   return (
     <InputGroup
       id={schemaKey}
-      disabled={relevant === false}
+      disabled={relevant === false || disabled}
       name={schemaKey}
       placeholder=""
       large={true}

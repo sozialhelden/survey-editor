@@ -1,5 +1,10 @@
-import { ODKNode } from "../../../types/ODKNode";
+import {
+  NodesToAncestors,
+  NodesToValues,
+  ODKNode,
+} from "../../../types/ODKNode";
 import { NameExpression } from "../pratt-parser-base";
+import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
 /**
  * Contains global information that can be used in a single formula evaluation. The evaluation
@@ -10,7 +15,9 @@ import { NameExpression } from "../pratt-parser-base";
 type ODKFormulaEvaluationContext = {
   /** The survey in which the evaluation takes place */
   survey: ODKNode;
-
+  nodesToAncestors: NodesToAncestors;
+  nodesToAnswers: NodesToValues;
+  evaluationResults: NodesToValues<Map<string, ODKFormulaEvaluationResult>>;
   /** The current stack depth. Used to to prevent stack overflows in recursive calculations. */
   stackDepth: number;
   knownLiteralsWithoutDollarSign: Record<string, unknown>;
@@ -33,8 +40,10 @@ export const knownLiteralsWithoutDollarSign: Record<string, unknown> = {
   false: false,
 };
 
-export const getEmptyContext: () => ODKFormulaEvaluationContext = () => ({
-  survey: {
+export const getEmptyContext: (
+  survey?: ODKNode
+) => ODKFormulaEvaluationContext = (survey?: ODKNode) => ({
+  survey: survey || {
     type: "",
     typeParameters: [],
     row: {
@@ -44,11 +53,11 @@ export const getEmptyContext: () => ODKFormulaEvaluationContext = () => ({
     },
     children: [],
     indentationLevel: 0,
-    rowIndex: 0,
-    stack: [],
-    evaluatedResults: {},
-    resultsThatNeedReevaluation: {},
+    rowIndex: -1,
   },
+  nodesToAncestors: new Map(),
+  nodesToAnswers: new Map(),
+  evaluationResults: new Map(),
   stackDepth: 0,
-  knownLiteralsWithoutDollarSign: {},
+  knownLiteralsWithoutDollarSign,
 });

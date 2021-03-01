@@ -1,11 +1,23 @@
-import { Expression, punctuator, TokenType, StringBuilder } from "../types";
+import {
+  Expression,
+  punctuator,
+  TokenType,
+  StringBuilder,
+  Token,
+} from "../types";
 
 /**
  * A postfix unary arithmetic expression like "a!".
  */
 export default class PostfixExpression implements Expression {
   kind = "postfix";
-  constructor(readonly left: Expression, readonly operator: TokenType) {}
+  children = [this.left];
+
+  constructor(
+    readonly tokens: Token[],
+    readonly left: Expression,
+    readonly operator: TokenType
+  ) {}
 
   public print(builder: StringBuilder): void {
     builder("(");

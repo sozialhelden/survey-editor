@@ -1,12 +1,14 @@
-import { Expression, StringBuilder } from "../types";
+import { Expression, StringBuilder, Token } from "../types";
 
 /**
  * A ternary conditional expression like "a ? b : c".
  */
 export default class ConditionalExpression implements Expression {
   kind = "conditional";
+  children = [this.condition, this.thenArm, this.elseArm];
 
   constructor(
+    readonly tokens: Token[],
     readonly condition: Expression,
     readonly thenArm: Expression,
     readonly elseArm: Expression

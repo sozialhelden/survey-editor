@@ -1,6 +1,10 @@
 // tslint:disable-next-line: import-name
-import SimpleSchema, { SchemaDefinition, ValidationFunction } from 'simpl-schema';
-import { parseODKFormula } from '../functions/odk-formulas/evaluation/parseODKFormula';
+import SimpleSchema, {
+  SchemaDefinition,
+  ValidationFunction,
+} from "simpl-schema";
+import ODKFormulaLexer from "../functions/odk-formulas/odk-formula-parser/ODKFormulaLexer";
+import ODKFormulaParser from "../functions/odk-formulas/odk-formula-parser/ODKFormulaParser";
 
 export const getStringMapSchemaDefinition = <T>(
   schemaDefinition: Partial<SchemaDefinition<T>> = {}
@@ -13,14 +17,14 @@ export const getStringMapSchemaDefinition = <T>(
       if (value === undefined) {
         return;
       }
-      if (typeof value === 'string') {
-        return 'notAllowed';
+      if (typeof value === "string") {
+        return "notAllowed";
       }
       const keys = Object.keys(value);
       for (let i = 0; i < keys.length; i += 1) {
         const key = keys[i];
-        if (typeof value[key] !== 'string') {
-          return 'notAllowed';
+        if (typeof value[key] !== "string") {
+          return "notAllowed";
         }
       }
       return undefined;
@@ -31,17 +35,21 @@ export const getStringMapSchemaDefinition = <T>(
 
 export const getLocalizedStringSchemaDefinition = getStringMapSchemaDefinition;
 
-const optionalLocalizedString = getLocalizedStringSchemaDefinition({ optional: true });
+const optionalLocalizedString = getLocalizedStringSchemaDefinition({
+  optional: true,
+});
 const optionalStringMap = getStringMapSchemaDefinition({ optional: true });
 
 const formulaValidationFunction: ValidationFunction<unknown> = function () {
   try {
-    parseODKFormula(this.value);
+    const lexer = new ODKFormulaLexer(this.value);
+    const parser = new ODKFormulaParser({ tokens: lexer });
+    parser.parseExpression();
   } catch (e) {
     this.addValidationErrors([
       {
         name: this.key,
-        type: `Could not parse formula: ${e.message}`,
+        type: `Invalid formula: ${e.message}`,
         value: this.value,
       },
     ]);
@@ -56,20 +64,27 @@ export const questionRowSchema = new SimpleSchema({
     type: String,
     optional: true,
     custom() {
-      const shouldBeRequired = !['end_group', 'end_repeat'].includes(this.field('type').value);
+      const shouldBeRequired = !["end_group", "end_repeat"].includes(
+        this.field("type").value
+      );
       if (shouldBeRequired) {
         const error = SimpleSchema.ErrorTypes.REQUIRED;
 
         // inserts
         if (!this.operator) {
-          if (!this.isSet || this.value === null || this.value === '') return error;
+          if (!this.isSet || this.value === null || this.value === "")
+            return error;
         }
 
         // updates
         else if (this.isSet) {
-          if ((this.operator === '$set' && this.value === null) || this.value === '') return error;
-          if (this.operator === '$unset') return error;
-          if (this.operator === '$rename') return error;
+          if (
+            (this.operator === "$set" && this.value === null) ||
+            this.value === ""
+          )
+            return error;
+          if (this.operator === "$unset") return error;
+          if (this.operator === "$rename") return error;
         }
       }
       return undefined;
@@ -139,7 +154,7 @@ export const questionRowSchema = new SimpleSchema({
 });
 
 export const choiceRowSchema = new SimpleSchema({
-  'list name': {
+  "list name": {
     type: String,
   },
   name: {
@@ -147,7 +162,6 @@ export const choiceRowSchema = new SimpleSchema({
   },
   label: getLocalizedStringSchemaDefinition(),
 });
-
 
 export const settingsRowSchema = new SimpleSchema({
   form_title: {

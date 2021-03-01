@@ -1,24 +1,25 @@
 import Excel from "exceljs";
-import { BeginOrEndMarkerRow } from "../types/BeginOrEndMarkerRow";
 import { SyntaxError } from "../types/Errors";
 import { ODKNode } from "../types/ODKNode";
 import {
-  questionRowSchema,
   choiceRowSchema,
+  questionRowSchema,
   settingsRowSchema,
 } from "../types/RowSchemas";
 import {
-  QuestionRow,
-  ChoiceRow,
-  SettingsRow,
-  assertValidQuestionRow,
   assertValidChoiceRow,
+  assertValidQuestionRow,
   assertValidSettingsRow,
+  ChoiceRow,
+  QuestionRow,
+  SettingsRow,
 } from "../types/RowTypes";
 import XLSForm, {
   ChoiceRowsByListNameAndName,
   ChoicesWorksheet,
-  FlatNode,
+  loadXLSFormFromRows,
+  WorksheetName,
+  WorksheetRowsWithMetadata,
 } from "../types/XLSForm";
 import nestSurvey from "./nestSurvey";
 
@@ -26,7 +27,10 @@ export function nestDoubleColonFields(
   row: Record<string, unknown>,
   namespacePrefixes: string[],
   defaultSuffix?: string
-): { result: Record<string, unknown>; foundSuffixes: Set<string> } {
+): {
+  result: Readonly<Record<string, unknown>>;
+  foundSuffixes: Readonly<Set<string>>;
+} {
   const result: Record<string, unknown> = {
     ...row,
   };
@@ -73,7 +77,9 @@ export function nestDoubleColonFields(
 
 // See reference table: https://xlsform.org/en/ref-table/
 
-export function normalizeColumnNames(headerRow: Excel.CellValue[]): string[] {
+export function normalizeColumnNames(
+  headerRow: Excel.CellValue[]
+): readonly string[] {
   const result: string[] = [];
   for (let i = 0; i < headerRow.length; i += 1) {
     const columnName = headerRow[i]?.toString() || "";
@@ -88,7 +94,7 @@ export function normalizeColumnNames(headerRow: Excel.CellValue[]): string[] {
         .replace(/^list_name$/, "list name")
     );
   }
-  return result;
+  return Object.freeze(result);
 }
 
 // See reference table: https://xlsform.org/en/ref-table/
@@ -116,7 +122,10 @@ const autoCleanOptions = {
 };
 
 export function loadQuestionRow(row: Record<string, unknown>): QuestionRow {
-  const cleanRow = questionRowSchema.clean(row, autoCleanOptions);
+  const cleanRow = questionRowSchema.clean(
+    { ...row, type: normalizeType(String(row.type)) },
+    autoCleanOptions
+  );
   assertValidQuestionRow(cleanRow);
   return cleanRow;
 }
@@ -148,16 +157,16 @@ export const localizableColumnNames = [
   "video",
 ];
 
-function loadRow<RowT>({
+export function loadExcelRow<RowT>({
   row,
   columnNames,
   defaultLanguage,
   loadRowFn,
 }: {
-  row: Excel.Row;
-  columnNames: string[];
-  defaultLanguage: string | undefined;
-  loadRowFn: LoadRowFunction<RowT>;
+  readonly row: Excel.Row;
+  readonly columnNames: readonly string[];
+  readonly defaultLanguage: string | undefined;
+  readonly loadRowFn: LoadRowFunction<RowT>;
 }) {
   const rowRawData: Record<string, unknown> = {};
   (row.values as Excel.CellValue[]).slice(1).forEach((value, columnIndex) => {
@@ -190,9 +199,9 @@ function loadRow<RowT>({
 }
 
 function findLanguagesInColumnNames(
-  columnNames: string[],
+  columnNames: readonly string[],
   defaultLanguage?: string
-): Set<string> {
+): Readonly<Set<string>> {
   const columnNamesToTrues: Record<string, unknown> = {};
   columnNames.forEach((name) => {
     columnNamesToTrues[name] = true;
@@ -205,28 +214,18 @@ function findLanguagesInColumnNames(
   return foundSuffixes;
 }
 
-function loadChoices(worksheet: ChoicesWorksheet): ChoiceRowsByListNameAndName {
-  const map: ChoiceRowsByListNameAndName = {};
-
-  worksheet.rows.forEach((row) => {
-    const listName = row["list name"];
-    const { name } = row;
-    const list = map[listName] || {};
-    list[name] = row;
-    map[listName] = list;
-  });
-
-  return map;
-}
-
 function loadWorksheet<RowT>(
   workbook: Excel.Workbook,
-  sheetName: string,
+  sheetName: WorksheetName,
   loadRowFn: LoadRowFunction<RowT>,
   defaultLanguage?: string
-) {
+): WorksheetRowsWithMetadata<RowT> | undefined {
   const excelWorksheet = workbook.getWorksheet(sheetName);
   const rows: RowT[] = [];
+
+  if (!excelWorksheet) {
+    return undefined;
+  }
 
   const firstRow = excelWorksheet.getRows(1, 1)[0];
   if (!(firstRow.values instanceof Array)) {
@@ -249,7 +248,7 @@ function loadWorksheet<RowT>(
       return;
     }
     rows.push(
-      loadRow<RowT>({
+      loadExcelRow<RowT>({
         row,
         columnNames: columnNamesNormalized,
         defaultLanguage,
@@ -265,7 +264,7 @@ export async function loadFormFromExcelWorkbook(
   workbook: Excel.Workbook
 ): Promise<XLSForm> {
   const settings = loadWorksheet(workbook, "settings", loadSettingsRow);
-  const defaultLanguage = settings.rows[0].default_language || "English (en)";
+  const defaultLanguage = settings?.rows[0].default_language || "English (en)";
   const choices = loadWorksheet(
     workbook,
     "choices",
@@ -279,24 +278,18 @@ export async function loadFormFromExcelWorkbook(
     defaultLanguage
   );
 
-  const flatNodes: FlatNode[] = [];
-  const rootSurveyGroup = nestSurvey({
-    rows: survey.rows,
-    defaultLanguage,
-    onRow: (row, node) => flatNodes.push({ row, node }),
-  });
+  if (!survey) {
+    throw new Error(
+      "No `survey` sheet found in workbook. Please define a sheet named `survey` and try again."
+    );
+  }
 
-  const xlsForm: XLSForm = {
-    worksheets: {
-      settings,
-      choices,
-      survey,
-    },
-    rootSurveyGroup,
-    choicesByName: loadChoices(choices),
-    languages: survey.languages,
-    flatNodes,
-  };
+  const xlsForm: XLSForm = loadXLSFormFromRows(
+    survey,
+    defaultLanguage,
+    settings,
+    choices
+  );
 
   // console.log(xlsForm);
   // console.log(xlsForm.rootSurveyGroup);

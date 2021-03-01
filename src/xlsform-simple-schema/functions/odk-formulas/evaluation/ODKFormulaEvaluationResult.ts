@@ -1,21 +1,24 @@
-import { ODKFormulaError } from '../../../types/Errors';
-import { Expression } from '../pratt-parser-base';
+import { ODKFormulaError } from "../../../types/Errors";
+import ODKFormulaParser from "../odk-formula-parser/ODKFormulaParser";
+import { Expression } from "../pratt-parser-base";
 
 /**
  * Contains information about the result of a single evaluation process.
  */
 type ODKFormulaEvaluationResult =
   | {
-      state: 'success';
+      state: "success";
       expression: Expression;
       result: unknown;
       error: undefined;
+      parser?: ODKFormulaParser;
     }
   | {
-      state: 'error';
+      state: "error";
       expression?: Expression;
       result: null;
       error: ODKFormulaError;
+      parser?: ODKFormulaParser;
     };
 
 export default ODKFormulaEvaluationResult;

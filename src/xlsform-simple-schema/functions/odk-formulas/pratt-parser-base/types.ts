@@ -1,41 +1,43 @@
 export enum TokenType {
-  LEFT_PAREN = "(",
-  RIGHT_PAREN = ")",
-  COMMA = ",",
-  ASSIGN = "=",
-  PLUS = "+",
-  MINUS = "-",
-  ASTERISK = "*",
-  DOLLAR = "$",
-  LEFT_BRACE = "{",
-  RIGHT_BRACE = "}",
-  GREATER_THAN = ">",
-  LESS_THAN = "<",
-  SLASH = "/",
-  POINT = ".",
-  CARET = "^",
-  TILDE = "~",
-  BANG = "!",
-  BACKSLASH = "\\",
-  QUESTION = "?",
-  COLON = ":",
-  SINGLE_QUOTE = "'",
-  DOUBLE_QUOTE = '"',
-  MODULO = "[modulo]",
-  BOOLEAN_AND = "[boolean and]",
-  BOOLEAN_OR = "[boolean or]",
-  COMPARISON = "[comparison]",
-  NAME = "[name]",
-  LITERAL = "[literal]",
-  NUMBER_LITERAL = "[number literal]",
-  FLOAT_LITERAL = "[float literal]",
-  INT_LITERAL = "[integer literal]",
-  STRING_LITERAL = "[string literal]",
-  BOOLEAN_LITERAL = "[boolean literal]",
-  SELECTOR = "[selector]",
-  WHITESPACE = "[whitespace]",
-  UNKNOWN = "[unknown]",
-  EOF = "[eof]",
+  LEFT_PAREN,
+  RIGHT_PAREN,
+  COMMA,
+  ASSIGN,
+  PLUS,
+  MINUS,
+  ASTERISK,
+  DOLLAR,
+  LEFT_BRACE,
+  RIGHT_BRACE,
+  GREATER_THAN,
+  LESS_THAN,
+  SLASH,
+  POINT,
+  CARET,
+  TILDE,
+  BANG,
+  BACKSLASH,
+  QUESTION,
+  COLON,
+  SINGLE_QUOTE,
+  DOUBLE_QUOTE,
+  MODULO,
+  BOOLEAN_AND,
+  BOOLEAN_OR,
+  COMPARISON,
+  NAME,
+  LITERAL,
+  NUMBER_LITERAL,
+  FLOAT_LITERAL,
+  INT_LITERAL,
+  STRING_LITERAL,
+  BOOLEAN_LITERAL,
+  SELECTOR,
+  WHITESPACE,
+  UNKNOWN,
+  EOF,
+  INVALID,
+  INTERNAL_LEXER_ERROR,
 }
 
 export const tokenTypes = [
@@ -71,6 +73,7 @@ export const tokenTypes = [
   TokenType.WHITESPACE,
   TokenType.UNKNOWN,
   TokenType.EOF,
+  TokenType.INVALID,
 ];
 
 /**
@@ -118,6 +121,7 @@ export function punctuator(tokenType: TokenType): string {
 export type Token = {
   type: TokenType;
   text: string;
+  index: number;
 };
 
 /**
@@ -125,6 +129,8 @@ export type Token = {
  */
 export interface Expression {
   kind: string;
+  tokens: Token[];
+  children: Expression[];
   /**
    * Pretty-print the expression to a string.
    */

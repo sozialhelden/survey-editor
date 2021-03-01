@@ -1,10 +1,11 @@
-import { LexerError } from '../../../types/Errors';
-import { Token, TokenType } from '../pratt-parser-base/types';
+import { LexerError } from "../../../types/Errors";
+import { Token, TokenType } from "../pratt-parser-base/types";
 
 export const xPathPrefixRegExp = /^\/(\/?[\w*]+(?:\[[^]+?]\B)?)/;
 
 const tokenPatterns: [TokenType, RegExp][] = [
   [TokenType.STRING_LITERAL, /^'(\\\\|\\'|[^'])*'/],
+  [TokenType.STRING_LITERAL, /^"(\\\\|\\"|[^"])*"/],
   [TokenType.SLASH, /^div/],
   [TokenType.MODULO, /^mod/],
   [TokenType.BOOLEAN_AND, /^and/],
@@ -21,7 +22,8 @@ const tokenPatterns: [TokenType, RegExp][] = [
   [TokenType.MINUS, /^-/],
   [TokenType.ASTERISK, /^\*/],
   [TokenType.COMPARISON, /^(>=|>|<=|<|=|!=)/],
-  // [undefined, /^[\s\S]/],
+  [TokenType.COMPARISON, /^(>=|>|<=|<|=|!=)/],
+  [TokenType.INVALID, /^(\w+|[\s\S])/],
 ];
 
 export default class ODKFormulaLexer implements Iterator<Token> {
@@ -32,11 +34,11 @@ export default class ODKFormulaLexer implements Iterator<Token> {
       // Once we've reached the end of the string, just return EOF tokens. We'll
       // just keeping returning them as many times as we're asked so that the
       // parser's lookahead doesn't have to worry about running out of tokens.
-      return { value: { type: TokenType.EOF, text: '' } };
+      return { value: { type: TokenType.EOF, text: "", index: this.index } };
     }
 
     // Consume and ignore whitespace
-    while (this.text[this.index] === ' ') {
+    while (this.text[this.index] === " ") {
       this.index += 1;
     }
 
@@ -51,16 +53,20 @@ export default class ODKFormulaLexer implements Iterator<Token> {
       const token: Token = {
         type,
         text: this.text.substr(this.index, text.length),
+        index: this.index,
       };
       this.index += text.length;
-      // console.log('Found token', type, 'in', token.text);
       return { value: token };
     }
+
+    const errorToken: Token = {
+      type: TokenType.INTERNAL_LEXER_ERROR,
+      text: this.text[this.index],
+      index: this.index,
+    };
     throw new LexerError(
-      `Don’t know how to interpret \`${this.text.slice(
-        this.index,
-        this.index + 10
-      )}…\` (starting at character ${this.index} in \`${this.text}\`)`
+      errorToken,
+      "Lexer should never get here. If we get here, this means there is no invalid token defined at the end of the pattern list. This invalid token should match at least one character that is not recognized by all other patterns."
     );
   }
 }

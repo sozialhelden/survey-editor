@@ -13,13 +13,12 @@ import ODKFormulaEvaluationContext, {
 
 function expectFail(formula: string, regexp: RegExp) {
   test(`\`${formula}\` fails with (${regexp.source})`, () => {
-    const { node: survey, nodesToAncestors } = nestSurvey({
+    const { node: survey } = nestSurvey({
       rows: hospitalSurveyRawData(),
       defaultLanguage: "en-US",
     });
     const context: ODKFormulaEvaluationContext = {
       survey,
-      nodesToAncestors,
       knownLiteralsWithoutDollarSign,
       stackDepth: 0,
     };
@@ -37,13 +36,12 @@ function expectResult<T>(
   expressionClass: unknown
 ) {
   test(`\`${formula}\` -> ${expectedResult}`, () => {
-    const { node: survey, nodesToAncestors } = nestSurvey({
+    const { node: survey } = nestSurvey({
       rows: hospitalSurveyRawData(),
       defaultLanguage: "en-US",
     });
     const context: ODKFormulaEvaluationContext = {
       survey,
-      nodesToAncestors,
       knownLiteralsWithoutDollarSign,
       stackDepth: 0,
     };

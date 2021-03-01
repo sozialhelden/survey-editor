@@ -5,7 +5,6 @@ import { FieldProps } from "../survey/FieldProps";
 import { AppToaster } from "../toaster";
 import XLSForm, { WorksheetName } from "../xlsform-simple-schema";
 import getEvaluatedXLSFormResult from "../xlsform-simple-schema/functions/evaluateNodeAndChildren";
-import { calculateNodesToAncestorsMap } from "../xlsform-simple-schema/functions/nestSurvey";
 import ODKFormulaEvaluationContext, {
   getEmptyContext,
   knownLiteralsWithoutDollarSign,
@@ -38,16 +37,13 @@ export default function useChangeHooks({
         return context;
       }
 
-      console.log("Setting up new context.");
       const newContext = getEmptyContext(xlsForm.rootSurveyGroup);
-      newContext.nodesToAncestors = calculateNodesToAncestorsMap(
-        xlsForm.rootSurveyGroup
-      );
       newContext.nodesToAnswers = new Map();
       newContext.survey = xlsForm.rootSurveyGroup;
       newContext.stackDepth = 0;
       newContext.knownLiteralsWithoutDollarSign = knownLiteralsWithoutDollarSign;
       getEvaluatedXLSFormResult(xlsForm, newContext);
+      console.log("Setting up new context", newContext);
       return newContext;
     });
   }, [xlsForm, xlsForm?.rootSurveyGroup]);

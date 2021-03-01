@@ -1,3 +1,4 @@
+import { isEqual } from "lodash";
 import { ODKNode } from "../../../types/ODKNode";
 import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 
@@ -57,7 +58,7 @@ export function findNodeByNameInCurrentAndAncestorScopes(
       }
     }
   }
-  const stack = context.nodesToAncestors.get(scope);
+  const stack = getAncestors(scope, context);
   const parentScope = stack?.[stack.length - 1];
   if (!parentScope) {
     return undefined;
@@ -96,7 +97,7 @@ export function findNodeByPathRelativeToScope(
         "Reached root - Can’t traverse further up the hierarchy."
       );
     }
-    const stack = context.nodesToAncestors.get(scope);
+    const stack = getAncestors(scope, context);
     result = stack?.[stack.length - 1];
   } else if (pathComponent === scope.row.name) {
     result = scope;
@@ -135,7 +136,7 @@ function getReverseNodeAbsolutePath(
     );
   }
 
-  const stack = context.nodesToAncestors.get(node);
+  const stack = getAncestors(node, context);
   return [
     node.row?.name,
     ...getReverseNodeAbsolutePath(stack?.[stack.length - 1], context),
@@ -153,24 +154,41 @@ export function isXPath(string: string): boolean {
   return !!string.match(/^\/(\/?[\w*]+(?:\[[^]+?])?)$/);
 }
 
-function getReverseNodeIndexPath(
-  node: ODKNode,
-  context: ODKFormulaEvaluationContext
-): number[] {
-  const stack = context.nodesToAncestors.get(node);
-  const parentNode = stack?.[stack.length - 1];
-  if (!parentNode) {
-    return [];
-  }
-  return [
-    parentNode.children.indexOf(node),
-    ...getReverseNodeIndexPath(parentNode, context),
-  ];
-}
-
 export function getNodeIndexPath(
   node: ODKNode,
   context: ODKFormulaEvaluationContext
 ): number[] {
-  return getReverseNodeIndexPath(node, context).reverse();
+  const ancestors = getAncestors(node, context);
+  const stack = [...(ancestors || []), node].slice(1);
+  return stack.map(
+    (node, i) => node.rowIndex - (stack[i - 1] ? stack[i - 1].rowIndex + 1 : 0)
+  );
+}
+
+export function getScopedAncestors(
+  node: ODKNode,
+  scope: ODKNode,
+  stack: ODKNode[] = []
+): ODKNode[] | undefined {
+  if (isEqual(node, scope)) {
+    return stack;
+  }
+  if (scope.children?.length) {
+    stack.push(scope);
+    for (let i = 0; i < scope.children.length; i += 1) {
+      const childNode = scope.children[i];
+      const foundStack = getScopedAncestors(node, childNode, stack);
+      if (foundStack) {
+        return foundStack;
+      }
+    }
+    stack.pop();
+  }
+}
+
+export function getAncestors(
+  node: ODKNode,
+  context: ODKFormulaEvaluationContext
+) {
+  return getScopedAncestors(node, context.survey);
 }

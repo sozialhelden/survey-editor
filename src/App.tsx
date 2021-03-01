@@ -24,7 +24,6 @@ import XLSFormWorksheet from "./table/XLSFormWorksheet";
 import { AppToaster } from "./toaster";
 import getEvaluatedXLSFormResult from "./xlsform-simple-schema/functions/evaluateNodeAndChildren";
 import { loadFormFromExcelWorkbook } from "./xlsform-simple-schema/functions/loadSurveyFromXLSX";
-import { calculateNodesToAncestorsMap } from "./xlsform-simple-schema/functions/nestSurvey";
 import ODKFormulaEvaluationContext, {
   getEmptyContext,
   knownLiteralsWithoutDollarSign,

@@ -1,5 +1,5 @@
 import produce, { applyPatches, Patch } from "immer";
-import { compact } from "lodash";
+import { compact, get, set } from "lodash";
 import { ODKNode } from "../types/ODKNode";
 import XLSForm, { WorksheetName } from "../types/XLSForm";
 import { localizableColumnNames } from "./loadSurveyFromXLSX";
@@ -31,38 +31,26 @@ export default function patchXLSForm({
     : [columnName];
 
   const isSurvey = worksheetName === "survey";
-
   return produce(xlsForm, (draft) => {
-    const patches: Patch[] = compact([
-      isSurvey &&
-        indexPath && {
-          op: "replace",
-          path: [
+    if (isSurvey) {
+      set(draft, ["flatNodes", rowIndex, "row", ...valuePathInRow], value);
+      set(
+        draft,
+        ["worksheets", worksheetName, "rows", rowIndex, ...valuePathInRow],
+        value
+      );
+      if (indexPath) {
+        set(
+          draft,
+          [
             "rootSurveyGroup",
             ...indexPath.map((i) => ["children", i]).flat(),
             "row",
             ...valuePathInRow,
           ],
-          value,
-        },
-      isSurvey && {
-        op: "replace",
-        path: ["flatNodes", rowIndex, "row", ...valuePathInRow],
-        value,
-      },
-      {
-        op: "replace",
-        path: [
-          "worksheets",
-          worksheetName,
-          "rows",
-          rowIndex,
-          ...valuePathInRow,
-        ],
-        value,
-      },
-    ]);
-    // console.log(xlsForm, patches, applyPatches(xlsForm, patches));
-    applyPatches(draft, patches);
+          value
+        );
+      }
+    }
   });
 }

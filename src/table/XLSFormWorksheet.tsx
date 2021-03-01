@@ -49,6 +49,7 @@ export default function XLSFormWorksheet(props: Props) {
       if (columnIndex === undefined || rowIndex === undefined) {
         return;
       }
+
       const row = worksheet?.rows[rowIndex];
       if (!row) {
         throw new Error("Tried to change a row that doesn’t exist");
@@ -87,9 +88,21 @@ export default function XLSFormWorksheet(props: Props) {
 
       if (value !== undefined && typeof value !== "string") {
         if (localizableColumnNames.includes(key)) {
-          return <EditableCell value={value[language]} />;
+          return (
+            <EditableCell
+              {...{ rowIndex, columnIndex }}
+              onConfirm={onConfirmCellEdit}
+              value={value[language]}
+            />
+          );
         } else {
-          return <EditableCell value={JSON.stringify(value)} />;
+          return (
+            <EditableCell
+              {...{ rowIndex, columnIndex }}
+              onConfirm={onConfirmCellEdit}
+              value={JSON.stringify(value)}
+            />
+          );
         }
       }
 

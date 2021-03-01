@@ -1,4 +1,4 @@
-import { NodesToAncestors, ODKNode } from "../types/ODKNode";
+import { ODKNode } from "../types/ODKNode";
 import {
   BeginMarkerRow,
   BeginOrEndMarkerRow,
@@ -37,7 +37,6 @@ export default function nestSurvey({
   onRow?: (row: QuestionRow | BeginOrEndMarkerRow, node: ODKNode) => void;
 }): {
   node: Readonly<ODKNode>;
-  nodesToAncestors: NodesToAncestors;
 } {
   const root: ODKNode = {
     children: [] as ODKNode[],
@@ -51,7 +50,6 @@ export default function nestSurvey({
       label: { [defaultLanguage]: titleFromSettings },
     } as QuestionRow,
   };
-  const nodesToAncestors: NodesToAncestors = new Map();
   const stack: ODKNode[] = [root];
   let i = 0;
 
@@ -79,7 +77,6 @@ export default function nestSurvey({
         indentationLevel: stack.length - 1,
         rowIndex: i,
       };
-      nodesToAncestors.set(newGroupNode, [...stack]);
       currentGroup.children.push(newGroupNode);
       stack.push(newGroupNode);
       onRow?.(row, newGroupNode);
@@ -94,7 +91,6 @@ export default function nestSurvey({
         rowIndex: i,
         children: [],
       };
-      nodesToAncestors.set(newChildNode, [...stack]);
       currentGroup.children.push(newChildNode);
       onRow?.(row, newChildNode);
     }
@@ -102,19 +98,5 @@ export default function nestSurvey({
     i += 1;
   }
 
-  return { nodesToAncestors, node: root };
-}
-
-export function calculateNodesToAncestorsMap(
-  node: ODKNode,
-  stack: ODKNode[] = [],
-  nodesToAncestors: NodesToAncestors = new Map()
-) {
-  nodesToAncestors.set(node, [...stack]);
-  stack.push(node);
-  node.children.forEach((child) =>
-    calculateNodesToAncestorsMap(child, stack, nodesToAncestors)
-  );
-  stack.pop();
-  return nodesToAncestors;
+  return { node: root };
 }

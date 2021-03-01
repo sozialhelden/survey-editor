@@ -1,4 +1,5 @@
 import ODKFormulaEvaluationContext from "../functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import { getScopedAncestors } from "../functions/odk-formulas/evaluation/XPath";
 import { Expression, Token } from "../functions/odk-formulas/pratt-parser-base";
 import { ODKNode } from "./ODKNode";
 
@@ -21,7 +22,10 @@ export class EvaluationError extends ODKFormulaError {
     readonly underlyingEvaluationError: EvaluationError | undefined = undefined
   ) {
     super(message);
-    this.nodeStack = [...(context.nodesToAncestors.get(scope) || []), scope];
+
+    const ancestors = getScopedAncestors(scope, context.survey);
+
+    this.nodeStack = [...(ancestors || []), scope];
   }
 
   toMarkdown(): string {

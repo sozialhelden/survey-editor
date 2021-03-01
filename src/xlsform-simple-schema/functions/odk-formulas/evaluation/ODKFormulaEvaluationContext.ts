@@ -1,8 +1,4 @@
-import {
-  NodesToAncestors,
-  NodesToValues,
-  ODKNode,
-} from "../../../types/ODKNode";
+import { NodesToValues, ODKNode } from "../../../types/ODKNode";
 import { NameExpression } from "../pratt-parser-base";
 import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
@@ -15,7 +11,6 @@ import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 type ODKFormulaEvaluationContext = {
   /** The survey in which the evaluation takes place */
   survey: ODKNode;
-  nodesToAncestors: NodesToAncestors;
   nodesToAnswers: NodesToValues;
   evaluationResults: NodesToValues<Map<string, ODKFormulaEvaluationResult>>;
   /** The current stack depth. Used to to prevent stack overflows in recursive calculations. */
@@ -55,7 +50,6 @@ export const getEmptyContext: (
     indentationLevel: 0,
     rowIndex: -1,
   },
-  nodesToAncestors: new Map(),
   nodesToAnswers: new Map(),
   evaluationResults: new Map(),
   stackDepth: 0,

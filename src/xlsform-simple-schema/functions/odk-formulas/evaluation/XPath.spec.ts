@@ -10,13 +10,12 @@ import {
 } from "./XPath";
 
 function createTestSurvey() {
-  const { node: survey, nodesToAncestors } = nestSurvey({
+  const { node: survey } = nestSurvey({
     rows: hospitalSurveyRawData(),
     defaultLanguage: "en-US",
   });
   const context: ODKFormulaEvaluationContext = {
     survey,
-    nodesToAncestors,
     stackDepth: 0,
     knownLiteralsWithoutDollarSign: {},
   };
@@ -37,13 +36,12 @@ describe("XPath", () => {
     });
 
     it("returns `undefined` if the name does not exist", () => {
-      const { node: survey, nodesToAncestors } = nestSurvey({
+      const { node: survey } = nestSurvey({
         rows: hospitalSurveyRawData(),
         defaultLanguage: "en-US",
       });
       const context: ODKFormulaEvaluationContext = {
         survey,
-        nodesToAncestors,
         stackDepth: 0,
         knownLiteralsWithoutDollarSign: {},
       };

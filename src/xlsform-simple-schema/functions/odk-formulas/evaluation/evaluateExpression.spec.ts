@@ -8,13 +8,12 @@ import ODKFormulaExecutionContext from "./ODKFormulaEvaluationContext";
 
 describe("evaluateExpression()", () => {
   it("evaluates a name expression to undefined", () => {
-    const { node: survey, nodesToAncestors } = nestSurvey({
+    const { node: survey } = nestSurvey({
       rows: hospitalSurveyRawData(),
       defaultLanguage: "en-US",
     });
     const exampleContext: ODKFormulaExecutionContext = {
       survey,
-      nodesToAncestors,
       nodesToAnswers: new Map(),
       evaluationResults: new Map(),
       stackDepth: 0,
@@ -31,13 +30,12 @@ describe("evaluateExpression()", () => {
   });
 
   it("evaluates a name expression to the according survey answer", () => {
-    const { node: survey, nodesToAncestors } = nestSurvey({
+    const { node: survey } = nestSurvey({
       rows: hospitalSurveyRawData(),
       defaultLanguage: "en-US",
     });
     const exampleContext: ODKFormulaExecutionContext = {
       survey,
-      nodesToAncestors,
       nodesToAnswers: new Map(),
       evaluationResults: new Map(),
       stackDepth: 0,
@@ -56,13 +54,12 @@ describe("evaluateExpression()", () => {
   });
 
   it("evaluates a name expression to the according survey calculation", () => {
-    const { node: survey, nodesToAncestors } = nestSurvey({
+    const { node: survey } = nestSurvey({
       rows: hospitalSurveyRawData(),
       defaultLanguage: "en-US",
     });
     const exampleContext: ODKFormulaExecutionContext = {
       survey,
-      nodesToAncestors,
       nodesToAnswers: new Map(),
       evaluationResults: new Map(),
       stackDepth: 0,

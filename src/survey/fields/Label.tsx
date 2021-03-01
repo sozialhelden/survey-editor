@@ -28,7 +28,17 @@ export function Label(
   const path =
     context.context && getNodeAbsolutePath(node, context.context).join("/");
 
-  const onChangeLabel = React.useCallback(
+  const [editedLabel, setEditedLabel] = React.useState(label);
+
+  const onChangeLabel = React.useCallback((text: string) => {
+    setEditedLabel(text);
+  }, []);
+
+  React.useEffect(() => {
+    setEditedLabel(label);
+  }, [label]);
+
+  const onConfirmLabel = React.useCallback(
     (text: string) => {
       if (text === label || (label === undefined && text === "")) {
         return;
@@ -42,9 +52,9 @@ export function Label(
     isEditable && debug ? (
       <EditableText
         onChange={onChangeLabel}
-        onConfirm={onChangeLabel}
+        onConfirm={onConfirmLabel}
         placeholder={`Enter a title for \`${node.row.name}\`…`}
-        value={label}
+        value={editedLabel}
         minWidth={100}
         maxLines={5}
       />

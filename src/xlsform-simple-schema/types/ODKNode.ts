@@ -39,10 +39,6 @@ export type ODKNode =
       rowIndex: number;
     };
 
-export type NodesToAncestors = Readonly<
-  Map<Readonly<ODKNode>, readonly ODKNode[]>
->;
-
 export type NodesToValues<T = unknown> = Readonly<Map<Readonly<ODKNode>, T>>;
 
 export type EvaluatableColumnName =

@@ -1,5 +1,6 @@
 import { Callout, Code, NumericInput } from "@blueprintjs/core";
 import * as React from "react";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
@@ -11,11 +12,12 @@ type Props = FieldProps & {
 
 export default function NumberField(props: Props) {
   const { value, schemaKey, relevant, disabled } = props;
+  const { onChangeAnswer } = React.useContext(ODKSurveyContext);
   const onChange = React.useCallback(
     (valueAsNumber: number) => {
-      props.onChange(valueAsNumber, props);
+      onChangeAnswer(valueAsNumber, props);
     },
-    [props]
+    [props, onChangeAnswer]
   );
 
   if (

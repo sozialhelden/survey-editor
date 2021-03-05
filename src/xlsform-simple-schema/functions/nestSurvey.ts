@@ -1,10 +1,10 @@
-import { ODKNode } from "../types/ODKNode";
 import {
   BeginMarkerRow,
   BeginOrEndMarkerRow,
 } from "../types/BeginOrEndMarkerRow";
-import { QuestionRow } from "../types/RowTypes";
 import { SemanticError } from "../types/Errors";
+import { ODKNode } from "../types/ODKNode";
+import { QuestionRow } from "../types/RowTypes";
 import { normalizeType } from "./loadSurveyFromXLSX";
 
 function assertNoEndMarker(
@@ -30,7 +30,7 @@ export default function nestSurvey({
   titleFromSettings = "",
   onRow,
 }: {
-  rows: (QuestionRow | BeginOrEndMarkerRow)[];
+  rows: readonly (QuestionRow | BeginOrEndMarkerRow)[];
   defaultLanguage: string;
   formRootNameFromSettings?: string;
   titleFromSettings?: string;

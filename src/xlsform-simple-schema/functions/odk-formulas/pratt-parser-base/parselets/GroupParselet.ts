@@ -14,6 +14,7 @@ export default class GroupParselet extends PrefixParselet {
     const expression = parser.parseExpression();
     const rightParenToken = parser.consume(this.rightParenTokenType);
     expression.tokens = [leftParenToken, ...expression.tokens, rightParenToken];
+    expression.children = [leftParenToken, expression, rightParenToken];
     return expression;
   }
 }

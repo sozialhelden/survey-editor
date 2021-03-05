@@ -1,14 +1,14 @@
 import { Icon, ITreeNode, Tree } from "@blueprintjs/core";
 import * as React from "react";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
-import DetailsPopover from "../survey/DetailsPopover";
-import XLSForm from "../xlsform-simple-schema";
+import DetailsPopover from "../survey/DetailsPopover/DetailsPopover";
+import { XLSForm } from "../xlsform-simple-schema";
 import ODKFormulaEvaluationContext from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
-  isNodeRelevant,
-  ODKNode,
-} from "../xlsform-simple-schema/types/ODKNode";
+  getNodeAbsolutePath,
+  getNodeAbsolutePathString,
+} from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 
 function SecondaryLabel(props: { node: ODKNode }) {
   const { node } = props;
@@ -61,10 +61,21 @@ export function getNodeTree(
   });
 }
 
+// const DragSourcePlaceholder = styled.div`
+//   height: 20px;
+//   background-color: red;
+// `;
+
+// const DragTargetPlaceholder = styled.div`
+//   height: 20px;
+//   background-color: blue;
+// `;
+
 export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
   const { xlsForm } = props;
   const context = React.useContext(ODKSurveyContext);
   const evaluationContext = context.context;
+
   const result = React.useMemo(() => {
     return xlsForm && evaluationContext
       ? getNodeTree(xlsForm.rootSurveyGroup, evaluationContext, (result) => {
@@ -72,15 +83,21 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
           if (!node) {
             debugger;
             throw new Error(
-              "Encountered a tree node that is not assciated with a node. Please fix this."
+              "Encountered a tree node that is not associated with a node. Please fix this."
             );
           }
 
+          if (!context.context) {
+            throw new Error(
+              "No context defined. Please define a context before using this component."
+            );
+          }
+
+          const path = getNodeAbsolutePathString(node, context.context);
+
+          const caption = <span>{result.label}</span>;
           const label = (
-            <DetailsPopover
-              node={node}
-              detailsButtonCaption={<span>{result.label}</span>}
-            />
+            <DetailsPopover node={node} detailsButtonCaption={caption} />
           );
 
           return {
@@ -93,7 +110,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
           } as ITreeNode<ODKNode>;
         })
       : null;
-  }, [evaluationContext, xlsForm]);
+  }, [context.context, evaluationContext, xlsForm]);
 
   return result ? <Tree contents={[result]} /> : <div></div>;
 }

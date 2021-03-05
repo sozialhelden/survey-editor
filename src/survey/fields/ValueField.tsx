@@ -1,17 +1,17 @@
-import { Callout, Classes, FormGroup } from "@blueprintjs/core";
+import { Callout, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
-import { FieldProps } from "../FieldProps";
-import { internalFields } from "../internalFields";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import evaluateNodeColumn from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
-import { Label } from "./Label";
-import RadioGroupField from "./RadioGroupField";
+import DetailsPopover from "../DetailsPopover/DetailsPopover";
+import { FieldProps } from "../FieldProps";
+import { internalFields } from "../internalFields";
 import BooleanField from "./BooleanField";
-import NumberField from "./NumberField";
-import DateField from "./DateField";
-import TextField from "./TextField";
 import CheckboxGroupField from "./CheckboxGroupField";
-import DetailsPopover from "../DetailsPopover";
+import DateField from "./DateField";
+import { Label } from "./Label";
+import NumberField from "./NumberField";
+import RadioGroupField from "./RadioGroupField";
+import TextField from "./TextField";
 
 export function AutoField(
   props: FieldProps & {
@@ -48,7 +48,13 @@ export default function ValueField(props: FieldProps) {
   const { node } = props;
   const isBoolean = props.quickType === "boolean";
   const context = React.useContext(ODKSurveyContext);
-  const { language, debug, context: evaluationContext } = context;
+  const {
+    language,
+    debug,
+    context: evaluationContext,
+    onChangeAnswer,
+  } = context;
+
   const onInputChange = React.useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
       const target = event.currentTarget;
@@ -57,11 +63,12 @@ export default function ValueField(props: FieldProps) {
         date: target.valueAsDate,
         number: target.valueAsNumber,
         text: target.value,
+        radio: target.value,
       };
       const value = values[target.type];
-      props.onChange(value, props);
+      onChangeAnswer(value, props);
     },
-    [props]
+    [onChangeAnswer, props]
   );
 
   if (!language || !evaluationContext) {

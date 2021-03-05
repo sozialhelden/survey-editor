@@ -1,25 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
-import evaluateNodeColumn from "./evaluateNodeColumn";
+import { ordinalize } from "inflection";
+import { EvaluationError } from "../../../types/Errors";
+import { ODKNode } from "../../../types/ODKNode";
+import ODKNodeValue from "../../../types/ODKNodeValue";
 import {
   CallExpression,
   Expression,
   NameExpression,
   OperatorExpression,
 } from "../pratt-parser-base";
-import ODKNodeValue from "../../../types/ODKNodeValue";
-import functions from "./ODKFormulaFunctions";
 import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpression";
-import { ODKNode } from "../../../types/ODKNode";
 import SelectorExpression from "../pratt-parser-base/expressions/SelectorExpression";
+import evaluateNodeColumn from "./evaluateNodeColumn";
+import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
+import functions from "./ODKFormulaFunctions";
 import {
-  findNodeByPathRelativeToScope,
-  findNodeByNameInsideScope,
   findNodeByNameInCurrentAndAncestorScopes,
+  findNodeByNameInsideScope,
+  findNodeByPathRelativeToScope,
 } from "./XPath";
-import { EvaluationError } from "../../../types/Errors";
-import { ordinalize } from "inflection";
-import { isEqual, isNumber } from "lodash";
 
 /**
  * Evaluates a parsed expression / AST, returning the end result as JavaScript value.
@@ -216,16 +215,20 @@ function evaluateOperatorExpression(
     scope
   );
 
-  if (expression.operator === "=") {
+  const operator = expression.operatorToken.text;
+
+  if (operator === "=") {
+    // eslint-disable-next-line eqeqeq
     return leftBeforeCasting == rightBeforeCasting;
   }
-  if (expression.operator === "!=") {
+  if (operator === "!=") {
+    // eslint-disable-next-line eqeqeq
     return leftBeforeCasting != rightBeforeCasting;
   }
 
   let left;
   let right;
-  if (expression.operator === "and" || expression.operator === "or") {
+  if (operator === "and" || operator === "or") {
     if (typeof leftBeforeCasting === "boolean") {
       left = leftBeforeCasting;
     }
@@ -243,7 +246,7 @@ function evaluateOperatorExpression(
     assertBoolean(left, leftBeforeCasting, expression, context, scope);
     assertBoolean(right, rightBeforeCasting, expression, context, scope);
 
-    switch (expression.operator) {
+    switch (operator) {
       case "or":
         return left || right;
       case "and":
@@ -267,9 +270,9 @@ function evaluateOperatorExpression(
 
   if (typeof left !== "number") {
     throw new EvaluationError(
-      `Found left operand \`${JSON.stringify(
+      `Left operand is \`${JSON.stringify(
         leftBeforeCasting
-      )}\` that is no number. Arithmetic and relative comparison operators only work with operands that are numeric.`,
+      )}\`, which is no number. Arithmetic and relative comparison operators only work with operands that are numeric.`,
       "invalidOperandType",
       expression,
       context,
@@ -278,9 +281,9 @@ function evaluateOperatorExpression(
   }
   if (typeof right !== "number") {
     throw new EvaluationError(
-      `Found right operand \`${JSON.stringify(
+      `Right operand is \`${JSON.stringify(
         rightBeforeCasting
-      )}\` that is no number. Arithmetic and relative comparison operators only work with operands that are numeric.`,
+      )}\`, which no number. Arithmetic and relative comparison operators only work with operands that are numeric.`,
       "invalidOperandType",
       expression,
       context,
@@ -288,7 +291,7 @@ function evaluateOperatorExpression(
     );
   }
 
-  switch (expression.operator) {
+  switch (operator) {
     case "+":
       return left + right;
     case "-":
@@ -309,7 +312,7 @@ function evaluateOperatorExpression(
       return left <= right;
     default:
       throw new EvaluationError(
-        `The \`${expression.operator}\` operator is not supported`,
+        `The \`${operator}\` operator is not supported`,
         "unsupportedOperator",
         expression,
         context,

@@ -150,19 +150,44 @@ export function getNodeAbsolutePath(
   return getReverseNodeAbsolutePath(node, context)?.reverse();
 }
 
+export function getNodeAbsolutePathString(
+  node: ODKNode,
+  context: ODKFormulaEvaluationContext
+): string {
+  return getNodeAbsolutePath(node, context).slice(1).join(".");
+}
+
 export function isXPath(string: string): boolean {
   return !!string.match(/^\/(\/?[\w*]+(?:\[[^]+?])?)$/);
+}
+
+export function getScopedNodeIndexPath(
+  node: ODKNode,
+  scope: ODKNode,
+  stack: number[] = []
+): number[] | undefined {
+  if (isEqual(node, scope)) {
+    return stack;
+  }
+  if (scope.children?.length) {
+    for (let i = 0; i < scope.children.length; i += 1) {
+      stack.push(i);
+      const childNode = scope.children[i];
+      const foundStack = getScopedNodeIndexPath(node, childNode, stack);
+      if (foundStack !== undefined) {
+        return foundStack;
+      }
+      stack.pop();
+    }
+  }
+  return undefined;
 }
 
 export function getNodeIndexPath(
   node: ODKNode,
   context: ODKFormulaEvaluationContext
-): number[] {
-  const ancestors = getAncestors(node, context);
-  const stack = [...(ancestors || []), node].slice(1);
-  return stack.map(
-    (node, i) => node.rowIndex - (stack[i - 1] ? stack[i - 1].rowIndex + 1 : 0)
-  );
+): number[] | undefined {
+  return getScopedNodeIndexPath(node, context.survey);
 }
 
 export function getScopedAncestors(

@@ -1,7 +1,7 @@
 import { Callout, Checkbox, Code, ControlGroup } from "@blueprintjs/core";
 import * as React from "react";
-import { FieldProps } from "../FieldProps";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
   value: unknown;
@@ -11,7 +11,7 @@ type Props = FieldProps & {
 export default function CheckboxGroupField(props: Props) {
   const { value, allowedValues, node, relevant, disabled } = props;
   const context = React.useContext(ODKSurveyContext);
-  const { language } = context;
+  const { language, onChangeAnswer } = context;
 
   const valueIsInvalid =
     value !== undefined &&
@@ -38,9 +38,9 @@ export default function CheckboxGroupField(props: Props) {
       } else {
         newChoices.delete(choice);
       }
-      props.onChange(Array.from(newChoices), props);
+      onChangeAnswer(Array.from(newChoices), props);
     },
-    [props, choices]
+    [props, onChangeAnswer, choices]
   );
 
   if (typeof language !== "string") {

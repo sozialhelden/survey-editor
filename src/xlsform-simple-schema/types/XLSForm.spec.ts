@@ -1,15 +1,15 @@
 // tslint:disable-next-line: import-name
-// import XLSForm from './XLSForm';
+// import {XLSForm} from './XLSForm';
 
-describe('XLSForm', () => {
-  describe('constructor', () => {
-    it('throws with wrong parameters', () => {
+describe("XLSForm", () => {
+  describe("constructor", () => {
+    it("throws with wrong parameters", () => {
       // expect(() => new Cache({ defaultTTL: 0 })).toThrowError(/defaultTTL/);
       // expect(() => new Cache({ maximalItemCount: 0 })).toThrowError(/maximalItemCount/);
     });
   });
 
-  it('caches items', () => {
+  it("caches items", () => {
     // const cache = new Cache();
     // cache.set('foo', 'bar');
     // cache.set('qoo', 'qux');

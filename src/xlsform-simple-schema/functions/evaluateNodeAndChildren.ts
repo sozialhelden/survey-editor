@@ -3,7 +3,7 @@ import {
   evaluatableColumnNames,
   ODKNode,
 } from "../types/ODKNode";
-import XLSForm from "../types/XLSForm";
+import { XLSForm } from "../types/XLSForm";
 import evaluateNodeColumn from "./odk-formulas/evaluation/evaluateNodeColumn";
 import ODKFormulaEvaluationContext from "./odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import ODKFormulaEvaluationResult from "./odk-formulas/evaluation/ODKFormulaEvaluationResult";
@@ -31,7 +31,7 @@ export function evaluateNodeAndChildren(
       evaluateNodeColumn(node, context, columnName, fallbacks[columnName])
     );
   });
-  node.children.forEach((child) =>
+  node.children?.forEach((child) =>
     evaluateNodeAndChildren(child, context, onEval)
   );
 }

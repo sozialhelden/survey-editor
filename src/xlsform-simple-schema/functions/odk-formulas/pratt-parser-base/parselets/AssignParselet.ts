@@ -28,6 +28,7 @@ export default class AssignParselet extends InfixParselet {
     return new AssignExpression(
       [...left.tokens, operatorToken, ...right.tokens],
       left,
+      operatorToken,
       right
     );
   }

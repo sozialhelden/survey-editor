@@ -9,3 +9,11 @@
 html {
     background-color: #EBF1F5;
 }
+
+.bp3-popover2.bp3-popover2-content-sizing .bp3-popover2-content {
+    max-width: 500px;
+}
+
+code, pre, .bp3-running-text pre, .bp3-code-block, .bp3-code  {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}

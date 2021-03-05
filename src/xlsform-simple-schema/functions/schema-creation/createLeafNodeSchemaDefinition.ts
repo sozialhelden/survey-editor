@@ -1,6 +1,6 @@
 import { SchemaDefinition } from "simpl-schema";
 import { ODKNode } from "../../types/ODKNode";
-import XLSForm from "../../types/XLSForm";
+import { XLSForm } from "../../types/XLSForm";
 import ODKFormulaEvaluationContext from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeOptionalFunction } from "./getNodeOptionalFunction";
 import { getStringInterpolationFunctionOrString } from "./getStringInterpolationFunctionOrString";

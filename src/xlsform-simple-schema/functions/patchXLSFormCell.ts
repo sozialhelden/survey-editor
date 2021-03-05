@@ -1,12 +1,12 @@
-import produce, { applyPatches, Patch } from "immer";
-import { compact, get, set } from "lodash";
+import produce from "immer";
+import { set } from "lodash";
 import { ODKNode } from "../types/ODKNode";
-import XLSForm, { WorksheetName } from "../types/XLSForm";
+import { WorksheetName, XLSForm } from "../types/XLSForm";
 import { localizableColumnNames } from "./loadSurveyFromXLSX";
 import ODKFormulaEvaluationContext from "./odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeIndexPath } from "./odk-formulas/evaluation/XPath";
 
-export default function patchXLSForm({
+export default function patchXLSFormCell({
   worksheetName,
   xlsForm,
   rowIndex,
@@ -30,15 +30,17 @@ export default function patchXLSForm({
     ? [columnName, language]
     : [columnName];
 
-  const isSurvey = worksheetName === "survey";
+  const changeIsInSurveyWorksheet = worksheetName === "survey";
+
   return produce(xlsForm, (draft) => {
-    if (isSurvey) {
+    set(
+      draft,
+      ["worksheets", worksheetName, "rows", rowIndex, ...valuePathInRow],
+      value
+    );
+
+    if (changeIsInSurveyWorksheet) {
       set(draft, ["flatNodes", rowIndex, "row", ...valuePathInRow], value);
-      set(
-        draft,
-        ["worksheets", worksheetName, "rows", rowIndex, ...valuePathInRow],
-        value
-      );
       if (indexPath) {
         set(
           draft,

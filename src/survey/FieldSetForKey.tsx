@@ -1,28 +1,18 @@
 import { Callout, Code, H4 } from "@blueprintjs/core";
 import * as React from "react";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
-import { WorksheetName } from "../xlsform-simple-schema";
 import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { FieldProps } from "./FieldProps";
 import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
 import ValueField from "./fields/ValueField";
 
 export function FieldSetForKey(props: {
-  onChange: (value: unknown, fieldProps: FieldProps) => void;
-  onChangeCell: (
-    worksheetName: WorksheetName,
-    rowIndex: number,
-    columnName: string,
-    value: unknown,
-    node?: ODKNode
-  ) => void;
   schemaKey: string;
   relevant?: boolean;
   disabled?: boolean;
 }) {
-  const { schemaKey, onChange, onChangeCell } = props;
+  const { schemaKey } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
   if (!context || !schema) {
     return null;
@@ -70,10 +60,14 @@ export function FieldSetForKey(props: {
     const evaluationResult = context.evaluationResults
       .get(node)
       ?.get("relevant");
-    relevant =
-      typeof evaluationResult?.result === "boolean"
-        ? evaluationResult.result
-        : true;
+
+    if (typeof evaluationResult?.result === "boolean") {
+      relevant = evaluationResult.result;
+    } else if (evaluationResult?.result === null) {
+      relevant = false;
+    } else {
+      relevant = true;
+    }
   }
 
   let disabled = props.disabled;
@@ -93,8 +87,6 @@ export function FieldSetForKey(props: {
     node,
     schemaKey,
     quickType,
-    onChange,
-    onChangeCell,
     relevant,
     disabled,
   };

@@ -21,6 +21,8 @@ function expectFail(formula: string, regexp: RegExp) {
       survey,
       knownLiteralsWithoutDollarSign,
       stackDepth: 0,
+      nodesToAnswers: new Map(),
+      evaluationResults: new Map(),
     };
     const { error, result } = evaluateODKFormula(formula, context);
     expect(error).toBeInstanceOf(ODKFormulaError);
@@ -44,6 +46,8 @@ function expectResult<T>(
       survey,
       knownLiteralsWithoutDollarSign,
       stackDepth: 0,
+      nodesToAnswers: new Map(),
+      evaluationResults: new Map(),
     };
     const { error, expression, result } = evaluateODKFormula(formula, context);
     expect(error).toBeUndefined();

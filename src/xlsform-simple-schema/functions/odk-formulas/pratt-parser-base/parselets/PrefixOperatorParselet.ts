@@ -19,7 +19,7 @@ export default class PrefixOperatorParselet extends PrefixParselet {
     // take *this* parselet's result as its left-hand argument.
     const right = parser.parseExpression(this.precedence);
 
-    return new PrefixExpression([token, ...right.tokens], token.type, right);
+    return new PrefixExpression([token, ...right.tokens], token, right);
   }
 
   public getPrecedence(): number {

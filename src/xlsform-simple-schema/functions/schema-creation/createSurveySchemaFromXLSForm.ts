@@ -1,5 +1,5 @@
 import SimpleSchema from "simpl-schema";
-import XLSForm from "../../types/XLSForm";
+import { XLSForm } from "../../types/XLSForm";
 import ODKFormulaEvaluationContext from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import createRecursiveNodeSchemaDefinition from "./createRecursiveNodeSchemaDefinition";
 

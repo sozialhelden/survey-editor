@@ -45,6 +45,7 @@ export default function evaluateNodeColumn(
   try {
     evaluationResult = evaluateODKFormula(formula, context, node);
   } catch (error) {
+    debugger;
     throw new EvaluationError(
       `Error in \`${columnName}\` column of the ‘${row?.name}’ question (row #${node.rowIndex}). It contains the formula \`${row?.[columnName]}\`. Please ensure the formula is valid. The error was: ${error}`,
       "calculationError",

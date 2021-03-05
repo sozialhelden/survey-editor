@@ -4,8 +4,8 @@
  * pretty-printed result.
  */
 
-import ODKFormulaParser from "./ODKFormulaParser";
 import ODKFormulaLexer from "../odk-formula-parser/ODKFormulaLexer";
+import ODKFormulaParser from "./ODKFormulaParser";
 
 function parse(input: string) {
   const lexer = new ODKFormulaLexer(input);

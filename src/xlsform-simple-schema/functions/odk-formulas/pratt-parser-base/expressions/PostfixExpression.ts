@@ -1,28 +1,24 @@
-import {
-  Expression,
-  punctuator,
-  TokenType,
-  StringBuilder,
-  Token,
-} from "../types";
+import { Expression, punctuator, StringBuilder, Token } from "../types";
 
 /**
  * A postfix unary arithmetic expression like "a!".
  */
-export default class PostfixExpression implements Expression {
+export default class PostfixExpression extends Expression {
   kind = "postfix";
-  children = [this.left];
+  children = [this.left, this.operatorToken];
 
   constructor(
     readonly tokens: Token[],
     readonly left: Expression,
-    readonly operator: TokenType
-  ) {}
+    readonly operatorToken: Token
+  ) {
+    super();
+  }
 
   public print(builder: StringBuilder): void {
     builder("(");
     this.left.print(builder);
-    builder(punctuator(this.operator));
+    builder(punctuator(this.operatorToken.type));
     builder(")");
   }
 }

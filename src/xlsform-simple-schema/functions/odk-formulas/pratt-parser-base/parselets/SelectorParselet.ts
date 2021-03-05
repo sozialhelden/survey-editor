@@ -14,6 +14,6 @@ export default class SelectorParselet<T> extends PrefixParselet {
   }
   public parse(_parser: Parser, token: Token): Expression {
     const selector = this.getSelector(token.text);
-    return new SelectorExpression([token], token.text, selector);
+    return new SelectorExpression(token, selector);
   }
 }

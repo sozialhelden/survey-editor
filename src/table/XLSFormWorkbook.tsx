@@ -1,9 +1,9 @@
 import { Tab, Tabs } from "@blueprintjs/core";
-import styled from "styled-components";
 import { CSSProperties, useCallback, useState } from "react";
-import XLSForm, { WorksheetName } from "../xlsform-simple-schema";
-import XLSFormWorksheet from "./XLSFormWorksheet";
+import styled from "styled-components";
+import { WorksheetName, XLSForm } from "../xlsform-simple-schema";
 import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import XLSFormWorksheet from "./XLSFormWorksheet";
 
 type Props = {
   xlsForm: XLSForm;

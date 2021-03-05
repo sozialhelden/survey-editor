@@ -3,16 +3,26 @@ import { Expression, StringBuilder, Token } from "../types";
 /**
  * A ternary conditional expression like "a ? b : c".
  */
-export default class ConditionalExpression implements Expression {
+export default class ConditionalExpression extends Expression {
   kind = "conditional";
-  children = [this.condition, this.thenArm, this.elseArm];
+  children = [
+    this.condition,
+    this.questionMarkToken,
+    this.thenArm,
+    this.colonToken,
+    this.elseArm,
+  ];
 
   constructor(
     readonly tokens: Token[],
     readonly condition: Expression,
+    readonly questionMarkToken: Token,
     readonly thenArm: Expression,
+    readonly colonToken: Token,
     readonly elseArm: Expression
-  ) {}
+  ) {
+    super();
+  }
 
   public print(builder: StringBuilder): void {
     builder("(");

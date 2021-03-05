@@ -1,4 +1,8 @@
-import { choiceRowSchema, questionRowSchema, settingsRowSchema } from './RowSchemas';
+import {
+  choiceRowSchema,
+  questionRowSchema,
+  settingsRowSchema,
+} from "./RowSchemas";
 
 /** Represents a row in the 'survey' worksheet */
 
@@ -23,7 +27,7 @@ export type QuestionRow = Record<string, string | LocalizedString> & {
   choice_filter?: string;
   calculation?: string;
   trigger?: string;
-  readonly?: 'true' | 'false';
+  readonly?: "true" | "false";
   required?: string;
   required_message?: LocalizedString;
   parameters?: string;
@@ -37,9 +41,9 @@ export type QuestionRow = Record<string, string | LocalizedString> & {
 
 /** Represents a row in the 'choices' worksheet */
 
-export type ChoiceRow = Record<string, string> & {
+export type ChoiceRow = Record<string, string | LocalizedString> & {
   /** lets you group together a set of related answer choices, i.e., answer choices that should appear together under a question. */
-  'list name': string;
+  "list name": string;
   /** specifies the unique variable name for that answer choice. */
   name: string;
   /** shows the answer choice exactly as you want it to appear on the form. Alternatively, label translation columns can be used. */
@@ -63,12 +67,18 @@ export type SettingsRow = Record<string, string> & {
   version: string;
 };
 
-export function assertValidQuestionRow(row: Record<string, unknown>): asserts row is QuestionRow {
+export function assertValidQuestionRow(
+  row: Record<string, unknown>
+): asserts row is QuestionRow {
   return questionRowSchema.validate(row);
 }
-export function assertValidChoiceRow(row: Record<string, unknown>): asserts row is ChoiceRow {
-  return choiceRowSchema.validate(row, { keys: ['list name', 'name'] });
+export function assertValidChoiceRow(
+  row: Record<string, unknown>
+): asserts row is ChoiceRow {
+  return choiceRowSchema.validate(row, { keys: ["list name", "name"] });
 }
-export function assertValidSettingsRow(row: Record<string, unknown>): asserts row is SettingsRow {
+export function assertValidSettingsRow(
+  row: Record<string, unknown>
+): asserts row is SettingsRow {
   return settingsRowSchema.validate(row);
 }

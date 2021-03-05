@@ -1,6 +1,7 @@
 import { Callout, Code } from "@blueprintjs/core";
 import { DateInput, IDateFormatProps } from "@blueprintjs/datetime";
 import * as React from "react";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
@@ -18,14 +19,15 @@ const jsDateFormatter: IDateFormatProps = {
 
 export default function DateField(props: Props) {
   const { value, relevant, disabled } = props;
+  const { onChangeAnswer } = React.useContext(ODKSurveyContext);
 
   const onChange = React.useCallback(
     (selectedDate: Date, isUserChange: boolean) => {
       if (isUserChange) {
-        props.onChange(selectedDate, props);
+        onChangeAnswer(selectedDate, props);
       }
     },
-    [props]
+    [props, onChangeAnswer]
   );
 
   if (value !== undefined && !(value instanceof Date)) {

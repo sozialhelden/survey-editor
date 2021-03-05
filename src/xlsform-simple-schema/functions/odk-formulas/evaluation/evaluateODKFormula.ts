@@ -43,7 +43,7 @@ export default function evaluateODKFormula(
   const lexer = new ODKFormulaLexer(formula);
   const parser = new ODKFormulaParser({ tokens: lexer });
   try {
-    const expression = parser.parseExpression();
+    expression = parser.parseExpression();
 
     if (!expression) {
       throw new Error(

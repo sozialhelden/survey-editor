@@ -1,12 +1,12 @@
-import { uniq } from "lodash";
-import styled from "styled-components";
-import * as React from "react";
+import { Callout } from "@blueprintjs/core";
 import { Column, EditableCell, Table } from "@blueprintjs/table";
-import XLSForm, { WorksheetName } from "../xlsform-simple-schema";
+import { uniq } from "lodash";
+import * as React from "react";
+import styled from "styled-components";
 import OverflowScrollContainer from "../components/OverflowScrollContainer";
+import { ODKSurveyContext } from "../lib/ODKSurveyContext";
+import { WorksheetName, XLSForm } from "../xlsform-simple-schema";
 import { localizableColumnNames } from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
-import { Callout, Code } from "@blueprintjs/core";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 
 type Props = {
   xlsForm: XLSForm;
@@ -14,13 +14,6 @@ type Props = {
   debug: boolean;
   worksheetName: WorksheetName;
   style?: React.CSSProperties;
-  onChangeCell: (
-    worksheetName: WorksheetName,
-    rowIndex: number,
-    columnName: string,
-    value: unknown,
-    node?: ODKNode
-  ) => void;
 };
 
 const FlexTable = styled(Table)`
@@ -28,8 +21,9 @@ const FlexTable = styled(Table)`
 `;
 
 export default function XLSFormWorksheet(props: Props) {
-  const { language, xlsForm, worksheetName, onChangeCell } = props;
-  // const context = React.useContext(ODKSurveyContext);
+  const { language, xlsForm, worksheetName } = props;
+  const context = React.useContext(ODKSurveyContext);
+  const { onChangeCell } = context;
   const worksheet = xlsForm.worksheets[props.worksheetName];
 
   const numRows = worksheet?.rows.length;
@@ -113,7 +107,7 @@ export default function XLSFormWorksheet(props: Props) {
           value={value}
           style={
             ["type", "name"].includes(key)
-              ? { paddingLeft: `${4 + node.indentationLevel * 8}px` }
+              ? { paddingLeft: `${4 + node?.indentationLevel * 8}px` }
               : {}
           }
         >

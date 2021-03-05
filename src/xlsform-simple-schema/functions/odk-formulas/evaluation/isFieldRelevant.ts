@@ -1,9 +1,9 @@
-import { ODKNodeWithoutRuntimeInfo, ODKNode } from "../../../types/ODKNode";
-import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
-import evaluateODKFormula from "./evaluateODKFormula";
-import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
-import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpression";
 import { SemanticError } from "../../../types/Errors";
+import { ODKNode, ODKNodeWithoutRuntimeInfo } from "../../../types/ODKNode";
+import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpression";
+import evaluateODKFormula from "./evaluateODKFormula";
+import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
+import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
 /**
  * Calculates if a field is relevant (\`true\`) or should be skipped (\`false\'). Users can
@@ -41,5 +41,5 @@ export default function isFieldRelevant(
     );
   }
 
-  return evaluateODKFormula(formula, context, scope);
+  return result;
 }

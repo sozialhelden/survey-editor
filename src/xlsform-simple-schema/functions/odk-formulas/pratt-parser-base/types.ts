@@ -127,14 +127,14 @@ export type Token = {
 /**
  * Interface for all expression AST node classes.
  */
-export interface Expression {
-  kind: string;
-  tokens: Token[];
-  children: Expression[];
+export abstract class Expression {
+  abstract readonly kind: string;
+  abstract tokens: Token[];
+  abstract children: (Token | Expression)[];
   /**
    * Pretty-print the expression to a string.
    */
-  print(builder: StringBuilder): void;
+  abstract print(builder: StringBuilder): void;
 }
 
 export type StringBuilder = (result: string) => void;

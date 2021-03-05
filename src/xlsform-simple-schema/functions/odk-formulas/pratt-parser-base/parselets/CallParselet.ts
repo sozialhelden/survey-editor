@@ -26,6 +26,7 @@ export default class CallParselet extends InfixParselet {
       this.rightParenTokenType
     );
     const tokens: Token[] = [...left.tokens, leftParenToken];
+    const argsAndDelimiters: (Expression | Token)[] = [];
     if (rightParenToken) {
       // There may be no arguments at all.
       tokens.push(rightParenToken);
@@ -35,9 +36,11 @@ export default class CallParselet extends InfixParselet {
         const arg = parser.parseExpression();
         args.push(arg);
         tokens.push(...arg.tokens);
+        argsAndDelimiters.push(arg);
         delimiterToken = parser.match(this.argumentDelimiterTokenType);
         if (delimiterToken) {
           tokens.push(delimiterToken);
+          argsAndDelimiters.push(delimiterToken);
         }
       } while (delimiterToken);
       rightParenToken = parser.consume(this.rightParenTokenType);
@@ -46,7 +49,13 @@ export default class CallParselet extends InfixParselet {
       }
     }
 
-    return new CallExpression(tokens, left, args);
+    return new CallExpression(
+      tokens,
+      left,
+      leftParenToken,
+      argsAndDelimiters,
+      rightParenToken
+    );
   }
 
   public getPrecedence(): number {

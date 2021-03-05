@@ -17,11 +17,12 @@ import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import useChangeHooks from "./lib/useChangeHooks";
 import { SheetTabs } from "./SheetTabs";
+import { ODKNodeDragAndDropContext } from "./survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./survey/XLSFormSurvey";
 import XLSFormWorksheet from "./table/XLSFormWorksheet";
 import { loadFormFromExcelWorkbook } from "./xlsform-simple-schema/functions/loadSurveyFromXLSX";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
-import XLSForm, { WorksheetName } from "./xlsform-simple-schema/index";
+import { WorksheetName, XLSForm } from "./xlsform-simple-schema/index";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -138,13 +139,15 @@ function App() {
     </OverflowScrollContainer>
   );
 
-  const { context, onChange, onChangeCell } = useChangeHooks({
-    xlsForm,
+  const changeHooks = useChangeHooks({
     language,
+    xlsForm,
     setXLSForm,
   });
 
-  const [, languageName, languageCode] = language?.match(/\w+ \((\w+)\)/) || [];
+  const { context } = changeHooks;
+  const [, languageName, languageCode] =
+    language?.match(/^(.*) \((\w+)\)$/) || [];
 
   const schema = React.useMemo(() => {
     if (xlsForm && language && context) {
@@ -154,87 +157,90 @@ function App() {
   }, [xlsForm, language, context]);
 
   return (
-    <ODKSurveyContext.Provider
-      value={{
-        schema,
-        context,
-        language,
-        languageCode,
-        languageName,
-        debug,
-        xlsForm,
-      }}
+    <ODKNodeDragAndDropContext.Provider
+      value={{ onDropNode: changeHooks.onMoveNode }}
     >
-      {xlsForm && (
-        <Navbar>
-          {showTable && <SheetTabs {...{ setWorksheetName, worksheetName }} />}
-
-          <Navbar.Group align={Alignment.RIGHT}>
-            {resetButton}
-            <Navbar.Divider />
-            <NavbarSwitch
-              checked={showTable === true}
-              label="Table"
-              onChange={onShowTableChange}
-            />
-            <NavbarSwitch
-              checked={debug === false}
-              label="Live View"
-              onChange={onDebugChange}
-            />
-            <NavbarSwitch
-              checked={showResult === true}
-              label="JSON"
-              onChange={onShowResultChange}
-            />
-            <Navbar.Divider />
-            {xlsForm && language && (
-              <LanguageSelector
-                languages={Array.from(xlsForm.languages.values())}
-                language={language}
-                onChange={setLanguage}
-              />
+      <ODKSurveyContext.Provider
+        value={{
+          schema,
+          language,
+          languageCode,
+          languageName,
+          debug,
+          xlsForm,
+          ...changeHooks,
+        }}
+      >
+        {xlsForm && (
+          <Navbar>
+            {showTable && (
+              <SheetTabs {...{ setWorksheetName, worksheetName }} />
             )}
-          </Navbar.Group>
-        </Navbar>
-      )}
 
-      <AppBody>
-        {!xlsForm && (
-          <OverflowScrollContainer>
-            <NonIdealState
-              icon="document-open"
-              title="Open an Excel file to start."
-              action={fileInput}
-            />
-          </OverflowScrollContainer>
+            <Navbar.Group align={Alignment.RIGHT}>
+              {resetButton}
+              <Navbar.Divider />
+              <NavbarSwitch
+                checked={showTable === true}
+                label="Table"
+                onChange={onShowTableChange}
+              />
+              <NavbarSwitch
+                checked={debug === false}
+                label="Live View"
+                onChange={onDebugChange}
+              />
+              <NavbarSwitch
+                checked={showResult === true}
+                label="JSON"
+                onChange={onShowResultChange}
+              />
+              <Navbar.Divider />
+              {xlsForm && language && (
+                <LanguageSelector
+                  languages={Array.from(xlsForm.languages.values())}
+                  language={language}
+                  onChange={setLanguage}
+                />
+              )}
+            </Navbar.Group>
+          </Navbar>
         )}
-        {xlsForm && language && showTable && (
-          <XLSFormWorksheet
-            xlsForm={xlsForm}
-            language={language}
-            debug={debug}
-            style={{ width: "50%" }}
-            worksheetName={worksheetName}
-            onChangeCell={onChangeCell}
-          />
-        )}
-        {xlsForm && language && (
-          <OverflowScrollContainer
-            style={{ boxShadow: "0 0px 30px #9fb7c2", zIndex: 1 }}
-          >
-            <StyledXLSFormSurvey
+
+        <AppBody>
+          {!xlsForm && (
+            <OverflowScrollContainer>
+              <NonIdealState
+                icon="document-open"
+                title="Open an Excel file to start."
+                action={fileInput}
+              />
+            </OverflowScrollContainer>
+          )}
+          {xlsForm && language && showTable && (
+            <XLSFormWorksheet
               xlsForm={xlsForm}
               language={language}
               debug={debug}
-              onChange={onChange}
-              onChangeCell={onChangeCell}
+              style={{ width: "50%" }}
+              worksheetName={worksheetName}
             />
-          </OverflowScrollContainer>
-        )}
-        {xlsForm && language && showResult && resultCodeElement}
-      </AppBody>
-    </ODKSurveyContext.Provider>
+          )}
+          {xlsForm && language && (
+            <OverflowScrollContainer
+              style={{ boxShadow: "0 0px 30px #9fb7c2", zIndex: 1 }}
+            >
+              <StyledXLSFormSurvey
+                xlsForm={xlsForm}
+                language={language}
+                debug={debug}
+              />
+            </OverflowScrollContainer>
+          )}
+          {xlsForm && language && showResult && resultCodeElement}
+        </AppBody>
+      </ODKSurveyContext.Provider>
+    </ODKNodeDragAndDropContext.Provider>
   );
 }
 

@@ -3,15 +3,28 @@ import { Expression, StringBuilder, Token } from "../types";
 /**
  * A function call like "a(b, c, d)".
  */
-export default class CallExpression implements Expression {
+export default class CallExpression extends Expression {
   kind = "call";
-  children = [this.fn, ...this.args];
+  readonly args: Expression[];
+  children = [
+    this.fn,
+    this.leftParenToken,
+    ...this.argsAndDelimiters,
+    this.rightParenToken,
+  ];
 
   constructor(
     readonly tokens: Token[],
     readonly fn: Expression,
-    readonly args: Expression[]
-  ) {}
+    readonly leftParenToken: Token,
+    readonly argsAndDelimiters: (Expression | Token)[],
+    readonly rightParenToken: Token
+  ) {
+    super();
+    this.args = argsAndDelimiters.filter(
+      (e) => e instanceof Expression
+    ) as Expression[];
+  }
 
   public print(builder: StringBuilder): void {
     this.fn.print(builder);

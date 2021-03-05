@@ -13,7 +13,7 @@ export default class PostfixOperatorParselet extends InfixParselet {
   }
 
   public parse(_parser: Parser, left: Expression, token: Token): Expression {
-    return new PostfixExpression([...left.tokens, token], left, token.type);
+    return new PostfixExpression([...left.tokens, token], left, token);
   }
 
   public getPrecedence(): number {

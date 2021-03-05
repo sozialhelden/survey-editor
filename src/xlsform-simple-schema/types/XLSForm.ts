@@ -21,7 +21,7 @@ export type FlatNode = {
   node: Readonly<ODKNode>;
 };
 
-type XLSForm = {
+export type XLSForm = {
   worksheets: {
     survey: SurveyWorksheet;
     choices?: ChoicesWorksheet;
@@ -35,16 +35,16 @@ type XLSForm = {
 
 export type WorksheetName = keyof XLSForm["worksheets"];
 
-export default XLSForm;
-
 export type WorksheetRowsWithMetadata<RowT> = {
-  rows: RowT[];
+  rows: readonly RowT[];
   languages: Readonly<Set<string>>;
-  columnNames: string[];
+  columnNames: readonly string[];
   columnNamesNormalized: readonly string[];
 };
 
-function loadChoices(worksheet: ChoicesWorksheet): ChoiceRowsByListNameAndName {
+export function loadChoices(
+  worksheet: ChoicesWorksheet
+): ChoiceRowsByListNameAndName {
   const map: ChoiceRowsByListNameAndName = {};
 
   worksheet.rows.forEach((row) => {
@@ -59,7 +59,7 @@ function loadChoices(worksheet: ChoicesWorksheet): ChoiceRowsByListNameAndName {
 }
 
 export function loadXLSFormFromRows(
-  survey: WorksheetRowsWithMetadata<QuestionRow>,
+  survey: Readonly<WorksheetRowsWithMetadata<QuestionRow>>,
   defaultLanguage: string,
   settings?: WorksheetRowsWithMetadata<SettingsRow>,
   choices?: WorksheetRowsWithMetadata<ChoiceRow>

@@ -11,14 +11,26 @@ export default class ConditionalParselet extends InfixParselet {
     super();
   }
 
-  public parse(parser: Parser, left: Expression, _token: Token): Expression {
+  public parse(
+    parser: Parser,
+    left: Expression,
+    questionMarkToken: Token
+  ): Expression {
     const thenArm = parser.parseExpression();
     const colonToken = parser.consume(TokenType.COLON);
     const elseArm = parser.parseExpression(this.precedence - 1);
     return new ConditionalExpression(
-      [...left.tokens, ...thenArm.tokens, colonToken, ...elseArm.tokens],
+      [
+        ...left.tokens,
+        questionMarkToken,
+        ...thenArm.tokens,
+        colonToken,
+        ...elseArm.tokens,
+      ],
       left,
+      questionMarkToken,
       thenArm,
+      colonToken,
       elseArm
     );
   }

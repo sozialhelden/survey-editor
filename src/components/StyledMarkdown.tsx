@@ -16,9 +16,9 @@ const StyledMarkdown = styled(Markdown)`
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     color: ${Colors.DARK_GRAY1};
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    /* border: 1px solid rgba(0, 0, 0, 0.2); */
     margin: -1px;
-    padding: 1px;
+    padding: 2px 3px;
     background-color: rgba(255, 255, 255, 0.3);
   }
 

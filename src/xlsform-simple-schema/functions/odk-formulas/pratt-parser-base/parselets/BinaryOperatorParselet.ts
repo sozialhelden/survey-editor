@@ -29,7 +29,7 @@ export default class BinaryOperatorParselet extends InfixParselet {
     return new OperatorExpression(
       [...left.tokens, operatorToken, ...right.tokens],
       left,
-      operatorToken.text,
+      operatorToken,
       right
     );
   }

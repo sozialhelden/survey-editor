@@ -1,6 +1,5 @@
 import Excel from "exceljs";
 import { SyntaxError } from "../types/Errors";
-import { ODKNode } from "../types/ODKNode";
 import {
   choiceRowSchema,
   questionRowSchema,
@@ -14,14 +13,12 @@ import {
   QuestionRow,
   SettingsRow,
 } from "../types/RowTypes";
-import XLSForm, {
-  ChoiceRowsByListNameAndName,
-  ChoicesWorksheet,
+import {
   loadXLSFormFromRows,
   WorksheetName,
   WorksheetRowsWithMetadata,
+  XLSForm,
 } from "../types/XLSForm";
-import nestSurvey from "./nestSurvey";
 
 export function nestDoubleColonFields(
   row: Record<string, unknown>,

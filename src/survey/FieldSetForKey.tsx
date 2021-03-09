@@ -1,11 +1,87 @@
-import { Callout, Code, H4 } from "@blueprintjs/core";
+import { Callout, Classes, Code, Colors, H4 } from "@blueprintjs/core";
+import { ContextMenu2, Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
+import styled from "styled-components";
+import { alpha } from "../lib/colors";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
+import useConfirmNodeDeletion from "../lib/useConfirmNodeDeletion";
 import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import AddFieldMenuItem from "./AddFieldMenuItem";
+import NodeActionMenu from "./DetailsPopover/ActionMenu";
 import { FieldProps } from "./FieldProps";
 import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
 import ValueField from "./fields/ValueField";
+
+const Stripe = styled.div`
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0px;
+    width: 1px;
+    bottom: 0;
+    top: 0;
+    background-color: transparent;
+  }
+`;
+
+const CornerButton = styled.div`
+  position: absolute;
+  left: 0px;
+  height: 44px;
+  width: 44px;
+  background-color: transparent;
+  cursor: pointer;
+`;
+
+const TopCornerButton = styled(CornerButton)`
+  top: 0;
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      ${alpha(Colors.BLUE3, 0.1)},
+      ${alpha(Colors.BLUE3, 0.0)} 50%
+    );
+  }
+`;
+
+const BottomCornerButton = styled(CornerButton)`
+  bottom: 0;
+  &:hover {
+    background: linear-gradient(
+      45deg,
+      ${alpha(Colors.BLUE3, 0.1)},
+      ${alpha(Colors.BLUE3, 0.0)} 50%
+    );
+  }
+`;
+
+const Hoverable = styled.div`
+  padding: 16px 16px 8px;
+  margin: 0;
+  position: relative;
+
+  &:not(:hover):not(:focus-within) {
+    ${Stripe} {
+      background: none;
+    }
+  }
+  &:hover,
+  :focus-within {
+    /* background: linear-gradient(
+      ${alpha(Colors.BLUE3, 0.1)},
+      ${alpha(Colors.BLUE3, 0.03)} 20%,
+      ${alpha(Colors.BLUE3, 0.03)}
+    ); */
+    background: ${alpha(Colors.BLUE3, 0.03)};
+
+    ${Stripe} {
+      &:after {
+        background: ${alpha(Colors.BLUE3, 0.1)};
+      }
+    }
+  }
+`;
 
 export function FieldSetForKey(props: {
   schemaKey: string;
@@ -14,6 +90,7 @@ export function FieldSetForKey(props: {
 }) {
   const { schemaKey } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
+  const { alert, showRemoveConfirmationDialog } = useConfirmNodeDeletion();
   if (!context || !schema) {
     return null;
   }
@@ -95,12 +172,80 @@ export function FieldSetForKey(props: {
     return null;
   }
 
+  let field;
   switch (quickType) {
     case "object":
-      return <ObjectField {...fieldProps} />;
+      field = <ObjectField {...fieldProps} />;
+      break;
     case "objectArray":
-      return <ObjectArrayField {...fieldProps} />;
+      field = <ObjectArrayField {...fieldProps} />;
+      break;
     default:
-      return <ValueField {...fieldProps} />;
+      field = <ValueField {...fieldProps} />;
+      break;
   }
+
+  if (debug && node !== context.survey) {
+    return (
+      <>
+        {alert}
+        <ContextMenu2
+          content={
+            <NodeActionMenu
+              node={node}
+              onRemove={showRemoveConfirmationDialog}
+            />
+          }
+        >
+          <Hoverable>
+            <Stripe />
+
+            <Popover2
+              content={
+                <ul className={Classes.LIST_UNSTYLED}>
+                  <AddFieldMenuItem
+                    icon="arrow-up"
+                    node={node}
+                    position="before"
+                  />
+                </ul>
+              }
+              lazy={true}
+              interactionKind="click"
+              placement="left"
+              renderTarget={({ isOpen, ref, ...targetProps }) => (
+                <TopCornerButton {...targetProps} ref={ref} />
+              )}
+              hoverOpenDelay={0}
+              hoverCloseDelay={0}
+            />
+
+            <Popover2
+              content={
+                <ul className={Classes.LIST_UNSTYLED}>
+                  <AddFieldMenuItem
+                    icon="arrow-down"
+                    node={node}
+                    position="after"
+                  />
+                </ul>
+              }
+              lazy={true}
+              interactionKind="click"
+              placement="left"
+              renderTarget={({ isOpen, ref, ...targetProps }) => (
+                <BottomCornerButton {...targetProps} ref={ref} />
+              )}
+              hoverOpenDelay={0}
+              hoverCloseDelay={0}
+            />
+
+            {field}
+          </Hoverable>
+        </ContextMenu2>
+      </>
+    );
+  }
+
+  return field;
 }

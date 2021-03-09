@@ -22,6 +22,7 @@ import styled from "styled-components";
 import { getFirstColumnNameWithError } from "../../lib/getFirstColumnNameWithError";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import useConfirmNodeDeletion from "../../lib/useConfirmNodeDeletion";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
@@ -31,6 +32,7 @@ import {
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
 import { useNodeDragAndDrop } from "../useNodeDragAndDrop";
+import NodeActionMenu from "./ActionMenu";
 import { ExpressionPanel } from "./ExpressionPanel";
 import { FieldConfigurationButton } from "./FieldConfigurationButton";
 import { FieldPathBreadcrumbs } from "./FieldPathBreadcrumbs";
@@ -196,23 +198,37 @@ export default function DetailsPopover(props: {
     firstColumnNameWithError || firstColumnNameWithContent || "calculation"
   );
 
+  const { alert, showRemoveConfirmationDialog } = useConfirmNodeDeletion();
+
   if (!context.context) {
     return null;
   }
 
   const path = getNodeAbsolutePath(node, context.context).slice(1);
 
+  const editHeader = (
+    <ControlGroup style={{ marginBottom: "16px" }}>
+      <FieldConfigurationButton node={node} showType={true} />
+      <div className={Classes.FLEX_EXPANDER} />
+      <Popover2
+        content={
+          <NodeActionMenu node={node} onRemove={showRemoveConfirmationDialog} />
+        }
+        lazy={true}
+      >
+        <Button fill={false} rightIcon={"caret-down"}>
+          Actions
+        </Button>
+      </Popover2>
+    </ControlGroup>
+  );
+
   const detailsContent = (
-    <ControlGroup vertical={true} style={{ gap: "8px" }}>
-      {editable && (
-        <ControlGroup>
-          <FieldConfigurationButton node={node} showType={true} />
-          <div className={Classes.FLEX_EXPANDER} />
-        </ControlGroup>
-      )}
+    <ControlGroup vertical={true}>
+      {editable && editHeader}
 
       <ResizeSensor onResize={handleResize} observeParents={true}>
-        <ControlGroup style={{ width: "100%" }}>
+        <ControlGroup style={{ width: "100%", marginBottom: "8px" }}>
           <FieldPathBreadcrumbs {...{ path, width }} />
         </ControlGroup>
       </ResizeSensor>
@@ -242,6 +258,7 @@ export default function DetailsPopover(props: {
 
   return (
     <ODKNodeContext.Provider value={{ node, nodeEvaluationResults }}>
+      {alert}
       <Popover2
         lazy={true}
         interactionKind="click"

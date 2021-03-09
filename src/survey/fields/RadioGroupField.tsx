@@ -1,4 +1,12 @@
-import { Callout, Code, Radio, RadioGroup } from "@blueprintjs/core";
+import {
+  Callout,
+  Code,
+  ControlGroup,
+  H4,
+  Radio,
+  RadioGroup,
+} from "@blueprintjs/core";
+import { FLEX_EXPANDER } from "@blueprintjs/core/lib/esm/common/classes";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { FieldConfigurationButton } from "../DetailsPopover/FieldConfigurationButton";
@@ -39,8 +47,12 @@ export default function RadioGroupField(props: Props) {
 
   if (context.debug && node.typeParameters.length === 0) {
     return (
-      <Callout intent="warning" title="No choice list set.">
-        <FieldConfigurationButton node={node} showType={false} />
+      <Callout intent="warning">
+        <ControlGroup fill={true}>
+          <H4>No choice list set.</H4>
+          <div className={FLEX_EXPANDER} />
+          <FieldConfigurationButton node={node} showType={false} />
+        </ControlGroup>
       </Callout>
     );
   }

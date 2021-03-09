@@ -82,11 +82,21 @@ export default function ObjectField(props: FieldProps) {
   return (
     <ControlGroup
       vertical={true}
-      style={{ margin: `${6 / (node.indentationLevel + 1)}rem 0` }}
+      style={{ padding: `${6 / (node.indentationLevel + 1)}rem 0` }}
     >
-      <ControlGroup fill={true} style={{ alignItems: "baseline" }}>
-        <HeadingClass style={{ flex: 1 }} id={path}>
-          {debug ? labelInput : label}
+      <ControlGroup
+        fill={true}
+        style={{
+          alignItems: "baseline",
+        }}
+      >
+        <HeadingClass
+          style={{
+            flex: 1,
+          }}
+          id={path}
+        >
+          {debug ? <>{labelInput}</> : label}
         </HeadingClass>
         {debug && node !== context.context?.survey && (
           <DetailsPopover {...{ ...props }} editable={true} />

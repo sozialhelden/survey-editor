@@ -46,10 +46,10 @@ export function ExpressionPanel({
         backgroundColor: Colors.LIGHT_GRAY5,
         marginTop: "0",
         padding: "20px",
-        background: `linear-gradient(${alpha(Colors.DARK_GRAY5, 0.12)}, ${alpha(
-          Colors.DARK_GRAY5,
-          0.07
-        )} 5px, ${alpha(Colors.DARK_GRAY5, 0.03)} 10px, transparent 30px)`,
+        background: `linear-gradient(${alpha(Colors.BLUE3, 0.06)}, ${alpha(
+          Colors.BLUE3,
+          0.05
+        )} 5px, ${alpha(Colors.BLUE3, 0.01)} 10px, transparent 30px)`,
         borderTop: `solid 1px ${Colors.LIGHT_GRAY3}`,
         ...style,
       }}

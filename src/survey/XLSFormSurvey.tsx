@@ -10,7 +10,7 @@ export default function XLSFormSurvey(props: {
   debug: boolean;
   className?: string;
 }) {
-  const { schema, languageCode } = React.useContext(ODKSurveyContext);
+  const { schema, languageCode, debug } = React.useContext(ODKSurveyContext);
 
   const fieldSets = schema
     ?.objectKeys()
@@ -21,7 +21,11 @@ export default function XLSFormSurvey(props: {
       horizontal={2}
       vertical={2}
       className={props.className}
-      style={{ maxWidth: "50rem", padding: "4rem", margin: "auto" }}
+      style={{
+        maxWidth: debug ? "60rem" : "50rem",
+        padding: "4rem",
+        margin: "auto",
+      }}
       lang={languageCode}
     >
       <form>{fieldSets}</form>

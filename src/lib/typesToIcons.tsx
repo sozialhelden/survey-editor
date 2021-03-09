@@ -11,7 +11,7 @@ export const typesToIcons: Record<string, IconName> = {
   select_multiple_from_file: "multi-select",
   rank: "sort-numerical",
   note: "lightbulb",
-  geopoint: "geolocation",
+  geopoint: "map-marker",
   geotrace: "geofence",
   geoshape: "geofence",
   date: "calendar",
@@ -43,7 +43,7 @@ export const typesToIcons: Record<string, IconName> = {
 export const fieldTypeNames: Record<string, string> = {
   integer: "Integer number",
   decimal: "Decimal number",
-  range: "Range",
+  range: "Slider",
   text: "Text field",
   select_one: "Single choice",
   select_one_from_file: "Single choice from file",
@@ -105,12 +105,12 @@ export const fieldCategoryNames: Record<string, string> = {
 };
 
 export const fieldTypesToCategories: Record<string, string> = {
+  text: "literal",
+  acknowledge: "literal",
   integer: "literal",
   decimal: "literal",
   range: "literal",
-  text: "literal",
   barcode: "literal",
-  acknowledge: "literal",
   select_one: "choice",
   select_one_from_file: "choice",
   select_multiple: "choice",

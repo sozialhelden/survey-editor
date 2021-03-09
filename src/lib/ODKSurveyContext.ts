@@ -31,4 +31,5 @@ export const ODKSurveyContext = React.createContext<
   onChangeCell: () => {},
   onMoveNode: () => {},
   onSpliceRows: () => {},
+  onRemoveRowAndChildren: () => {},
 });

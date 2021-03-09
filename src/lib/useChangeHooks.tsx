@@ -17,8 +17,10 @@ import ODKFormulaEvaluationContext, {
   getEmptyContext,
   knownLiteralsWithoutDollarSign,
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import { getNodeIndexPath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import patchXLSFormCell from "../xlsform-simple-schema/functions/patchXLSFormCell";
 import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import getLastRowIndexOfGroup from "./getLastRowIndexOfGroup";
 
 export default function useChangeHooks({
   xlsForm,
@@ -168,43 +170,25 @@ export default function useChangeHooks({
     [context, setXLSForm, xlsForm]
   );
 
-  // const onRemoveRowAndChildren = React.useCallback((node: ODKNode) => {
-  //   if (!xlsForm || !context) {
-  //     return;
-  //   }
-  //   const indexPath = getNodeIndexPath(node, context);
-  //   if (!indexPath) {
-  //     throw new Error(
-  //       "Can’t remove a node that isn’t reachable from survey root. Please ensure the node is actually part of the survey."
-  //     );
-  //   }
-  //   const { rowIndex } = node;
-
-  //   setXLSForm(
-  //     produce(xlsForm, (draft) => {
-  //       const hasChildren = node.children.length > 0;
-  //       // The end_group or end_repeat marker is associated to the node, too.
-  //       const indexOfGroupOrRepeatEnd = hasChildren
-  //         ? draft.flatNodes.findIndex((n, i) => i > rowIndex && n === node)
-  //         : -1;
-  //       if (hasChildren && indexOfGroupOrRepeatEnd === -1) {
-  //         throw new Error(
-  //           "Node has children, but its end marker row could not be found in the ‘survey’ sheet. Please ensure the node is actually part of the survey."
-  //         );
-  //       }
-  //       const numberOfRowsToRemove = hasChildren ? indexOfGroupOrRepeatEnd - node.rowIndex : 1;
-  //       debugger;
-  //       draft.flatNodes.splice(rowIndex, numberOfRowsToRemove);
-  //       draft.worksheets.survey.rows.splice(rowIndex, numberOfRowsToRemove);
-  //       const path = indexPath.map((i) => ["children", i]).flat();
-  //       const nodeIndexInParentChildren = path.pop();
-  //       const parentChildren = get(draft.rootSurveyGroup, path);
-  //       parentChildren.splice(nodeIndexInParentChildren, 1);
-  //       debugger;
-  //       // TODO: Regenerate rowIndex values for all nodes
-  //     })
-  //   );
-  // }, []);
+  const onRemoveRowAndChildren = React.useCallback(
+    (node: ODKNode) => {
+      if (!xlsForm || !context) {
+        return;
+      }
+      const indexPath = getNodeIndexPath(node, context);
+      if (!indexPath) {
+        throw new Error(
+          "Can’t remove a node that isn’t reachable from survey root. Please ensure the node is actually part of the survey."
+        );
+      }
+      const hasChildren = node.children.length > 0;
+      const numberOfRowsToRemove = hasChildren
+        ? getLastRowIndexOfGroup(xlsForm, node) - node.rowIndex + 1
+        : 1;
+      onSpliceRows("survey", node.rowIndex, numberOfRowsToRemove);
+    },
+    [context, onSpliceRows, xlsForm]
+  );
 
   const onMoveNode = React.useCallback(
     (options: {
@@ -249,5 +233,6 @@ export default function useChangeHooks({
     onChangeCell,
     onMoveNode,
     onSpliceRows,
+    onRemoveRowAndChildren,
   };
 }

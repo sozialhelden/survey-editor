@@ -145,9 +145,9 @@ function evaluateCallExpression(
       const number = ordinalize(String(i + 1));
 
       throw new EvaluationError(
-        `Error in ${number} argument \`${stringFromStringOrExpression(
+        `Error in ${number} argument in \`${stringFromStringOrExpression(
           nameExpressionOrString
-        )}()\`: ${e.message}`,
+        )}() function call\`: ${e.message}`,
         "functionEvalError",
         expression,
         context,

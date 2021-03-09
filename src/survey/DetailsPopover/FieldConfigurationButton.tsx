@@ -12,7 +12,10 @@ import { Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { fieldTypeNames, typesToIcons } from "../../lib/typesToIcons";
-import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
+import {
+  isGroupNode,
+  ODKNode,
+} from "../../xlsform-simple-schema/types/ODKNode";
 import { ChoiceListMenu } from "./ChoiceListMenu";
 import { FieldTypeMenu } from "./FieldTypeMenu";
 import { NoChoicesState } from "./NoChoicesState";
@@ -24,7 +27,7 @@ export function FieldConfigurationButton({
   node: ODKNode;
   showType: boolean;
 }) {
-  const isGroup = ["begin_group", "repeat_group"].includes(node.type);
+  const isGroup = isGroupNode(node);
   const context = React.useContext(ODKSurveyContext);
   const { xlsForm } = context;
   const surveyHasChoiceLists =

@@ -100,3 +100,16 @@ export function isNodeReadonly(
     ?.get("readonly")?.result;
   return isReadonlyEvaluationResult === undefined || isReadonlyEvaluationResult;
 }
+
+export function isGroupNode(node: ODKNode) {
+  return node.type === "begin_group" || node.type === "begin_repeat";
+}
+
+export function isGroupRow(row: QuestionRow) {
+  return (
+    row.type === "begin_group" ||
+    row.type === "begin_repeat" ||
+    row.type === "end_group" ||
+    row.type === "end_repeat"
+  );
+}

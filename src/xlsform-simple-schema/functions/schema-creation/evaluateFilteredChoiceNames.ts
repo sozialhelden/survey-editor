@@ -11,7 +11,7 @@ import { Expression } from "../odk-formulas/pratt-parser-base";
 
 export function evaluateFilteredChoiceNames(
   choiceFilterString: string,
-  choiceObject: Record<string, ChoiceRow>,
+  choiceObjects: Record<string, ChoiceRow>[],
   node: ODKNode,
   context: ODKFormulaEvaluationContext
 ) {
@@ -19,7 +19,8 @@ export function evaluateFilteredChoiceNames(
   const parser = new ODKFormulaParser({ tokens: lexer });
   const choiceFilterExpression: Expression = parser.parseExpression();
   const result = function filteredChoiceValues() {
-    return Object.values(choiceObject)
+    return choiceObjects
+      .flatMap((choiceObject) => Object.values(choiceObject))
       .filter((choiceRow) => {
         const evalResult = evaluateExpression(
           choiceFilterExpression,

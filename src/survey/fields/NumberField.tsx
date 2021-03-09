@@ -11,7 +11,7 @@ type Props = FieldProps & {
 };
 
 export default function NumberField(props: Props) {
-  const { value, schemaKey, relevant, disabled } = props;
+  const { value, schemaKey, relevant, readonly } = props;
   const { onChangeAnswer } = React.useContext(ODKSurveyContext);
   const onChange = React.useCallback(
     (valueAsNumber: number) => {
@@ -37,7 +37,7 @@ export default function NumberField(props: Props) {
   return (
     <NumericInput
       id={schemaKey}
-      disabled={relevant === false || disabled}
+      disabled={relevant === false || readonly}
       name={schemaKey}
       large={true}
       allowNumericCharactersOnly={false}

@@ -191,6 +191,9 @@ describe("evaluateODKFormula", () => {
     );
   });
 
+  // TODO: Go through this documentation
+  // https://getodk.github.io/xforms-spec/#xpath-functions
+
   describe("functions", () => {
     expectFnResults("if", [
       ["if(true(), 'foo', 'bar')", "foo"],

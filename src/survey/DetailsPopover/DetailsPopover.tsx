@@ -11,18 +11,19 @@ import {
   ResizeSensor,
   Tab,
   Tabs,
-  Text,
 } from "@blueprintjs/core";
-import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
+import {
+  Classes as PopoverClasses,
+  IPopover2TargetProps,
+  Popover2,
+} from "@blueprintjs/popover2";
 import * as React from "react";
 import styled from "styled-components";
-import HighlightedExpression from "../../components/expression/HighlightedExpression";
-import StyledMarkdown from "../../components/StyledMarkdown";
-import { alpha } from "../../lib/colors";
+import { getFirstColumnNameWithError } from "../../lib/getFirstColumnNameWithError";
+import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
-import { EvaluationError } from "../../xlsform-simple-schema/types/Errors";
 import {
   EvaluatableColumnName,
   evaluatableColumnNames,
@@ -30,10 +31,11 @@ import {
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
 import { useNodeDragAndDrop } from "../useNodeDragAndDrop";
+import { ExpressionPanel } from "./ExpressionPanel";
 import { FieldConfigurationButton } from "./FieldConfigurationButton";
 import { FieldPathBreadcrumbs } from "./FieldPathBreadcrumbs";
 
-const StyledCodeBlock = styled(Code)`
+export const StyledCodeBlock = styled(Code)`
   overflow: auto;
   word-break: break-all;
   font-size: 16px;
@@ -45,7 +47,7 @@ const StyledCodeBlock = styled(Code)`
   padding: 0;
 `;
 
-const StyledPanel = styled.div`
+export const StyledPanel = styled.div`
   display: grid;
   gap: 8px;
 
@@ -61,7 +63,7 @@ const StyledPanel = styled.div`
   }
 `;
 
-const StyledCalloutWithCode = styled(Callout)`
+export const StyledCalloutWithCode = styled(Callout)`
   > code,
   pre {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
@@ -88,21 +90,93 @@ const StyledCalloutWithCode = styled(Callout)`
   }
 `;
 
+function RenderTarget({
+  isOpen,
+  ref,
+  detailsButtonCaption,
+  ...targetProps
+}: IPopover2TargetProps & { detailsButtonCaption: React.ReactNode }) {
+  const context = React.useContext(ODKSurveyContext);
+  const { node, nodeEvaluationResults } = React.useContext(ODKNodeContext);
+  const isRelevant = isNodeRelevant(node, context.context);
+  const hasMissingParameters =
+    node.type.match(/^select/) && node.typeParameters.length === 0;
+  const firstColumnNameWithError = getFirstColumnNameWithError(
+    nodeEvaluationResults
+  );
+  const hasError = !!firstColumnNameWithError;
+  const [isDraggedOver, setIsDraggedOver] = React.useState(false);
+  const dragProps = useNodeDragAndDrop({
+    context: context.context,
+    node,
+    setIsDraggedOver,
+  });
+
+  return ref ? (
+    <ControlGroup
+      style={{
+        display: "inline-flex",
+        flex: "none",
+        borderTop: isDraggedOver ? `5px solid ${Colors.BLUE3}` : "none",
+      }}
+      {...dragProps}
+    >
+      <Button
+        {...targetProps}
+        elementRef={ref}
+        minimal={true}
+        // outlined={true}
+        small={true}
+        lang="en"
+        intent={hasError ? "danger" : hasMissingParameters ? "warning" : "none"}
+        icon={hasError ? "error" : undefined}
+        style={{
+          color: hasError || hasMissingParameters ? undefined : "inherit",
+          fontSize: "inherit",
+          padding: 0,
+        }}
+        className={[!hasError && !isRelevant && Classes.TEXT_MUTED]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        <ControlGroup>
+          {detailsButtonCaption || (
+            <code style={{ color: "inherit" }}>{node.row.name}</code>
+          )}
+          {!isRelevant && (
+            <>
+              &nbsp;
+              <Icon icon="eye-off" style={{ opacity: 0.5, color: "inherit" }} />
+            </>
+          )}
+        </ControlGroup>
+      </Button>
+    </ControlGroup>
+  ) : (
+    <div></div>
+  );
+}
+
 export default function DetailsPopover(props: {
-  detailsButtonCaption: React.ReactNode;
+  detailsButtonCaption?: React.ReactNode;
   detailsContent?: string | JSX.Element | undefined;
   node: ODKNode;
   controlGroupProps?: HTMLDivProps;
+  showJumpButton?: boolean;
+  editable: boolean;
+  nameOfOnlyShownTab?: EvaluatableColumnName;
 }) {
-  const { node } = props;
+  const { node, editable, nameOfOnlyShownTab } = props;
   const context = React.useContext(ODKSurveyContext);
-  const isRelevant = isNodeRelevant(node, context.context);
   const nodeEvaluationResults = context.context?.evaluationResults.get(node);
-  const firstColumnNameWithError =
-    nodeEvaluationResults &&
-    [...nodeEvaluationResults.keys()].find(
-      (k) => nodeEvaluationResults?.get(k)?.error
-    );
+  const firstColumnNameWithError = getFirstColumnNameWithError(
+    nodeEvaluationResults
+  );
+  const { row } = node;
+  const firstColumnNameWithContent = evaluatableColumnNames.find((n) => {
+    const value = row[n];
+    return typeof value === "string" && value.length > 0;
+  });
 
   const [width, setWidth] = React.useState(100);
   const handleResize = React.useCallback(
@@ -118,15 +192,8 @@ export default function DetailsPopover(props: {
     [width]
   );
 
-  const [isDraggedOver, setIsDraggedOver] = React.useState(false);
-  const dragProps = useNodeDragAndDrop({
-    context: context.context,
-    node,
-    setIsDraggedOver,
-  });
-
   const [tabId, setTabId] = React.useState<string | number>(
-    firstColumnNameWithError || "calculation"
+    firstColumnNameWithError || firstColumnNameWithContent || "calculation"
   );
 
   if (!context.context) {
@@ -136,88 +203,66 @@ export default function DetailsPopover(props: {
   const path = getNodeAbsolutePath(node, context.context).slice(1);
 
   const detailsContent = (
-    <ControlGroup vertical={true}>
-      <ControlGroup>
-        <FieldConfigurationButton node={node} />
-      </ControlGroup>
+    <ControlGroup vertical={true} style={{ gap: "8px" }}>
+      {editable && (
+        <ControlGroup>
+          <FieldConfigurationButton node={node} showType={true} />
+          <div className={Classes.FLEX_EXPANDER} />
+        </ControlGroup>
+      )}
 
       <ResizeSensor onResize={handleResize} observeParents={true}>
-        <ControlGroup style={{ margin: "8px 0 8px", width: "100%" }}>
+        <ControlGroup style={{ width: "100%" }}>
           <FieldPathBreadcrumbs {...{ path, width }} />
         </ControlGroup>
       </ResizeSensor>
 
-      <Tabs
-        onChange={setTabId}
-        selectedTabId={tabId}
-        renderActiveTabPanelOnly={false}
-      >
-        {evaluatableColumnNames.map((columnName) =>
-          getTabPanel({
-            columnName: columnName,
-            node: node,
-            nodeEvaluationResults: nodeEvaluationResults,
-          })
-        )}
-      </Tabs>
+      {nameOfOnlyShownTab ? (
+        <ExpressionPanel
+          {...{ node, columnName: nameOfOnlyShownTab, nodeEvaluationResults }}
+          style={{ margin: "0 -20px -20px -20px" }}
+        />
+      ) : (
+        <Tabs
+          onChange={setTabId}
+          selectedTabId={tabId}
+          renderActiveTabPanelOnly={false}
+        >
+          {evaluatableColumnNames.map((columnName) =>
+            getTab({
+              node,
+              nodeEvaluationResults,
+              columnName: columnName,
+            })
+          )}
+        </Tabs>
+      )}
     </ControlGroup>
   );
 
   return (
-    <Popover2
-      interactionKind="click"
-      popoverClassName={PopoverClasses.POPOVER2_CONTENT_SIZING}
-      minimal={false}
-      placement="auto-end"
-      rootBoundary="viewport"
-      onOpening={() => setWidth(0)}
-      modifiers={{
-        arrow: { enabled: true },
-        preventOverflow: { enabled: true },
-      }}
-      content={detailsContent}
-      fill={true}
-      renderTarget={({ isOpen, ref, ...targetProps }) =>
-        ref ? (
-          <ControlGroup
-            style={{
-              flex: "none",
-              borderTop: isDraggedOver ? `5px solid ${Colors.BLUE3}` : "none",
-            }}
-            {...dragProps}
-          >
-            <Button
-              {...targetProps}
-              elementRef={ref}
-              minimal={true}
-              // outlined={true}
-              small={true}
-              lang="en"
-              intent={firstColumnNameWithError ? "danger" : "none"}
-              icon={firstColumnNameWithError ? "error" : undefined}
-              className={
-                !firstColumnNameWithError && !isRelevant
-                  ? Classes.TEXT_MUTED
-                  : undefined
-              }
-            >
-              <ControlGroup>
-                {props.detailsButtonCaption}&nbsp;
-                {!isRelevant && (
-                  <Icon icon="eye-off" style={{ opacity: 0.5 }} />
-                )}
-              </ControlGroup>
-            </Button>
-          </ControlGroup>
-        ) : (
-          <div></div>
-        )
-      }
-    />
+    <ODKNodeContext.Provider value={{ node, nodeEvaluationResults }}>
+      <Popover2
+        lazy={true}
+        interactionKind="click"
+        popoverClassName={PopoverClasses.POPOVER2_CONTENT_SIZING}
+        minimal={false}
+        placement="bottom"
+        rootBoundary="viewport"
+        onOpening={() => setWidth(0)}
+        modifiers={{
+          arrow: { enabled: true },
+          preventOverflow: { enabled: true },
+        }}
+        content={detailsContent}
+        fill={true}
+        renderTarget={RenderTarget}
+      />
+    </ODKNodeContext.Provider>
   );
 }
 
-function getTabPanel({
+function getTab({
   nodeEvaluationResults,
   node,
   columnName,
@@ -227,135 +272,11 @@ function getTabPanel({
   columnName: EvaluatableColumnName;
 }) {
   const results = nodeEvaluationResults?.get(columnName);
-  const cellValue = node.row[columnName];
-  const cellIsEmpty = cellValue === undefined;
-  const isLiteral = results?.expression?.kind === "literal";
-  const isName = results?.expression?.kind === "name";
   const panel = (
-    <StyledPanel
-      lang="en"
-      style={{
-        backgroundColor: Colors.LIGHT_GRAY5,
-        margin: "-20px",
-        padding: "20px",
-        background: `linear-gradient(${alpha(Colors.DARK_GRAY5, 0.12)}, ${alpha(
-          Colors.DARK_GRAY5,
-          0.07
-        )} 5px, ${alpha(Colors.DARK_GRAY5, 0.03)} 10px, transparent 30px)`,
-        borderTop: `solid 1px ${Colors.LIGHT_GRAY3}`,
-      }}
-    >
-      {!cellIsEmpty && (
-        <>
-          <h4>
-            <Icon icon="function" />{" "}
-            {columnName === "calculation" ? "Formula" : "Condition"}
-          </h4>
-          <StyledCodeBlock
-            style={{
-              fontSize: isLiteral || isName ? "20px" : "16px",
-              lineHeight: "28px",
-            }}
-          >
-            <HighlightedExpression
-              node={node}
-              state={results?.state}
-              error={results?.error}
-              expression={results?.expression}
-              code={String(cellValue)}
-              tokens={results?.parser?.tokens}
-            />
-          </StyledCodeBlock>
-          <h4>Result</h4>
-        </>
-      )}
-
-      {!cellIsEmpty && !results && (
-        <Callout intent="none">Not calculated yet.</Callout>
-      )}
-
-      {results?.state !== "error" && (
-        <StyledCodeBlock style={{ fontSize: "20px", lineHeight: "28px" }}>
-          {results?.result === undefined
-            ? "undefined"
-            : JSON.stringify(results.result)}
-        </StyledCodeBlock>
-      )}
-
-      {results?.state === "error" && (
-        <StyledCalloutWithCode intent="danger">
-          {results.error instanceof EvaluationError && (
-            <>
-              Error in&nbsp;
-              <code>
-                <HighlightedExpression
-                  node={node}
-                  expression={results.error.expression}
-                />
-              </code>
-              :
-            </>
-          )}
-          <StyledMarkdown>{results.error.toMarkdown()}</StyledMarkdown>
-        </StyledCalloutWithCode>
-      )}
-
-      {!cellIsEmpty && results?.result !== undefined && (
-        <Text className={Classes.TEXT_MUTED}>
-          {
-            {
-              calculation: (
-                <>
-                  Using the answer value as the <code>{columnName}</code> cell
-                  contains no formula.
-                </>
-              ),
-              required: `This means the survey field is ${
-                results?.result ? "required" : "optional"
-              }`,
-              relevant: `This means the survey field is ${
-                results?.result ? "shown" : "hidden"
-              }.`,
-              readonly: `This means the survey field is ${
-                results?.result ? "read-only" : "editable"
-              }.`,
-            }[columnName]
-          }
-        </Text>
-      )}
-      {cellIsEmpty && (
-        <Text className={Classes.TEXT_MUTED}>
-          {
-            {
-              calculation: (
-                <>
-                  Using the answer value as the <code>{columnName}</code> cell
-                  contains no formula.
-                </>
-              ),
-              required: (
-                <>
-                  Users are not required to enter this field. This is the
-                  default when the <code>{columnName}</code> cell is empty.
-                </>
-              ),
-              relevant: (
-                <>
-                  The field is always shown. This is the default when the{" "}
-                  <code>{columnName}</code> cell is empty.
-                </>
-              ),
-              readonly: (
-                <>
-                  The field is not read-only. This is the default when the{" "}
-                  <code>{columnName}</code> cell is empty.
-                </>
-              ),
-            }[columnName]
-          }
-        </Text>
-      )}
-    </StyledPanel>
+    <ExpressionPanel
+      {...{ node, columnName, nodeEvaluationResults }}
+      style={{ margin: "-20px" }}
+    />
   );
 
   return (

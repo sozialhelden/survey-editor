@@ -7,5 +7,5 @@ export type FieldProps = {
   schemaKey: string;
   node: ODKNode;
   relevant: boolean;
-  disabled: boolean;
+  readonly: boolean;
 };

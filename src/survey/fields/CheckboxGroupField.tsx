@@ -1,6 +1,7 @@
 import { Callout, Checkbox, Code, ControlGroup } from "@blueprintjs/core";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { FieldConfigurationButton } from "../DetailsPopover/FieldConfigurationButton";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
@@ -9,7 +10,7 @@ type Props = FieldProps & {
 };
 
 export default function CheckboxGroupField(props: Props) {
-  const { value, allowedValues, node, relevant, disabled } = props;
+  const { value, node, relevant, readonly } = props;
   const context = React.useContext(ODKSurveyContext);
   const { language, onChangeAnswer } = context;
 
@@ -58,25 +59,39 @@ export default function CheckboxGroupField(props: Props) {
     );
   }
 
+  if (context.debug && node.typeParameters.length === 0) {
+    return (
+      <Callout intent="warning" title="No choice list set.">
+        <FieldConfigurationButton node={node} showType={false} />
+      </Callout>
+    );
+  }
+
   return (
     <ControlGroup vertical={true}>
-      {allowedValues.map((value) => {
-        const choiceListName = node.typeParameters[0];
-        const choiceRow = context.xlsForm?.choicesByName[choiceListName][value];
-        const definedLabel = choiceRow?.label?.[language];
-        const shownLabel =
-          definedLabel === "undefined" ? choiceRow?.name : definedLabel;
-        return (
-          <Checkbox
-            disabled={relevant === false || disabled}
-            label={shownLabel}
-            checked={typeof value === "string" && choices.has(value)}
-            name={value}
-            inline={true}
-            large={true}
-            onChange={onChange}
-          />
-        );
+      {node.typeParameters.map((choiceListName) => {
+        const choiceList = context.xlsForm?.choicesByName[choiceListName];
+        if (!choiceList) {
+          return null;
+        }
+        return Object.keys(choiceList).map((value) => {
+          const choiceRow = choiceList[value];
+
+          const definedLabel = choiceRow?.label?.[language];
+          const shownLabel =
+            definedLabel === "undefined" ? choiceRow?.name : definedLabel;
+          return (
+            <Checkbox
+              disabled={relevant === false || readonly}
+              label={shownLabel}
+              checked={typeof value === "string" && choices.has(value)}
+              name={value}
+              inline={true}
+              large={true}
+              onChange={onChange}
+            />
+          );
+        });
       })}
     </ControlGroup>
   );

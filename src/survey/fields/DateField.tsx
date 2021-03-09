@@ -18,7 +18,7 @@ const jsDateFormatter: IDateFormatProps = {
 };
 
 export default function DateField(props: Props) {
-  const { value, relevant, disabled } = props;
+  const { value, relevant, readonly } = props;
   const { onChangeAnswer } = React.useContext(ODKSurveyContext);
 
   const onChange = React.useCallback(
@@ -52,7 +52,7 @@ export default function DateField(props: Props) {
       {...jsDateFormatter}
       onChange={onChange}
       defaultValue={defaultValue || undefined}
-      disabled={relevant === false || disabled}
+      disabled={relevant === false || readonly}
     />
   );
 }

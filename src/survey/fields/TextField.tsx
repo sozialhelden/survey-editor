@@ -10,7 +10,7 @@ type Props = FieldProps & {
 };
 
 export default function TextField(props: Props) {
-  const { value, schemaKey, relevant, disabled } = props;
+  const { value, schemaKey, relevant, readonly } = props;
 
   if (
     value !== undefined &&
@@ -30,7 +30,7 @@ export default function TextField(props: Props) {
   return (
     <InputGroup
       id={schemaKey}
-      disabled={relevant === false || disabled}
+      disabled={relevant === false || readonly}
       name={schemaKey}
       placeholder=""
       large={true}

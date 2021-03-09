@@ -1,127 +1,99 @@
 import {
+  Boundary,
   Button,
   ButtonGroup,
-  Callout,
   Classes,
+  Code,
   Icon,
-  Menu,
-  MenuDivider,
-  MenuItem,
+  OverflowList,
   Text,
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import {
-  fieldCategoriesToIcons,
-  fieldCategoryNames,
-  fieldTypeNames,
-  fieldTypesToCategories,
-  typesToIcons,
-} from "../../lib/typesToIcons";
+import { fieldTypeNames, typesToIcons } from "../../lib/typesToIcons";
 import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
+import { ChoiceListMenu } from "./ChoiceListMenu";
+import { FieldTypeMenu } from "./FieldTypeMenu";
 import { NoChoicesState } from "./NoChoicesState";
 
-export function FieldConfigurationButton({ node }: { node: ODKNode }) {
+export function FieldConfigurationButton({
+  node,
+  showType,
+}: {
+  node: ODKNode;
+  showType: boolean;
+}) {
   const isGroup = ["begin_group", "repeat_group"].includes(node.type);
-
-  const typeMenu = (
-    <Menu>
-      <li className="bp3-menu-header">
-        <h6 className="bp3-heading">Collecting data</h6>
-      </li>
-
-      {Object.keys(fieldCategoriesToIcons)
-        .filter((c) => c !== "special" && c !== "grouping")
-        .map((category) => (
-          <MenuItem
-            text={fieldCategoryNames[category]}
-            icon={fieldCategoriesToIcons[category]}
-          >
-            {Object.keys(fieldTypesToCategories)
-              .filter((t) => fieldTypesToCategories[t] === category)
-              .map((type) => (
-                <MenuItem
-                  text={fieldTypeNames[type]}
-                  icon={typesToIcons[type]}
-                />
-              ))}
-          </MenuItem>
-        ))}
-
-      <MenuDivider />
-
-      {Object.keys(fieldTypesToCategories)
-        .filter((t) => fieldTypesToCategories[t] === "special")
-        .map((type) => (
-          <MenuItem text={fieldTypeNames[type]} icon={typesToIcons[type]} />
-        ))}
-    </Menu>
-  );
-
   const context = React.useContext(ODKSurveyContext);
-  const choicesByName = context.xlsForm?.choicesByName;
-  const choiceListNames = choicesByName ? Object.keys(choicesByName) : [];
-  const choiceListMenu = (
-    <Menu>
-      <li className="bp3-menu-header">
-        <h6 className="bp3-heading">Choice lists</h6>
-      </li>
-      {choiceListNames.map((listName) => (
-        <MenuItem text={<code>{listName}</code>} icon="list" />
-      ))}
-      <MenuDivider />
-      <Callout intent="primary">
-        These lists are defined in the <code>choices</code> sheet.
-      </Callout>
-    </Menu>
+  const { xlsForm } = context;
+  const surveyHasChoiceLists =
+    !!xlsForm && Object.keys(xlsForm?.choicesByName).length > 0;
+  const choiceListMenu = xlsForm && (
+    <ChoiceListMenu xlsForm={xlsForm} node={node} />
   );
-
   const noChoicesAvailable = NoChoicesState();
-
   const typeName = fieldTypeNames[node.type];
   const icon = typesToIcons[node.type];
+  const hasItems = node.typeParameters.length > 0;
 
   return (
     <ButtonGroup>
-      {isGroup ? (
-        <Text className={Classes.TEXT_MUTED}>
-          <Icon icon={icon} />
-          &nbsp;{typeName}
-        </Text>
-      ) : (
-        <Popover2 content={typeMenu}>
+      {showType && (
+        <>
+          {isGroup ? (
+            <Text className={Classes.TEXT_MUTED}>
+              <Icon icon={icon} />
+              &nbsp;{typeName}
+            </Text>
+          ) : (
+            <Popover2 content={<FieldTypeMenu />} lazy={true}>
+              <Button
+                icon={icon || "blank"}
+                fill={false}
+                minimal={isGroup}
+                disabled={isGroup}
+                small={isGroup}
+                rightIcon={!isGroup && "caret-down"}
+              >
+                {typeName}
+              </Button>
+            </Popover2>
+          )}
+        </>
+      )}
+
+      {node.type.match(/^select/) && (
+        <Popover2
+          lazy={true}
+          content={surveyHasChoiceLists ? choiceListMenu : noChoicesAvailable}
+        >
           <Button
-            icon={icon || "blank"}
-            fill={false}
-            minimal={isGroup}
-            disabled={isGroup}
-            small={isGroup}
-            rightIcon={!isGroup && "caret-down"}
+            fill={true}
+            outlined={false}
+            rightIcon={"caret-down"}
+            intent={hasItems ? "none" : "warning"}
           >
-            {typeName}
+            {!hasItems && "Set visible choices"}
+            {hasItems && (
+              <OverflowList
+                observeParents={true}
+                minVisibleItems={2}
+                collapseFrom={Boundary.END}
+                items={node.typeParameters}
+                visibleItemRenderer={(p) => <Code>{p}</Code>}
+                overflowRenderer={(overflowItems) => (
+                  <span>{`+ ${overflowItems.length}`}</span>
+                )}
+                style={{
+                  transition: "width 0.1s ease-out",
+                  maxWidth: `200px`,
+                }}
+              />
+            )}
           </Button>
         </Popover2>
       )}
-
-      {node.typeParameters.map((parameter) => (
-        <Popover2
-          content={
-            choiceListNames.length === 0 ? noChoicesAvailable : choiceListMenu
-          }
-        >
-          <Button
-            icon="list"
-            fill={false}
-            minimal={true}
-            outlined={true}
-            className={Classes.CODE}
-            rightIcon={"caret-down"}
-          >
-            {parameter}
-          </Button>
-        </Popover2>
-      ))}
     </ButtonGroup>
   );
 }

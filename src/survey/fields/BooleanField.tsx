@@ -10,7 +10,7 @@ type Props = FieldProps & {
 };
 
 export default function BooleanField(props: Props) {
-  const { value, labelElement, relevant, disabled } = props;
+  const { value, labelElement, relevant, readonly } = props;
 
   //   const context = React.useContext(ODKSurveyContext);
   if (value !== undefined && typeof value !== "boolean") {
@@ -25,7 +25,7 @@ export default function BooleanField(props: Props) {
   return (
     <Checkbox
       large={true}
-      disabled={relevant === false || disabled}
+      disabled={relevant === false || readonly}
       labelElement={labelElement}
       onChange={props.onInputChange}
       defaultChecked={

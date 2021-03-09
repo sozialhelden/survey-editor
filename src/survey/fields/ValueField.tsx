@@ -80,10 +80,7 @@ export default function ValueField(props: FieldProps) {
     return null;
   }
 
-  const detailsButtonCaption = <code>{node.row.name}</code>;
-  const detailsButton = (
-    <DetailsPopover {...{ ...props, detailsButtonCaption }} />
-  );
+  const detailsButton = <DetailsPopover {...{ ...props }} editable={true} />;
   const hintString = node.row.hint?.[language] && (
     <Callout intent="primary">{node.row.hint?.[language]}</Callout>
   );

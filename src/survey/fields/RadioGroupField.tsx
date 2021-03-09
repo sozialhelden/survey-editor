@@ -1,7 +1,8 @@
 import { Callout, Code, Radio, RadioGroup } from "@blueprintjs/core";
 import * as React from "react";
-import { FieldProps } from "../FieldProps";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { FieldConfigurationButton } from "../DetailsPopover/FieldConfigurationButton";
+import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
   onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
@@ -17,7 +18,7 @@ export default function RadioGroupField(props: Props) {
     allowedValues,
     node,
     relevant,
-    disabled,
+    readonly,
   } = props;
   const context = React.useContext(ODKSurveyContext);
   const { language } = context;
@@ -36,17 +37,26 @@ export default function RadioGroupField(props: Props) {
     return null;
   }
 
+  if (context.debug && node.typeParameters.length === 0) {
+    return (
+      <Callout intent="warning" title="No choice list set.">
+        <FieldConfigurationButton node={node} showType={false} />
+      </Callout>
+    );
+  }
+
   return (
     <RadioGroup
       // label={labelElement}
       onChange={onInputChange}
       selectedValue={value}
       inline={true}
-      disabled={relevant === false || disabled}
+      disabled={relevant === false || readonly}
     >
       {allowedValues.map((value) => {
         const choiceListName = node.typeParameters[0];
-        const choiceRow = context.xlsForm?.choicesByName[choiceListName][value];
+        const choiceRow =
+          context.xlsForm?.choicesByName[choiceListName]?.[value];
         const definedLabel = choiceRow?.label?.[language];
         const shownLabel =
           definedLabel === "undefined" ? choiceRow?.name : definedLabel;

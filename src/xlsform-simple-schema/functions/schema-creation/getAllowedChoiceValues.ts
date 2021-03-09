@@ -1,3 +1,4 @@
+import { compact } from "lodash";
 import { SemanticError } from "../../types/Errors";
 import { NodeToDefinitionFunctionOptions } from "./createLeafNodeSchemaDefinition";
 import { evaluateDynamicChoiceListName } from "./evaluateDynamicChoiceListName";
@@ -6,7 +7,7 @@ import { evaluateFilteredChoiceNames } from "./evaluateFilteredChoiceNames";
 export default function getAllowedChoiceValues(
   options: NodeToDefinitionFunctionOptions
 ): string[] | (() => string[]) {
-  const choiceListString = options.node.typeParameters[0];
+  const choiceListStrings = options.node.typeParameters;
   const availableListNames = Object.keys(options.xlsForm.choicesByName);
   const { type } = options.node.row;
   const firstList = availableListNames[0];
@@ -19,34 +20,38 @@ export default function getAllowedChoiceValues(
 
   const { choicesByName } = options.xlsForm;
 
-  let choiceListName = choiceListString;
-  if (choiceListString.trim().startsWith("$")) {
-    choiceListName = evaluateDynamicChoiceListName(
-      choiceListString,
-      options,
-      choiceListName,
-      choicesByName
-    );
-  }
+  let choiceListNames = compact(
+    choiceListStrings.map((choiceListString) => {
+      if (choiceListString.trim().startsWith("$")) {
+        return evaluateDynamicChoiceListName(
+          choiceListString,
+          options,
+          choicesByName
+        );
+      } else {
+        return choiceListString;
+      }
+    })
+  ).filter((n) => n !== undefined && n !== "");
 
-  const hasDefinedChoiceListName =
-    choiceListName !== undefined && choiceListName !== "";
-  const choiceObject = choicesByName[choiceListName];
+  // const hasDefinedChoiceListName = choiceListNames.length > 0;
+  // if (!hasDefinedChoiceListName) {
+  //   const possibleStrings = availableListNames
+  //     .map((cl) => `- \`${type} ${cl}\``)
+  //     .join("\n");
+  //   throw new SemanticError(
+  //     `Node \`${options.key}\` is missing a reference to the set of possible answer choices. Its \`type\` cell contains \`${type}\`, but it should be one of these:\n\n${possibleStrings}`
+  //   );
+  // }
 
-  if (!hasDefinedChoiceListName) {
-    const possibleStrings = availableListNames
-      .map((cl) => `- \`${type} ${cl}`)
-      .join("\n");
-    throw new SemanticError(
-      `Node \`${options.key}\` is missing a reference to the set of possible answer choices. Its \`type\` cell contains \`${type}\`, but it should be one of these:\n\n${possibleStrings}`
-    );
-  }
-
-  if (!choiceObject) {
+  const choiceObjects = choiceListNames
+    .map((n) => choicesByName[n])
+    .filter((o) => o !== undefined);
+  if (choiceObjects.length !== choiceListNames.length) {
     throw new SemanticError(
       `Node \`${options.key}\` (row #${
         options.node.rowIndex + 2
-      }) refers to list name \`${choiceListName}\`. This list is either not defined in the ‘choices’ worksheet, or could not be loaded correctly. Found list names:\n\n${availableListNames
+      }) refers to list names \`${choiceListNames}\`. One of these lists is either not defined in the ‘choices’ worksheet, or could not be loaded correctly. Found list names:\n\n${availableListNames
         .map((n) => `\`${n}\``)
         .join(", ")}`
     );
@@ -54,12 +59,12 @@ export default function getAllowedChoiceValues(
 
   const choiceFilterString = options.node.row.choice_filter?.trim();
   if (!choiceFilterString || choiceFilterString === "") {
-    return Object.keys(choiceObject);
+    return choiceObjects.flatMap((choiceObject) => Object.keys(choiceObject));
   }
 
   return evaluateFilteredChoiceNames(
     choiceFilterString,
-    choiceObject,
+    choiceObjects,
     options.node,
     options.context
   );

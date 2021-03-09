@@ -137,7 +137,6 @@ export default function useChangeHooks({
         const newRows = [...worksheet?.rows];
         newRows.splice(rowIndex, rowCount, ...rowsToAdd);
         const newWorksheet = { ...worksheet, rows: newRows };
-        debugger;
         return loadXLSFormFromRows(
           worksheetName === "survey"
             ? (newWorksheet as SurveyWorksheet)

@@ -1,21 +1,8 @@
 import { Button, ControlGroup, NonIdealState } from "@blueprintjs/core";
 import * as React from "react";
+import { createLabelInAllLanguages } from "../../lib/createLabelInAllLanguages";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import {
-  ChoiceRow,
-  LocalizedString,
-} from "../../xlsform-simple-schema/types/RowTypes";
-
-function createLabelInAllLanguages(
-  label: string,
-  languages: Readonly<Set<string>>
-): LocalizedString {
-  const result: LocalizedString = {};
-  languages.forEach((lang) => {
-    result[lang] = label;
-  });
-  return result;
-}
+import { ChoiceRow } from "../../xlsform-simple-schema/types/RowTypes";
 
 export function NoChoicesState() {
   const context = React.useContext(ODKSurveyContext);

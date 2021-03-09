@@ -8,7 +8,10 @@ import {
   getNodeAbsolutePath,
   getNodeAbsolutePathString,
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import {
+  evaluatableColumnNames,
+  ODKNode,
+} from "../xlsform-simple-schema/types/ODKNode";
 
 function SecondaryLabel(props: { node: ODKNode }) {
   const { node } = props;
@@ -17,7 +20,7 @@ function SecondaryLabel(props: { node: ODKNode }) {
   if (!results) {
     return <Icon icon="calculator" intent="none" />;
   }
-  const keysWithErrors = Object.keys(results).filter(
+  const keysWithErrors = evaluatableColumnNames.filter(
     (k) => results.get(k)?.error
   );
   const answer = context.context?.nodesToAnswers.get(node);
@@ -95,10 +98,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
 
           const path = getNodeAbsolutePathString(node, context.context);
 
-          const caption = <span>{result.label}</span>;
-          const label = (
-            <DetailsPopover node={node} detailsButtonCaption={caption} />
-          );
+          const label = <DetailsPopover node={node} editable={true} />;
 
           return {
             ...result,

@@ -9,7 +9,10 @@ import {
 export type StringMap = Record<string, string>;
 export type LocalizedString = StringMap;
 
-export type QuestionRow = Record<string, string | LocalizedString> & {
+export type QuestionRow = Record<
+  string,
+  string | LocalizedString | undefined
+> & {
   /** specifies the type of entry you are adding. */
   type: string;
   /** specifies the unique variable name for that entry. No two entries can have the same name. Names have to start with a letter or an underscore. Names can only contain letters, digits, hyphens, underscores, and periods. Names are case-sensitive. */

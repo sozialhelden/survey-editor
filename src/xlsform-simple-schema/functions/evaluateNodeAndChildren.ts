@@ -17,11 +17,12 @@ export function evaluateNodeAndChildren(
     result: ODKFormulaEvaluationResult
   ) => void
 ): void {
-  const fallbacks = {
+  const fallbacks: Record<EvaluatableColumnName, unknown> = {
     relevant: true,
     calculation: context.nodesToAnswers.get(node),
     required: false,
     readonly: false,
+    constraint: true,
   };
 
   evaluatableColumnNames.forEach((columnName) => {

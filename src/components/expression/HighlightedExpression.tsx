@@ -2,10 +2,10 @@ import { Classes, Colors } from "@blueprintjs/core";
 import * as React from "react";
 import styled, { CSSProperties } from "styled-components";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import DetailsPopover from "../../survey/DetailsPopover/DetailsPopover";
 import {
   findNodeByNameInCurrentAndAncestorScopes,
   findNodeByNameInsideScope,
-  getNodeAbsolutePath,
 } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
   Expression,
@@ -15,71 +15,6 @@ import {
 } from "../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base";
 import { EvaluationError } from "../../xlsform-simple-schema/types/Errors";
 import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
-
-function TokenElement({
-  token,
-  expression,
-  parentExpression,
-  node,
-}: {
-  token: Token;
-  expression?: Expression;
-  parentExpression?: Expression;
-  node: ODKNode;
-}) {
-  const className = `token token-${TokenType[token.type]}`;
-  const context = React.useContext(ODKSurveyContext);
-  if (
-    token.type === TokenType.NAME &&
-    parentExpression?.kind === "call" &&
-    expression instanceof NameExpression &&
-    token === parentExpression.tokens[0]
-  ) {
-    return (
-      <a
-        href={`https://getodk.github.io/xforms-spec/#fn:${token.text}`}
-        className={className}
-        target="docs"
-      >
-        {token.text}
-      </a>
-    );
-  } else if (
-    token.type === TokenType.NAME &&
-    expression instanceof NameExpression &&
-    token.text.startsWith("$") &&
-    context.context
-  ) {
-    const referencedNode =
-      findNodeByNameInCurrentAndAncestorScopes(
-        expression.name,
-        context.context,
-        node
-      ) ||
-      findNodeByNameInsideScope(
-        expression.name,
-        context.context,
-        context.context.survey
-      );
-    if (!referencedNode || referencedNode instanceof Array) {
-      debugger;
-      return (
-        <span className={className} data-referenced-node={referencedNode}>
-          {token.text}
-        </span>
-      );
-    }
-    const path = getNodeAbsolutePath(referencedNode, context.context)?.join(
-      "/"
-    );
-    return (
-      <a href={`#${path}`} className={className} style={{ color: "inherit" }}>
-        {token.text}
-      </a>
-    );
-  }
-  return <span className={className}>{token.text}</span>;
-}
 
 const StyledCode = styled.code`
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
@@ -168,6 +103,74 @@ const StyledCode = styled.code`
     color: ${Colors.RED2};
   }
 `;
+
+function TokenElement({
+  token,
+  expression,
+  parentExpression,
+  node,
+}: {
+  token: Token;
+  expression?: Expression;
+  parentExpression?: Expression;
+  node: ODKNode;
+}) {
+  const className = `token token-${TokenType[token.type]}`;
+  const context = React.useContext(ODKSurveyContext);
+  if (
+    token.type === TokenType.NAME &&
+    parentExpression?.kind === "call" &&
+    expression instanceof NameExpression &&
+    token === parentExpression.tokens[0]
+  ) {
+    return (
+      <a
+        href={`https://getodk.github.io/xforms-spec/#fn:${token.text}`}
+        className={className}
+        target="docs"
+      >
+        {token.text}
+      </a>
+    );
+  } else if (
+    token.type === TokenType.NAME &&
+    expression instanceof NameExpression &&
+    token.text.startsWith("$") &&
+    context.context
+  ) {
+    const referencedNode =
+      findNodeByNameInCurrentAndAncestorScopes(
+        expression.name,
+        context.context,
+        node
+      ) ||
+      findNodeByNameInsideScope(
+        expression.name,
+        context.context,
+        context.context.survey
+      );
+    if (!referencedNode || referencedNode instanceof Array) {
+      debugger;
+      return (
+        <span className={className} data-referenced-node={referencedNode}>
+          {token.text}
+        </span>
+      );
+    }
+    return (
+      <>
+        {"${"}
+        <DetailsPopover
+          node={referencedNode}
+          editable={false}
+          nameOfOnlyShownTab={"calculation"}
+        />
+        {"}"}
+      </>
+    );
+  }
+  return <span className={className}>{token.text}</span>;
+}
 
 export function InvalidExpression(props: {
   code?: string;

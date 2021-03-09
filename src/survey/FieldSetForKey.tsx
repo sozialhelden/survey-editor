@@ -10,7 +10,7 @@ import ValueField from "./fields/ValueField";
 export function FieldSetForKey(props: {
   schemaKey: string;
   relevant?: boolean;
-  disabled?: boolean;
+  readonly?: boolean;
 }) {
   const { schemaKey } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
@@ -70,15 +70,15 @@ export function FieldSetForKey(props: {
     }
   }
 
-  let disabled = props.disabled;
-  if (typeof disabled !== "boolean" || disabled === true) {
+  let readonly = false;
+  if (typeof props.readonly !== "undefined" || props.readonly === true) {
     const evaluationResult = context.evaluationResults
       .get(node)
-      ?.get("disabled");
-    disabled =
+      ?.get("readonly");
+    readonly =
       typeof evaluationResult?.result === "boolean"
         ? evaluationResult.result
-        : false;
+        : props.readonly;
   }
   // TODO: Add warning for evaluation failure
 
@@ -88,7 +88,7 @@ export function FieldSetForKey(props: {
     schemaKey,
     quickType,
     relevant,
-    disabled,
+    readonly,
   };
 
   if (!debug && !relevant) {

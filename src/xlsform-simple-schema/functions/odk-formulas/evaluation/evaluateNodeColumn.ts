@@ -1,9 +1,9 @@
-import { ODKNode } from "../../../types/ODKNode";
-import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
-import evaluateODKFormula from "./evaluateODKFormula";
 import { EvaluationError } from "../../../types/Errors";
-import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
+import { EvaluatableColumnName, ODKNode } from "../../../types/ODKNode";
 import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpression";
+import evaluateODKFormula from "./evaluateODKFormula";
+import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
+import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
 /**
  * Evaluates the JavaScript value of a survey node, returning either a user answer or a calculated
@@ -18,10 +18,15 @@ import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpressio
 export default function evaluateNodeColumn(
   node: ODKNode,
   context: ODKFormulaEvaluationContext,
-  columnName: "calculation" | "relevant" | "required" | "readonly",
+  columnName: EvaluatableColumnName,
   fallback: unknown
 ): ODKFormulaEvaluationResult {
-  const formula = node.row?.[columnName]?.trim();
+  const originalFormula = node.row?.[columnName];
+  if (originalFormula !== undefined && typeof originalFormula !== "string") {
+    debugger;
+    throw new Error("Sorry, multilingual formulas are not supported yet.");
+  }
+  const formula = originalFormula?.trim();
   if (formula === "" || formula === undefined) {
     const fallbackValue = fallback;
     const isMultiSelectResult = node.type === "select_multiple";

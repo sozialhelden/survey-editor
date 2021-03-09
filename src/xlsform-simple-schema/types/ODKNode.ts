@@ -1,3 +1,4 @@
+import { createLabelInAllLanguages } from "../../lib/createLabelInAllLanguages";
 import ODKFormulaEvaluationContext from "../functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import {
   IBeginGroupMarkerRow,
@@ -39,18 +40,39 @@ export type ODKNode =
       rowIndex: number;
     };
 
+let i = 0;
+export function getEmptyNode(
+  languages: Readonly<Set<string>>
+): Readonly<ODKNode> {
+  i += 1;
+  return Object.freeze({
+    row: {
+      type: "text",
+      name: `empty_node_${i}`,
+      label: createLabelInAllLanguages(`Empty node ${i}`, languages),
+    },
+    type: "text",
+    typeParameters: [],
+    children: [],
+    indentationLevel: 0,
+    rowIndex: -2,
+  });
+}
+
 export type NodesToValues<T = unknown> = Readonly<Map<Readonly<ODKNode>, T>>;
 
 export type EvaluatableColumnName =
   | "relevant"
   | "calculation"
   | "required"
-  | "readonly";
+  | "readonly"
+  | "constraint";
 export const evaluatableColumnNames: EvaluatableColumnName[] = [
   "calculation",
   "required",
   "relevant",
   "readonly",
+  "constraint",
 ];
 
 export function isNodeRelevant(

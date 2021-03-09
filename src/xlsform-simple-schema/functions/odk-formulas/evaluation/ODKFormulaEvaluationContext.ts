@@ -1,4 +1,8 @@
-import { NodesToValues, ODKNode } from "../../../types/ODKNode";
+import {
+  EvaluatableColumnName,
+  NodesToValues,
+  ODKNode,
+} from "../../../types/ODKNode";
 import { NameExpression } from "../pratt-parser-base";
 import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
@@ -12,7 +16,9 @@ type ODKFormulaEvaluationContext = {
   /** The survey in which the evaluation takes place */
   survey: ODKNode;
   nodesToAnswers: NodesToValues;
-  evaluationResults: NodesToValues<Map<string, ODKFormulaEvaluationResult>>;
+  evaluationResults: NodesToValues<
+    Map<EvaluatableColumnName, ODKFormulaEvaluationResult>
+  >;
   /** The current stack depth. Used to to prevent stack overflows in recursive calculations. */
   stackDepth: number;
   knownLiteralsWithoutDollarSign: Record<string, unknown>;

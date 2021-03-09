@@ -6,7 +6,6 @@ import { NodeToDefinitionFunctionOptions } from "./createLeafNodeSchemaDefinitio
 export function evaluateDynamicChoiceListName(
   choiceListString: string,
   options: NodeToDefinitionFunctionOptions,
-  choiceListName: string,
   choicesByName: Record<string, Record<string, ChoiceRow>>
 ) {
   const evaluationResult = evaluateODKFormula(
@@ -32,7 +31,7 @@ export function evaluateDynamicChoiceListName(
       options.node
     );
   }
-  choiceListName = evaluationResult.result;
+  const choiceListName = evaluationResult.result;
   if (!choicesByName[choiceListName]) {
     throw new EvaluationError(
       `Evaluating \`${choiceListString}\` yielded string \`'${choiceListName}'\`, but the according choices list does not exist. Please ensure that the field calculates an existing list name.`,

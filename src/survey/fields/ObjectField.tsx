@@ -72,8 +72,6 @@ export default function ObjectField(props: FieldProps) {
 
   const HeadingClass = [H1, H2, H3, H4, H5][node.indentationLevel] || H5;
 
-  const detailsButtonCaption = <code>{node.row.name}</code>;
-
   const hintString =
     typeof context.language === "string" && node.row.hint?.[context.language];
 
@@ -91,7 +89,7 @@ export default function ObjectField(props: FieldProps) {
           {debug ? labelInput : label}
         </HeadingClass>
         {debug && node !== context.context?.survey && (
-          <DetailsPopover {...{ ...props, detailsButtonCaption }} />
+          <DetailsPopover {...{ ...props }} editable={true} />
         )}
       </ControlGroup>
 
@@ -100,7 +98,7 @@ export default function ObjectField(props: FieldProps) {
           key={subkey}
           schemaKey={[schemaKey, subkey].join(".")}
           relevant={props.relevant}
-          disabled={props.disabled}
+          readonly={props.readonly}
         />
       ))}
 

@@ -53,7 +53,7 @@ export function Label(
       <EditableText
         onChange={onChangeLabel}
         onConfirm={onConfirmLabel}
-        placeholder={`Enter a title for \`${node.row.name}\`…`}
+        placeholder={`Enter a title for \`${node.row.name}\` in ${context.languageName}…`}
         value={editedLabel}
         minWidth={100}
         minLines={1}

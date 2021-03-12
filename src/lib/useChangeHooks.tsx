@@ -19,9 +19,18 @@ import ODKFormulaEvaluationContext, {
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeIndexPath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import patchXLSFormCell from "../xlsform-simple-schema/functions/patchXLSFormCell";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
+import { createEmptyFieldRow } from "./createUntitledFieldRow";
+import { createEmptyGroupRows } from "./createUntitledGroupRows";
 import findOrReplaceFieldReferences from "./findOrReplaceFieldReferences";
-import getLastRowIndexOfGroup from "./getLastRowIndexOfGroup";
+import getLastRowIndexOfNode from "./getLastRowIndexOfNode";
+
+type RowSpliceOperation = {
+  rowIndex: number;
+  numberOfRowsToRemove: number;
+  rowsToAdd: any[];
+};
 
 export default function useChangeHooks({
   xlsForm,
@@ -118,12 +127,7 @@ export default function useChangeHooks({
   );
 
   const onSpliceRows = React.useCallback(
-    (
-      worksheetName: WorksheetName,
-      rowIndex: number,
-      rowCount: number,
-      ...rowsToAdd: any[]
-    ) => {
+    (worksheetName: WorksheetName, operations: RowSpliceOperation[]) => {
       if (!xlsForm || !context) {
         return;
       }
@@ -138,7 +142,9 @@ export default function useChangeHooks({
           return xlsForm;
         }
         const newRows = [...worksheet?.rows];
-        newRows.splice(rowIndex, rowCount, ...rowsToAdd);
+        operations.forEach(({ rowIndex, numberOfRowsToRemove, rowsToAdd }) =>
+          newRows.splice(rowIndex, numberOfRowsToRemove, ...rowsToAdd)
+        );
         const newWorksheet = { ...worksheet, rows: newRows };
         return loadXLSFormFromRows(
           worksheetName === "survey"
@@ -154,19 +160,6 @@ export default function useChangeHooks({
             : xlsForm?.worksheets.choices
         );
       });
-
-      // setXLSForm(
-      //   produce(xlsForm, (draft) => {
-      //     const worksheet = draft.worksheets[worksheetName];
-      //     worksheet?.rows.splice(rowIndex, rowCount, ...rowsToAdd);
-      //     if (worksheetName === "choices") {
-      //       draft.choicesByName = draft.worksheets.choices
-      //         ? loadChoices(draft.worksheets.choices)
-      //         : {};
-      //     }
-      //     // TODO: Regenerate rowIndex values for all nodes
-      //   })
-      // );
     },
     [context, setXLSForm, xlsForm]
   );
@@ -184,9 +177,16 @@ export default function useChangeHooks({
       }
       const hasChildren = node.children.length > 0;
       const numberOfRowsToRemove = hasChildren
-        ? getLastRowIndexOfGroup(xlsForm, node) - node.rowIndex + 1
+        ? getLastRowIndexOfNode(xlsForm, node) - node.rowIndex + 1
         : 1;
-      onSpliceRows("survey", node.rowIndex, numberOfRowsToRemove);
+      const { rowIndex } = node;
+      onSpliceRows("survey", [
+        {
+          rowIndex,
+          numberOfRowsToRemove,
+          rowsToAdd: [],
+        },
+      ]);
     },
     [context, onSpliceRows, xlsForm]
   );
@@ -197,12 +197,116 @@ export default function useChangeHooks({
         return;
       }
       findOrReplaceFieldReferences(xlsForm, node, newName).forEach(
-        ({ index, row }) => {
-          onSpliceRows("survey", index, 1, { ...row });
+        ({ index: rowIndex, row }) => {
+          onSpliceRows("survey", [
+            {
+              rowIndex,
+              numberOfRowsToRemove: 1,
+              rowsToAdd: [{ ...row }],
+            },
+          ]);
         }
       );
+      onSpliceRows("survey", [
+        {
+          rowIndex: node.rowIndex,
+          numberOfRowsToRemove: 1,
+          rowsToAdd: [{ ...node.row, name: newName }],
+        },
+      ]);
+    },
+    [context, onSpliceRows, xlsForm]
+  );
 
-      onSpliceRows("survey", node.rowIndex, 1, { ...node.row, name: newName });
+  const onNestNode = React.useCallback(
+    (node: ODKNode) => {
+      if (!xlsForm || !context) {
+        return;
+      }
+      const { beginMarkerRow, endMarkerRow } = createEmptyGroupRows(xlsForm);
+      const firstIndex = node.rowIndex;
+      const lastIndex = getLastRowIndexOfNode(xlsForm, node);
+
+      onSpliceRows("survey", [
+        // Note that splicing changes indexes, so splicing the last row first is important.
+        {
+          rowIndex: lastIndex + 1,
+          numberOfRowsToRemove: 0,
+          rowsToAdd: [endMarkerRow],
+        },
+        {
+          rowIndex: firstIndex,
+          numberOfRowsToRemove: 0,
+          rowsToAdd: [beginMarkerRow],
+        },
+      ]);
+    },
+    [context, onSpliceRows, xlsForm]
+  );
+
+  const onUngroupNode = React.useCallback(
+    (node: ODKNode) => {
+      if (!xlsForm || !context) {
+        return;
+      }
+      const firstIndex = node.rowIndex;
+      const lastIndex = getLastRowIndexOfNode(xlsForm, node);
+      onSpliceRows("survey", [
+        // Note that splicing changes indexes, so removing last row first is important.
+        {
+          rowIndex: lastIndex,
+          numberOfRowsToRemove: 1,
+          rowsToAdd: [],
+        },
+        {
+          rowIndex: firstIndex,
+          numberOfRowsToRemove: 1,
+          rowsToAdd: [],
+        },
+      ]);
+    },
+    [context, onSpliceRows, xlsForm]
+  );
+
+  const onAddNode = React.useCallback(
+    ({
+      position,
+      node,
+      group,
+    }: {
+      position: "before" | "after" | "inside";
+      node: ODKNode;
+      group: boolean;
+    }) => {
+      if (!xlsForm || !context) {
+        return;
+      }
+      const row: QuestionRow = createEmptyFieldRow(xlsForm);
+      const { beginMarkerRow, endMarkerRow } = createEmptyGroupRows(xlsForm);
+      const rowsToInsert = group ? [beginMarkerRow, row, endMarkerRow] : [row];
+
+      let rowIndex = 0;
+      const currentNodeIsGroup = isGroupNode(node);
+      if (currentNodeIsGroup) {
+        rowIndex = {
+          after: getLastRowIndexOfNode(xlsForm, node) + 1,
+          before: node.rowIndex,
+          inside: node.rowIndex + 1,
+        }[position];
+      } else {
+        rowIndex = {
+          after: node.rowIndex + 1,
+          before: node.rowIndex,
+          inside: 0,
+        }[position];
+      }
+      onSpliceRows("survey", [
+        {
+          rowIndex,
+          numberOfRowsToRemove: 0,
+          rowsToAdd: rowsToInsert,
+        },
+      ]);
     },
     [context, onSpliceRows, xlsForm]
   );
@@ -252,5 +356,8 @@ export default function useChangeHooks({
     onSpliceRows,
     onRemoveRowAndChildren,
     onRenameNode,
+    onNestNode,
+    onUngroupNode,
+    onAddNode,
   };
 }

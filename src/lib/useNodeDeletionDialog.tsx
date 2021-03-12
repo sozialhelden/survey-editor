@@ -4,7 +4,7 @@ import { AppToaster } from "../toaster";
 import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { ODKSurveyContext } from "./ODKSurveyContext";
 
-export default function useConfirmNodeDeletion() {
+export default function useNodeDeletionDialog() {
   const context = useContext(ODKSurveyContext);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [node, setNode] = useState<ODKNode>();

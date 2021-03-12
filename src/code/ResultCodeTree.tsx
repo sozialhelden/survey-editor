@@ -98,7 +98,9 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
 
           const path = getNodeAbsolutePathString(node, context.context);
 
-          const label = <DetailsPopover node={node} editable={true} />;
+          const label = (
+            <DetailsPopover node={node} editable={true} hasTypeIcon={true} />
+          );
 
           return {
             ...result,

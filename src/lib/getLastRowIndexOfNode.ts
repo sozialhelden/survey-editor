@@ -1,17 +1,13 @@
 import { XLSForm } from "../xlsform-simple-schema";
 import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 
-export default function getLastRowIndexOfGroup(
-  xlsForm: XLSForm,
-  node: ODKNode
-) {
+export default function getLastRowIndexOfNode(xlsForm: XLSForm, node: ODKNode) {
   const isGroup = isGroupNode(node);
 
   if (!isGroup) {
-    throw new Error(
-      "Getting the last row index of a group only works with rows that are groups."
-    );
+    return node.rowIndex;
   }
+
   const hasChildren = node.children.length > 0;
   // The end_group or end_repeat marker is associated to the node, too.
   const indexOfGroupOrRepeatEnd = hasChildren

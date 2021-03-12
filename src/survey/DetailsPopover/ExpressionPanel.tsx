@@ -48,6 +48,23 @@ export function ExpressionPanel({
     (results?.expression instanceof NameExpression &&
       results?.expression.name === results?.expression.text);
 
+  let title: React.ReactNode = "Result";
+  if (cellIsEmpty) {
+    if (columnName === "calculation") {
+      if (answer !== undefined) {
+        title = "Using answer value";
+      }
+    } else {
+      title = "Default value";
+    }
+  } else {
+    title = (
+      <>
+        <Icon icon="function" />{" "}
+        {columnName === "calculation" ? "Formula" : "Condition"}
+      </>
+    );
+  }
   const panel = (
     <StyledPanel
       lang="en"
@@ -63,12 +80,9 @@ export function ExpressionPanel({
         ...style,
       }}
     >
+      <h4>{title}</h4>
       {!cellIsEmpty && (
         <>
-          <h4>
-            <Icon icon="function" />{" "}
-            {columnName === "calculation" ? "Formula" : "Condition"}
-          </h4>
           <StyledCodeBlock
             style={{
               fontSize: isLiteral || isName ? "20px" : "16px",
@@ -89,8 +103,6 @@ export function ExpressionPanel({
 
       {(cellIsEmpty || !formulaIsTrivial) && (
         <>
-          <h4>{cellIsEmpty ? "Default value" : "Result"}</h4>
-
           {!cellIsEmpty && !results && (
             <Callout intent="none">Not calculated yet.</Callout>
           )}

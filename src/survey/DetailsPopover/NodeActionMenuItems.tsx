@@ -10,10 +10,14 @@ export default function NodeActionMenuItems({
   node,
   onRemove,
   onRename,
+  onNestField,
+  onUngroupField,
 }: {
   node: ODKNode;
   onRemove: (node: ODKNode) => void;
   onRename: (node: ODKNode) => void;
+  onNestField: (node: ODKNode) => void;
+  onUngroupField: (node: ODKNode) => void;
 }) {
   const removeNode = useCallback(() => {
     onRemove(node);
@@ -23,12 +27,22 @@ export default function NodeActionMenuItems({
     onRename(node);
   }, [node, onRename]);
 
+  const nestField = useCallback(() => {
+    onNestField(node);
+  }, [node, onNestField]);
+
+  const ungroupField = useCallback(() => {
+    onUngroupField(node);
+  }, [node, onUngroupField]);
+
   const isGroup = isGroupNode(node);
   const renameText = isGroup ? "Rename group…" : "Rename field…";
   const items = (
     <>
       <MenuItem icon="edit" text={renameText} onClick={renameNode} />
+
       <MenuDivider />
+
       <MenuItem icon="group-objects" text="Add group">
         <AddFieldOrGroupMenuItem
           node={node}
@@ -54,6 +68,7 @@ export default function NodeActionMenuItems({
           omitAction={true}
         />
       </MenuItem>
+
       <MenuItem icon="manually-entered-data" text="Add field">
         <AddFieldOrGroupMenuItem
           node={node}
@@ -79,20 +94,24 @@ export default function NodeActionMenuItems({
           omitAction={true}
         />
       </MenuItem>
+
       <MenuDivider />
+
       <MenuItem
         icon="group-objects"
         text="Nest in new group"
-        onClick={removeNode}
-        disabled={true}
+        onClick={nestField}
       />
-      <MenuItem
-        icon="ungroup-objects"
-        text="Ungroup"
-        onClick={removeNode}
-        disabled={true}
-      />
+      {isGroup && (
+        <MenuItem
+          icon="ungroup-objects"
+          text="Ungroup"
+          onClick={ungroupField}
+        />
+      )}
+
       <MenuDivider />
+
       <MenuItem
         intent="danger"
         icon="trash"

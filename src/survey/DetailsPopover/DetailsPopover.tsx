@@ -14,19 +14,18 @@ import {
   Tab,
   Tabs,
 } from "@blueprintjs/core";
-import {
-  Classes as PopoverClasses,
-  IPopover2TargetProps,
-  Popover2,
-} from "@blueprintjs/popover2";
+import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../../lib/colors";
-import findOrReplaceFieldReferences from "../../lib/findOrReplaceFieldReferences";
+import findOrReplaceFieldReferences, {
+  DependentNodeWithReplacedRow,
+} from "../../lib/findOrReplaceFieldReferences";
 import { getFirstColumnNameWithError } from "../../lib/getFirstColumnNameWithError";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import useConfirmNodeDeletion from "../../lib/useConfirmNodeDeletion";
+import { typesToIcons } from "../../lib/typesToIcons";
+import useNodeDeletionDialog from "../../lib/useNodeDeletionDialog";
 import useRenameNodeDialog from "../../lib/useRenameNodeDialog";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
@@ -99,11 +98,12 @@ export const StyledCalloutWithCode = styled(Callout)`
 `;
 
 function RenderTarget({
-  isOpen,
-  ref,
   detailsButtonCaption,
-  ...targetProps
-}: IPopover2TargetProps & { detailsButtonCaption: React.ReactNode }) {
+  hasTypeIcon,
+}: {
+  detailsButtonCaption?: React.ReactNode;
+  hasTypeIcon?: boolean;
+}) {
   const context = React.useContext(ODKSurveyContext);
   const { node, nodeEvaluationResults } = React.useContext(ODKNodeContext);
   const isRelevant = isNodeRelevant(node, context.context);
@@ -120,7 +120,7 @@ function RenderTarget({
     setIsDraggedOver,
   });
 
-  return ref ? (
+  return (
     <ControlGroup
       style={{
         display: "inline-flex",
@@ -130,14 +130,14 @@ function RenderTarget({
       {...dragProps}
     >
       <Button
-        {...targetProps}
-        elementRef={ref}
+        // elementRef={ref}
         minimal={true}
         // outlined={true}
         small={true}
         lang="en"
         intent={hasError ? "danger" : hasMissingParameters ? "warning" : "none"}
-        icon={hasError ? "error" : undefined}
+        rightIcon={hasError ? "error" : undefined}
+        icon={hasTypeIcon ? typesToIcons[node.type] : undefined}
         style={{
           color: hasError || hasMissingParameters ? undefined : "inherit",
           fontSize: "inherit",
@@ -160,8 +160,6 @@ function RenderTarget({
         </ControlGroup>
       </Button>
     </ControlGroup>
-  ) : (
-    <div></div>
   );
 }
 
@@ -173,8 +171,15 @@ export default function DetailsPopover(props: {
   showJumpButton?: boolean;
   editable: boolean;
   nameOfOnlyShownTab?: EvaluatableColumnName;
+  hasTypeIcon?: boolean;
 }) {
-  const { node, editable, nameOfOnlyShownTab } = props;
+  const {
+    node,
+    editable,
+    nameOfOnlyShownTab,
+    detailsButtonCaption,
+    hasTypeIcon,
+  } = props;
   const context = React.useContext(ODKSurveyContext);
   const nodeEvaluationResults = context.context?.evaluationResults.get(node);
   const firstColumnNameWithError = getFirstColumnNameWithError(
@@ -210,7 +215,7 @@ export default function DetailsPopover(props: {
     [context, node]
   );
 
-  const { alert, showRemoveConfirmationDialog } = useConfirmNodeDeletion();
+  const { alert, showRemoveConfirmationDialog } = useNodeDeletionDialog();
   const { dialog: renameDialog, showRenameDialog } = useRenameNodeDialog();
   if (!context.context) {
     return null;
@@ -218,28 +223,7 @@ export default function DetailsPopover(props: {
 
   const path = getNodeAbsolutePath(node, context.context).slice(1);
 
-  const referencesButtonTitle =
-    references &&
-    (references.length === 1
-      ? "One dependency"
-      : `${references.length} dependencies`);
-  const referencesButton = editable && references && references.length > 0 && (
-    <Popover2
-      content={<NodeReferencesMenu references={references} />}
-      lazy={true}
-    >
-      <Button
-        icon="link"
-        // rightIcon={"caret-down"}
-        fill={false}
-        minimal={true}
-        title={referencesButtonTitle}
-        aria-label={referencesButtonTitle}
-      >
-        {references.length}
-      </Button>
-    </Popover2>
-  );
+  const referencesButton = ReferencesButton({ references, editable });
 
   const editHeader = (
     <ControlGroup
@@ -257,8 +241,11 @@ export default function DetailsPopover(props: {
       }}
     >
       <FieldConfigurationButton node={node} showType={true} />
+
       <div className={Classes.FLEX_EXPANDER} />
+
       {referencesButton}
+
       <ButtonGroup fill={false}>
         <Popover2
           content={
@@ -267,6 +254,8 @@ export default function DetailsPopover(props: {
                 node={node}
                 onRemove={showRemoveConfirmationDialog}
                 onRename={showRenameDialog}
+                onNestField={context.onNestNode}
+                onUngroupField={context.onUngroupNode}
               />
             </Menu>
           }
@@ -328,11 +317,45 @@ export default function DetailsPopover(props: {
           preventOverflow: { enabled: true },
         }}
         content={detailsContent}
-        fill={true}
-        renderTarget={RenderTarget}
-      />
+        fill={false}
+        targetTagName="span"
+      >
+        <RenderTarget {...{ detailsButtonCaption, hasTypeIcon }} />
+      </Popover2>
     </ODKNodeContext.Provider>
   );
+}
+
+function ReferencesButton({
+  references,
+  editable,
+}: {
+  references: DependentNodeWithReplacedRow[] | undefined;
+  editable: boolean;
+}) {
+  const referencesButtonTitle =
+    references &&
+    (references.length === 1
+      ? "One dependency"
+      : `${references.length} dependencies`);
+  const referencesButton = editable && references && references.length > 0 && (
+    <Popover2
+      content={<NodeReferencesMenu references={references} />}
+      lazy={true}
+    >
+      <Button
+        icon="link"
+        // rightIcon={"caret-down"}
+        fill={false}
+        minimal={true}
+        title={referencesButtonTitle}
+        aria-label={referencesButtonTitle}
+      >
+        {references.length}
+      </Button>
+    </Popover2>
+  );
+  return referencesButton;
 }
 
 function getTab({

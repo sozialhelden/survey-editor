@@ -33,7 +33,13 @@ export default function AddFieldButton({
       name: `untitled_field_${rowIndex++}`,
       label: createLabelInAllLanguages(``, xlsForm.languages),
     };
-    context.onSpliceRows("survey", node.rowIndex, 0, row);
+    context.onSpliceRows("survey", [
+      {
+        rowIndex: node.rowIndex,
+        numberOfRowsToRemove: 0,
+        rowsToAdd: [row],
+      },
+    ]);
   }, [context, node]);
 
   return (

@@ -36,20 +36,20 @@ export function DefaultValueExplanation({
           relevant: (
             <>
               This means the survey field is always shown. This is the default
-              when the <code>{columnName}</code> cell is empty.
+              behavior when the <code>{columnName}</code> cell is empty.
             </>
           ),
           readonly: (
             <>
-              This means the survey field is not read-only. This is the default
-              when the <code>{columnName}</code> cell is empty.
+              This means the survey field enables input. This is the default
+              behavior when the <code>{columnName}</code> cell is empty.
             </>
           ),
           constraint: (
             <>
-              If the cell contains a formula that evaluates to <code>true</code>
-              , the field accepts any input. This is the default when the{" "}
-              <code>{columnName}</code> cell is empty.
+              If the cell contains a formula that evaluates to <code>true</code>{" "}
+              or if there is no formula in the <code>{columnName}</code> cell,
+              the field accepts any input.
             </>
           ),
         }[columnName]

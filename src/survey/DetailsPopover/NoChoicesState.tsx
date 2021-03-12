@@ -26,7 +26,13 @@ export function NoChoicesState() {
         label: createLabelInAllLanguages("maybe", languages),
       },
     ];
-    context.onSpliceRows("choices", 0, 0, ...choiceRows);
+    context.onSpliceRows("choices", [
+      {
+        rowIndex: 0,
+        numberOfRowsToRemove: 0,
+        rowsToAdd: choiceRows,
+      },
+    ]);
   }, [context]);
 
   const addExampleChoicesButton = (

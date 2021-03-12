@@ -24,7 +24,13 @@ export function FieldTypeMenu() {
         ...node.row,
         type: newTypeValue,
       };
-      context.onSpliceRows("survey", node.rowIndex, 1, newRow);
+      context.onSpliceRows("survey", [
+        {
+          rowIndex: node.rowIndex,
+          numberOfRowsToRemove: 1,
+          rowsToAdd: [newRow],
+        },
+      ]);
     },
     [context, node]
   );

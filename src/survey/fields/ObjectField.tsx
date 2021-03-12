@@ -64,7 +64,7 @@ export default function ObjectField(props: FieldProps) {
         multiline={true}
         onChange={onChangeLabel}
         onConfirm={onChangeLabel}
-        placeholder={`Enter a title for \`${node.row.name}\`…`}
+        placeholder={`Enter a title for \`${node.row.name}\`in ${context.languageName}…`}
         value={label}
         minWidth={100}
       />
@@ -85,7 +85,7 @@ export default function ObjectField(props: FieldProps) {
       style={{ padding: `${6 / (node.indentationLevel + 1)}rem 0` }}
     >
       <ControlGroup
-        fill={true}
+        fill={false}
         style={{
           alignItems: "baseline",
         }}

@@ -13,7 +13,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../lib/colors";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
-import useConfirmNodeDeletion from "../lib/useConfirmNodeDeletion";
+import useNodeDeletionDialog from "../lib/useNodeDeletionDialog";
 import useRenameNodeDialog from "../lib/useRenameNodeDialog";
 import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import AddFieldOrGroupMenuItem from "./AddFieldMenuItem";
@@ -94,8 +94,14 @@ export function FieldSetForKey(props: {
   readonly?: boolean;
 }) {
   const { schemaKey } = props;
-  const { schema, context, debug } = React.useContext(ODKSurveyContext);
-  const { alert, showRemoveConfirmationDialog } = useConfirmNodeDeletion();
+  const {
+    schema,
+    context,
+    debug,
+    onNestNode,
+    onUngroupNode,
+  } = React.useContext(ODKSurveyContext);
+  const { alert, showRemoveConfirmationDialog } = useNodeDeletionDialog();
   const { dialog: renameDialog, showRenameDialog } = useRenameNodeDialog();
   if (!context || !schema) {
     return null;
@@ -197,6 +203,8 @@ export function FieldSetForKey(props: {
         node={node}
         onRemove={showRemoveConfirmationDialog}
         onRename={showRenameDialog}
+        onNestField={onNestNode}
+        onUngroupField={onUngroupNode}
       />
     );
     const nodeActionMenu = <Menu>{nodeActionMenuItems}</Menu>;

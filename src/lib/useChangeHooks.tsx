@@ -1,5 +1,4 @@
 import { Code } from "@blueprintjs/core";
-import produce from "immer";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { FieldProps } from "../survey/FieldProps";
@@ -175,10 +174,8 @@ export default function useChangeHooks({
           "Can’t remove a node that isn’t reachable from survey root. Please ensure the node is actually part of the survey."
         );
       }
-      const hasChildren = node.children.length > 0;
-      const numberOfRowsToRemove = hasChildren
-        ? getLastRowIndexOfNode(xlsForm, node) - node.rowIndex + 1
-        : 1;
+      const numberOfRowsToRemove =
+        getLastRowIndexOfNode(xlsForm, node) - node.rowIndex + 1;
       const { rowIndex } = node;
       onSpliceRows("survey", [
         {
@@ -312,7 +309,12 @@ export default function useChangeHooks({
   );
 
   const onMoveNode = React.useCallback(
-    (options: {
+    ({
+      sourcePath,
+      sourceNode,
+      destinationNode,
+      position,
+    }: {
       sourcePath: string;
       sourceNode: ODKNode;
       destinationNode: ODKNode;
@@ -321,30 +323,34 @@ export default function useChangeHooks({
       if (!xlsForm || !context || !language) {
         return;
       }
-      setXLSForm(
-        produce(xlsForm, (draft) => {
-          // set(draft, ["flatNodes", rowIndex, "row", ...valuePathInRow], value);
-          // set(
-          //   draft,
-          //   ["worksheets", worksheetName, "rows", rowIndex, ...valuePathInRow],
-          //   value
-          // );
-          // if (indexPath) {
-          //   set(
-          //     draft,
-          //     [
-          //       "rootSurveyGroup",
-          //       ...indexPath.map((i) => ["children", i]).flat(),
-          //       "row",
-          //       ...valuePathInRow,
-          //     ],
-          //     value
-          //   );
-          // }
-        })
+      const lastRowIndexOfSourceNode = getLastRowIndexOfNode(
+        xlsForm,
+        sourceNode
       );
+      const numberOfSourceNodeRows =
+        lastRowIndexOfSourceNode - sourceNode.rowIndex + 1;
+      const rowsOfSourceNode = [...xlsForm.worksheets.survey.rows].slice(
+        sourceNode.rowIndex,
+        sourceNode.rowIndex + numberOfSourceNodeRows
+      );
+      const destinationIsBeforeSource =
+        destinationNode.rowIndex < sourceNode.rowIndex;
+      const insertOperation: RowSpliceOperation = {
+        rowIndex: destinationNode.rowIndex,
+        numberOfRowsToRemove: 0,
+        rowsToAdd: rowsOfSourceNode,
+      };
+      const removeOperation: RowSpliceOperation = {
+        rowIndex:
+          sourceNode.rowIndex +
+          (destinationIsBeforeSource ? numberOfSourceNodeRows : 0),
+        numberOfRowsToRemove: numberOfSourceNodeRows,
+        rowsToAdd: [],
+      };
+
+      onSpliceRows("survey", [insertOperation, removeOperation]);
     },
-    []
+    [context, language, onSpliceRows, xlsForm]
   );
 
   return {

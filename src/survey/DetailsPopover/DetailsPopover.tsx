@@ -97,6 +97,16 @@ export const StyledCalloutWithCode = styled(Callout)`
   }
 `;
 
+const DragStripe = styled.div`
+  position: absolute;
+  top: 0px;
+  left: -20px;
+  width: calc(100% + 40px);
+  height: 5px;
+  background-color: ${Colors.BLUE3};
+  z-index: 10000000;
+`;
+
 function RenderTarget({
   detailsButtonCaption,
   hasTypeIcon,
@@ -125,10 +135,12 @@ function RenderTarget({
       style={{
         display: "inline-flex",
         flex: "none",
-        borderTop: isDraggedOver ? `5px solid ${Colors.BLUE3}` : "none",
+        position: "relative",
+        overflow: "visible",
       }}
       {...dragProps}
     >
+      {isDraggedOver && <DragStripe />}
       <Button
         // elementRef={ref}
         minimal={true}

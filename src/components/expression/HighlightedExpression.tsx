@@ -152,13 +152,13 @@ function TokenElement({
     if (!referencedNode || referencedNode instanceof Array) {
       debugger;
       return (
-        <span className={className} data-referenced-node={referencedNode}>
+        <var className={className} data-referenced-node={referencedNode}>
           {token.text}
-        </span>
+        </var>
       );
     }
     return (
-      <>
+      <var>
         {"${"}
         <DetailsPopover
           node={referencedNode}
@@ -166,7 +166,7 @@ function TokenElement({
           nameOfOnlyShownTab={"calculation"}
         />
         {"}"}
-      </>
+      </var>
     );
   }
   return <span className={className}>{token.text}</span>;

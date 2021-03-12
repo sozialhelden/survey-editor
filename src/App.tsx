@@ -212,7 +212,7 @@ function App() {
             <OverflowScrollContainer>
               <NonIdealState
                 icon="document-open"
-                title="Open an Excel file to start."
+                title="Open an XLSForm Excel file to start."
                 action={fileInput}
               />
             </OverflowScrollContainer>

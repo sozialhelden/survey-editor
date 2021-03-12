@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonGroup,
   Callout,
   Classes,
   Code,
@@ -8,6 +9,7 @@ import {
   HTMLDivProps,
   Icon,
   IResizeEntry,
+  Menu,
   ResizeSensor,
   Tab,
   Tabs,
@@ -19,10 +21,13 @@ import {
 } from "@blueprintjs/popover2";
 import * as React from "react";
 import styled from "styled-components";
+import { alpha } from "../../lib/colors";
+import findOrReplaceFieldReferences from "../../lib/findOrReplaceFieldReferences";
 import { getFirstColumnNameWithError } from "../../lib/getFirstColumnNameWithError";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import useConfirmNodeDeletion from "../../lib/useConfirmNodeDeletion";
+import useRenameNodeDialog from "../../lib/useRenameNodeDialog";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
@@ -32,10 +37,11 @@ import {
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
 import { useNodeDragAndDrop } from "../useNodeDragAndDrop";
-import NodeActionMenu from "./ActionMenu";
 import { ExpressionPanel } from "./ExpressionPanel";
 import { FieldConfigurationButton } from "./FieldConfigurationButton";
 import { FieldPathBreadcrumbs } from "./FieldPathBreadcrumbs";
+import NodeActionMenuItems from "./NodeActionMenuItems";
+import { NodeReferencesMenu } from "./NodeReferencesMenu";
 
 export const StyledCodeBlock = styled(Code)`
   overflow: auto;
@@ -198,28 +204,77 @@ export default function DetailsPopover(props: {
     firstColumnNameWithError || firstColumnNameWithContent || "calculation"
   );
 
-  const { alert, showRemoveConfirmationDialog } = useConfirmNodeDeletion();
+  const references = React.useMemo(
+    () =>
+      context?.xlsForm && findOrReplaceFieldReferences(context.xlsForm, node),
+    [context, node]
+  );
 
+  const { alert, showRemoveConfirmationDialog } = useConfirmNodeDeletion();
+  const { dialog: renameDialog, showRenameDialog } = useRenameNodeDialog();
   if (!context.context) {
     return null;
   }
 
   const path = getNodeAbsolutePath(node, context.context).slice(1);
 
+  const referencesButtonTitle =
+    references &&
+    (references.length === 1
+      ? "One dependency"
+      : `${references.length} dependencies`);
+  const referencesButton = editable && references && references.length > 0 && (
+    <Popover2
+      content={<NodeReferencesMenu references={references} />}
+      lazy={true}
+    >
+      <Button
+        icon="link"
+        // rightIcon={"caret-down"}
+        fill={false}
+        minimal={true}
+        title={referencesButtonTitle}
+        aria-label={referencesButtonTitle}
+      >
+        {references.length}
+      </Button>
+    </Popover2>
+  );
+
   const editHeader = (
-    <ControlGroup style={{ marginBottom: "16px" }}>
+    <ControlGroup
+      style={{
+        margin: "-20px",
+        marginBottom: "12px",
+        backgroundColor: Colors.LIGHT_GRAY5,
+        // padding: "20px",
+        background: `linear-gradient(
+          ${alpha(Colors.BLUE3, 0.0)} 0px,
+          ${alpha(Colors.BLUE3, 0.05)} 22px,
+          ${alpha(Colors.BLUE3, 0.06)} 32px)`,
+        borderBottom: `solid 1px ${Colors.LIGHT_GRAY3}`,
+        gap: "8px",
+      }}
+    >
       <FieldConfigurationButton node={node} showType={true} />
       <div className={Classes.FLEX_EXPANDER} />
-      <Popover2
-        content={
-          <NodeActionMenu node={node} onRemove={showRemoveConfirmationDialog} />
-        }
-        lazy={true}
-      >
-        <Button fill={false} rightIcon={"caret-down"}>
-          Actions
-        </Button>
-      </Popover2>
+      {referencesButton}
+      <ButtonGroup fill={false}>
+        <Popover2
+          content={
+            <Menu>
+              <NodeActionMenuItems
+                node={node}
+                onRemove={showRemoveConfirmationDialog}
+                onRename={showRenameDialog}
+              />
+            </Menu>
+          }
+          lazy={true}
+        >
+          <Button icon={"more"} minimal={true} title="Actions" />
+        </Popover2>
+      </ButtonGroup>
     </ControlGroup>
   );
 
@@ -236,7 +291,7 @@ export default function DetailsPopover(props: {
       {nameOfOnlyShownTab ? (
         <ExpressionPanel
           {...{ node, columnName: nameOfOnlyShownTab, nodeEvaluationResults }}
-          style={{ margin: "0 -20px -20px -20px" }}
+          style={{ margin: "0 -20px 0 -20px" }}
         />
       ) : (
         <Tabs
@@ -259,6 +314,7 @@ export default function DetailsPopover(props: {
   return (
     <ODKNodeContext.Provider value={{ node, nodeEvaluationResults }}>
       {alert}
+      {renameDialog}
       <Popover2
         lazy={true}
         interactionKind="click"

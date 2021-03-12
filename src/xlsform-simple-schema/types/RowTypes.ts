@@ -30,7 +30,7 @@ export type QuestionRow = Record<
   choice_filter?: string;
   calculation?: string;
   trigger?: string;
-  readonly?: "true" | "false";
+  readonly?: string;
   required?: string;
   required_message?: LocalizedString;
   parameters?: string;

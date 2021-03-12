@@ -20,6 +20,7 @@ import ODKFormulaEvaluationContext, {
 import { getNodeIndexPath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import patchXLSFormCell from "../xlsform-simple-schema/functions/patchXLSFormCell";
 import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import findOrReplaceFieldReferences from "./findOrReplaceFieldReferences";
 import getLastRowIndexOfGroup from "./getLastRowIndexOfGroup";
 
 export default function useChangeHooks({
@@ -190,6 +191,22 @@ export default function useChangeHooks({
     [context, onSpliceRows, xlsForm]
   );
 
+  const onRenameNode = React.useCallback(
+    (node: ODKNode, newName: string) => {
+      if (!xlsForm || !context) {
+        return;
+      }
+      findOrReplaceFieldReferences(xlsForm, node, newName).forEach(
+        ({ index, row }) => {
+          onSpliceRows("survey", index, 1, { ...row });
+        }
+      );
+
+      onSpliceRows("survey", node.rowIndex, 1, { ...node.row, name: newName });
+    },
+    [context, onSpliceRows, xlsForm]
+  );
+
   const onMoveNode = React.useCallback(
     (options: {
       sourcePath: string;
@@ -234,5 +251,6 @@ export default function useChangeHooks({
     onMoveNode,
     onSpliceRows,
     onRemoveRowAndChildren,
+    onRenameNode,
   };
 }

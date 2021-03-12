@@ -50,7 +50,9 @@ export function ChoiceListMenu({
   const choiceListMenu = (
     <Menu>
       <li className="bp3-menu-header">
-        <h6 className="bp3-heading">Which choice lists should be visible?</h6>
+        <h6 className="bp3-heading">
+          Set which choice lists should be visible.
+        </h6>
       </li>
       <ControlGroup style={{ margin: "16px 8px 4px" }} vertical={true}>
         {choiceListNames.map((listName) => {
@@ -131,7 +133,8 @@ export function ChoiceListMenu({
       </ControlGroup>
 
       <Callout intent="primary">
-        These lists are defined in the <code>choices</code> Excel sheet.
+        The content of these lists is defined in the <code>choices</code> Excel
+        sheet.
       </Callout>
     </Menu>
   );

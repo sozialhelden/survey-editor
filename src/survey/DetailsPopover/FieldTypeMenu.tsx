@@ -32,7 +32,7 @@ export function FieldTypeMenu() {
   return (
     <Menu>
       <li className="bp3-menu-header">
-        <h6 className="bp3-heading">Collecting data</h6>
+        <h6 className="bp3-heading">Set a field type.</h6>
       </li>
 
       {Object.keys(fieldCategoriesToIcons)

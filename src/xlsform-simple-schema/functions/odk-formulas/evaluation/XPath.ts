@@ -152,9 +152,10 @@ export function getNodeAbsolutePath(
 
 export function getNodeAbsolutePathString(
   node: ODKNode,
-  context: ODKFormulaEvaluationContext
+  context: ODKFormulaEvaluationContext,
+  delimiter: string = "."
 ): string {
-  return getNodeAbsolutePath(node, context).slice(1).join(".");
+  return getNodeAbsolutePath(node, context).slice(1).join(delimiter);
 }
 
 export function isXPath(string: string): boolean {

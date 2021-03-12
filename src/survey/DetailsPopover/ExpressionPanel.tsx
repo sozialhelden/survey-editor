@@ -1,4 +1,4 @@
-import { Callout, Classes, Colors, Icon, Text } from "@blueprintjs/core";
+import { Callout, Colors, Icon } from "@blueprintjs/core";
 import * as React from "react";
 import HighlightedExpression from "../../components/expression/HighlightedExpression";
 import StyledMarkdown from "../../components/StyledMarkdown";
@@ -6,16 +6,20 @@ import { alpha } from "../../lib/colors";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { NameExpression } from "../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base";
+import LiteralExpression from "../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base/expressions/LiteralExpression";
 import { EvaluationError } from "../../xlsform-simple-schema/types/Errors";
 import {
   EvaluatableColumnName,
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
+import { DefaultValueExplanation } from "./DefaultValueExplanation";
 import {
   StyledCalloutWithCode,
   StyledCodeBlock,
   StyledPanel,
 } from "./DetailsPopover";
+import { FormulaResultMeaning } from "./FormulaResultMeaning";
 
 export function ExpressionPanel({
   node,
@@ -38,6 +42,11 @@ export function ExpressionPanel({
   const nodeName = context.context
     ? getNodeAbsolutePathString(node, context.context)
     : node.row.name;
+
+  const formulaIsTrivial =
+    results?.expression instanceof LiteralExpression ||
+    (results?.expression instanceof NameExpression &&
+      results?.expression.name === results?.expression.text);
 
   const panel = (
     <StyledPanel
@@ -75,20 +84,24 @@ export function ExpressionPanel({
               tokens={results?.parser?.tokens}
             />
           </StyledCodeBlock>
-          <h4>Result</h4>
         </>
       )}
 
-      {!cellIsEmpty && !results && (
-        <Callout intent="none">Not calculated yet.</Callout>
-      )}
+      {(cellIsEmpty || !formulaIsTrivial) && (
+        <>
+          <h4>{cellIsEmpty ? "Default value" : "Result"}</h4>
 
-      {results?.state !== "error" && (
-        <StyledCodeBlock style={{ fontSize: "20px", lineHeight: "28px" }}>
-          {results?.result === undefined
-            ? "undefined"
-            : JSON.stringify(results.result)}
-        </StyledCodeBlock>
+          {!cellIsEmpty && !results && (
+            <Callout intent="none">Not calculated yet.</Callout>
+          )}
+          {results?.state !== "error" && (
+            <StyledCodeBlock style={{ fontSize: "20px", lineHeight: "28px" }}>
+              {results?.result === undefined
+                ? "undefined"
+                : JSON.stringify(results.result)}
+            </StyledCodeBlock>
+          )}
+        </>
       )}
 
       {results?.state === "error" && (
@@ -110,71 +123,11 @@ export function ExpressionPanel({
       )}
 
       {!cellIsEmpty && results?.result !== undefined && (
-        <Text className={Classes.TEXT_MUTED}>
-          {
-            {
-              calculation: <>This is the result of the formula.</>,
-              required: `This means you ${
-                results?.result ? "can’t" : "can"
-              } complete the survey without entering data in this field.`,
-              relevant: `This means the survey field is ${
-                results?.result ? "shown" : "hidden"
-              }.`,
-              readonly: `This means the survey field is ${
-                results?.result ? "read-only" : "editable"
-              }.`,
-              constraint: `This means the survey field contains an input that is ${
-                results?.result ? "allowed" : "not allowed"
-              } by the constraint formula..`,
-            }[columnName]
-          }
-        </Text>
+        <FormulaResultMeaning {...{ results, columnName }} />
       )}
 
       {cellIsEmpty && (
-        <Text className={Classes.TEXT_MUTED}>
-          {
-            {
-              calculation:
-                answer === undefined || answer === "" ? (
-                  <>
-                    This survey field has no entered answer yet, and the{" "}
-                    <code>{columnName}</code> cell is empty.
-                  </>
-                ) : (
-                  <>
-                    This is the answer value entered in the{" "}
-                    <code>{nodeName}</code> field.
-                  </>
-                ),
-              required: (
-                <>
-                  This means users are not required to enter this field. This is
-                  the default when the <code>{columnName}</code> cell is empty.
-                </>
-              ),
-              relevant: (
-                <>
-                  This means the survey field is always shown. This is the
-                  default when the <code>{columnName}</code> cell is empty.
-                </>
-              ),
-              readonly: (
-                <>
-                  This means the survey field is not read-only. This is the
-                  default when the <code>{columnName}</code> cell is empty.
-                </>
-              ),
-              constraint: (
-                <>
-                  If the cell contains a formula that evaluates to{" "}
-                  <code>true</code>, the field accepts any input. This is the
-                  default when the <code>{columnName}</code> cell is empty.
-                </>
-              ),
-            }[columnName]
-          }
-        </Text>
+        <DefaultValueExplanation {...{ answer, columnName, nodeName }} />
       )}
     </StyledPanel>
   );

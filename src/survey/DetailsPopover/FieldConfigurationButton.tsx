@@ -6,7 +6,6 @@ import {
   Code,
   Icon,
   OverflowList,
-  Text,
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
@@ -40,30 +39,30 @@ export function FieldConfigurationButton({
   const icon = typesToIcons[node.type];
   const hasItems = node.typeParameters.length > 0;
 
+  if (isGroup)
+    return (
+      <span
+        className={[Classes.TEXT_MUTED].join(" ")}
+        style={{ alignSelf: "center", marginLeft: "8px" }}
+      >
+        <Icon icon={icon} />
+        &nbsp;{typeName}
+      </span>
+    );
+
   return (
     <ButtonGroup>
       {showType && (
-        <>
-          {isGroup ? (
-            <Text className={Classes.TEXT_MUTED}>
-              <Icon icon={icon} />
-              &nbsp;{typeName}
-            </Text>
-          ) : (
-            <Popover2 content={<FieldTypeMenu />} lazy={true}>
-              <Button
-                icon={icon || "blank"}
-                fill={false}
-                minimal={isGroup}
-                disabled={isGroup}
-                small={isGroup}
-                rightIcon={!isGroup && "caret-down"}
-              >
-                {typeName}
-              </Button>
-            </Popover2>
-          )}
-        </>
+        <Popover2 content={<FieldTypeMenu />} lazy={true}>
+          <Button
+            icon={icon || "blank"}
+            fill={false}
+            minimal={true}
+            // rightIcon={"caret-down"}
+          >
+            {typeName}
+          </Button>
+        </Popover2>
       )}
 
       {node.type.match(/^select/) && (
@@ -73,8 +72,8 @@ export function FieldConfigurationButton({
         >
           <Button
             fill={true}
-            outlined={false}
-            rightIcon={"caret-down"}
+            minimal={true}
+            // rightIcon={"caret-down"}
             intent={hasItems ? "none" : "warning"}
           >
             {!hasItems && "Set visible choices"}

@@ -1,13 +1,23 @@
-import { Callout, Classes, Code, Colors, H4 } from "@blueprintjs/core";
+import {
+  Callout,
+  Classes,
+  Code,
+  Colors,
+  H4,
+  Menu,
+  MenuDivider,
+  MenuItem,
+} from "@blueprintjs/core";
 import { ContextMenu2, Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../lib/colors";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import useConfirmNodeDeletion from "../lib/useConfirmNodeDeletion";
+import useRenameNodeDialog from "../lib/useRenameNodeDialog";
 import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
-import AddFieldMenuItem from "./AddFieldMenuItem";
-import NodeActionMenu from "./DetailsPopover/ActionMenu";
+import AddFieldOrGroupMenuItem from "./AddFieldMenuItem";
+import NodeActionMenuItems from "./DetailsPopover/NodeActionMenuItems";
 import { FieldProps } from "./FieldProps";
 import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
@@ -68,11 +78,6 @@ const Hoverable = styled.div`
   }
   &:hover,
   :focus-within {
-    /* background: linear-gradient(
-      ${alpha(Colors.BLUE3, 0.1)},
-      ${alpha(Colors.BLUE3, 0.03)} 20%,
-      ${alpha(Colors.BLUE3, 0.03)}
-    ); */
     background: ${alpha(Colors.BLUE3, 0.03)};
 
     ${Stripe} {
@@ -91,6 +96,7 @@ export function FieldSetForKey(props: {
   const { schemaKey } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
   const { alert, showRemoveConfirmationDialog } = useConfirmNodeDeletion();
+  const { dialog: renameDialog, showRenameDialog } = useRenameNodeDialog();
   if (!context || !schema) {
     return null;
   }
@@ -186,28 +192,41 @@ export function FieldSetForKey(props: {
   }
 
   if (debug && node !== context.survey) {
+    const nodeActionMenuItems = (
+      <NodeActionMenuItems
+        node={node}
+        onRemove={showRemoveConfirmationDialog}
+        onRename={showRenameDialog}
+      />
+    );
+    const nodeActionMenu = <Menu>{nodeActionMenuItems}</Menu>;
     return (
       <>
         {alert}
-        <ContextMenu2
-          content={
-            <NodeActionMenu
-              node={node}
-              onRemove={showRemoveConfirmationDialog}
-            />
-          }
-        >
+        {renameDialog}
+        <ContextMenu2 content={nodeActionMenu}>
           <Hoverable>
             <Stripe />
 
             <Popover2
               content={
                 <ul className={Classes.LIST_UNSTYLED}>
-                  <AddFieldMenuItem
+                  <AddFieldOrGroupMenuItem
                     icon="arrow-up"
                     node={node}
                     position="before"
+                    group={false}
                   />
+                  <AddFieldOrGroupMenuItem
+                    icon="arrow-up"
+                    node={node}
+                    position="before"
+                    group={true}
+                  />
+                  <MenuDivider />
+                  <MenuItem text="Actions" icon="more">
+                    {nodeActionMenuItems}
+                  </MenuItem>
                 </ul>
               }
               lazy={true}
@@ -223,10 +242,21 @@ export function FieldSetForKey(props: {
             <Popover2
               content={
                 <ul className={Classes.LIST_UNSTYLED}>
-                  <AddFieldMenuItem
+                  <MenuItem text="Actions" icon="more">
+                    {nodeActionMenuItems}
+                  </MenuItem>
+                  <MenuDivider />
+                  <AddFieldOrGroupMenuItem
                     icon="arrow-down"
                     node={node}
                     position="after"
+                    group={false}
+                  />
+                  <AddFieldOrGroupMenuItem
+                    icon="arrow-down"
+                    node={node}
+                    position="after"
+                    group={true}
                   />
                 </ul>
               }

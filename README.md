@@ -15,6 +15,7 @@ https://sozialhelden.github.io/survey-editor/
 
 ## Features
 
+- Runs in the browser
 - Live synced views (Excel sheet, survey preview, output JSON)
 - WYSIWIG editing for [XLSForm](http://xlsform.org) files
 - Basic ODK formula support

@@ -283,7 +283,7 @@ export default function useChangeHooks({
       group,
     }: {
       position: "before" | "after" | "inside";
-      node: ODKNode;
+      node?: ODKNode;
       group: boolean;
     }) => {
       if (!xlsForm || !context) {
@@ -294,8 +294,8 @@ export default function useChangeHooks({
       const rowsToInsert = group ? [beginMarkerRow, row, endMarkerRow] : [row];
 
       let rowIndex = 0;
-      const currentNodeIsGroup = isGroupNode(node);
-      if (currentNodeIsGroup) {
+      const currentNodeIsGroup = node && isGroupNode(node);
+      if (node && currentNodeIsGroup) {
         rowIndex = {
           after: getLastRowIndexOfNode(xlsForm, node) + 1,
           before: node.rowIndex,
@@ -303,8 +303,8 @@ export default function useChangeHooks({
         }[position];
       } else {
         rowIndex = {
-          after: node.rowIndex + 1,
-          before: node.rowIndex,
+          after: node ? node.rowIndex + 1 : 0,
+          before: node ? node.rowIndex : 0,
           inside: 0,
         }[position];
       }

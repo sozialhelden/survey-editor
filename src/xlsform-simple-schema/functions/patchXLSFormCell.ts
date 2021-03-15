@@ -2,7 +2,10 @@ import produce from "immer";
 import { set } from "lodash";
 import { ODKNode } from "../types/ODKNode";
 import { WorksheetName, XLSForm } from "../types/XLSForm";
-import { localizableColumnNames } from "./loadSurveyFromXLSX";
+import {
+  localizableColumnNames,
+  normalizeColumnNames,
+} from "./loadSurveyFromXLSX";
 import ODKFormulaEvaluationContext from "./odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeIndexPath } from "./odk-formulas/evaluation/XPath";
 
@@ -32,6 +35,9 @@ export default function patchXLSFormCell({
 
   const changeIsInSurveyWorksheet = worksheetName === "survey";
 
+  // This creates a new object for each parent of a changed property inside the whole object tree of the given xlsForm.
+  // https://immerjs.github.io/immer/docs/introduction
+
   return produce(xlsForm, (draft) => {
     set(
       draft,
@@ -52,6 +58,24 @@ export default function patchXLSFormCell({
           ],
           value
         );
+      }
+    }
+
+    // Update cached column names if necessary
+    if (language !== undefined && !draft.languages.has(language)) {
+      draft.languages.add(language);
+    }
+    const worksheet = draft.worksheets[worksheetName];
+    if (worksheet) {
+      if (language !== undefined && !worksheet.languages.has(language)) {
+        worksheet.languages.add(language);
+      }
+      if (!worksheet.columnNames.includes(columnName)) {
+        worksheet.columnNames.push(columnName);
+      }
+      const normalizedColumnName = normalizeColumnNames([columnName])[0];
+      if (!worksheet.columnNamesNormalized.includes(normalizedColumnName)) {
+        worksheet.columnNamesNormalized.push(normalizedColumnName);
       }
     }
   });

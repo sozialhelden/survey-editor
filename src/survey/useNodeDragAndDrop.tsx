@@ -70,8 +70,6 @@ export function useNodeDragAndDrop({
       if (!context) {
         return;
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const data = event.dataTransfer.getData("application/json");
       setIsDraggedOver(true);
     },
     [context, setIsDraggedOver]

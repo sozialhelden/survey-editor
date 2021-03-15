@@ -4,10 +4,7 @@ import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import DetailsPopover from "../survey/DetailsPopover/DetailsPopover";
 import { XLSForm } from "../xlsform-simple-schema";
 import ODKFormulaEvaluationContext from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import {
-  getNodeAbsolutePath,
-  getNodeAbsolutePathString,
-} from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
   evaluatableColumnNames,
   ODKNode,
@@ -64,16 +61,6 @@ export function getNodeTree(
   });
 }
 
-// const DragSourcePlaceholder = styled.div`
-//   height: 20px;
-//   background-color: red;
-// `;
-
-// const DragTargetPlaceholder = styled.div`
-//   height: 20px;
-//   background-color: blue;
-// `;
-
 export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
   const { xlsForm } = props;
   const context = React.useContext(ODKSurveyContext);
@@ -95,8 +82,6 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
               "No context defined. Please define a context before using this component."
             );
           }
-
-          const path = getNodeAbsolutePathString(node, context.context);
 
           const label = (
             <DetailsPopover node={node} editable={true} hasTypeIcon={true} />

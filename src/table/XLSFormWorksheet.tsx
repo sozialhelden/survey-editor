@@ -130,7 +130,11 @@ export default function XLSFormWorksheet(props: Props) {
 
   if (!worksheet) {
     return (
-      <Callout intent="warning">No {props.worksheetName} sheet defined</Callout>
+      <OverflowScrollContainer style={{ ...props.style }}>
+        <Callout intent="warning">
+          No {props.worksheetName} sheet defined
+        </Callout>
+      </OverflowScrollContainer>
     );
   }
 

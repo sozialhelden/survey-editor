@@ -39,7 +39,12 @@ export default function LanguageSelector(props: Props) {
       filterable={false}
     >
       {/* children become the popover target; render value here */}
-      <Button text={props.language} rightIcon="double-caret-vertical" />
+      <Button
+        text={props.language}
+        rightIcon="double-caret-vertical"
+        icon="globe"
+        minimal={true}
+      />
     </LanguageSelect>
   );
 }

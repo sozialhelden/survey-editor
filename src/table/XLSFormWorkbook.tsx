@@ -47,6 +47,7 @@ export default function XLSFormWorkbook(props: Props) {
         id="TabsExample"
         onChange={handleTabChange}
         selectedTabId={worksheetName}
+        renderActiveTabPanelOnly={true}
       >
         <Tab
           id="survey"

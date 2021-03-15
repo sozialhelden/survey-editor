@@ -31,7 +31,7 @@ export default function XLSFormWorksheet(props: Props) {
     () =>
       uniq(worksheet?.columnNamesNormalized.map((n) => n.replace(/::.*$/, ""))),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [xlsForm, worksheet]
+    [xlsForm, worksheet, worksheet?.columnNamesNormalized, worksheet?.rows]
   );
 
   const onConfirmCellEdit = React.useCallback(
@@ -76,17 +76,19 @@ export default function XLSFormWorksheet(props: Props) {
       if (!row) {
         return <></>;
       }
-      const key = columnNames[columnIndex];
-      const value = row[key];
-      const node = xlsForm.flatNodes[rowIndex];
-
+      const columnName = columnNames[columnIndex];
+      const value = row[columnName];
+      const node =
+        worksheetName === "survey" ? xlsForm.flatNodes[rowIndex] : undefined;
+      const key = [worksheetName, rowIndex, columnName].join("-");
       if (value !== undefined && typeof value !== "string") {
-        if (localizableColumnNames.includes(key)) {
+        if (localizableColumnNames.includes(columnName)) {
           return (
             <EditableCell
               {...{ rowIndex, columnIndex }}
               onConfirm={onConfirmCellEdit}
               value={value[language]}
+              key={key}
             />
           );
         } else {
@@ -95,6 +97,7 @@ export default function XLSFormWorksheet(props: Props) {
               {...{ rowIndex, columnIndex }}
               onConfirm={onConfirmCellEdit}
               value={JSON.stringify(value)}
+              key={key}
             />
           );
         }
@@ -105,9 +108,10 @@ export default function XLSFormWorksheet(props: Props) {
           {...{ rowIndex, columnIndex }}
           onConfirm={onConfirmCellEdit}
           value={value}
+          key={key}
           style={
-            ["type", "name"].includes(key)
-              ? { paddingLeft: `${4 + node?.indentationLevel * 8}px` }
+            ["type", "name"].includes(columnName)
+              ? { paddingLeft: `${4 + (node?.indentationLevel || 0) * 8}px` }
               : {}
           }
         >
@@ -118,6 +122,7 @@ export default function XLSFormWorksheet(props: Props) {
   }, [
     worksheet?.rows,
     columnNames,
+    worksheetName,
     xlsForm.flatNodes,
     onConfirmCellEdit,
     language,

@@ -15,6 +15,7 @@ import {
   Tabs,
 } from "@blueprintjs/core";
 import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
+import { without } from "lodash";
 import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../../lib/colors";
@@ -33,6 +34,7 @@ import {
   isNodeRelevant,
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
+import { internalFields } from "../internalFields";
 import { useNodeDragAndDrop } from "../useNodeDragAndDrop";
 import { ExpressionPanel } from "./ExpressionPanel";
 import { FieldConfigurationButton } from "./FieldConfigurationButton";
@@ -114,7 +116,9 @@ function RenderTarget({
 }) {
   const context = React.useContext(ODKSurveyContext);
   const { node, nodeEvaluationResults } = React.useContext(ODKNodeContext);
-  const isRelevant = isNodeRelevant(node, context.context);
+  const isInternalFieldType = internalFields.includes(node.type);
+  const isVisible =
+    !isInternalFieldType && isNodeRelevant(node, context.context);
   const hasMissingParameters =
     node.type.match(/^select/) && node.typeParameters.length === 0;
   const firstColumnNameWithError = getFirstColumnNameWithError(
@@ -153,7 +157,7 @@ function RenderTarget({
           fontSize: "inherit",
           padding: 0,
         }}
-        className={[!hasError && !isRelevant && Classes.TEXT_MUTED]
+        className={[!hasError && !isVisible && Classes.TEXT_MUTED]
           .filter(Boolean)
           .join(" ")}
       >
@@ -161,7 +165,7 @@ function RenderTarget({
           {detailsButtonCaption || (
             <code style={{ color: "inherit" }}>{node.row.name}</code>
           )}
-          {!isRelevant && (
+          {!isVisible && (
             <>
               &nbsp;
               <Icon icon="eye-off" style={{ opacity: 0.5, color: "inherit" }} />
@@ -196,7 +200,11 @@ export default function DetailsPopover(props: {
     nodeEvaluationResults
   );
   const { row } = node;
-  const firstColumnNameWithContent = evaluatableColumnNames.find((n) => {
+  const isInternalField = internalFields.includes(node.type);
+  const columnNames = isInternalField
+    ? without(evaluatableColumnNames, "relevant", "readonly")
+    : evaluatableColumnNames;
+  const firstColumnNameWithContent = columnNames.find((n) => {
     const value = row[n];
     return typeof value === "string" && value.length > 0;
   });
@@ -286,7 +294,7 @@ export default function DetailsPopover(props: {
           selectedTabId={tabId}
           renderActiveTabPanelOnly={false}
         >
-          {evaluatableColumnNames.map((columnName) =>
+          {columnNames.map((columnName) =>
             getTab({
               node,
               nodeEvaluationResults,

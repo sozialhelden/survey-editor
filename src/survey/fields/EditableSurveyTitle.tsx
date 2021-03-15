@@ -9,7 +9,7 @@ export default function EditableSurveyTitle() {
 
   const onChangeSurveyName = React.useCallback(
     (text: string) => {
-      if (editedSurveyName === undefined && editedSurveyName === "") {
+      if (editedSurveyName === undefined || editedSurveyName === "") {
         return;
       }
       context.onChangeCell("settings", 0, "form_title", editedSurveyName);

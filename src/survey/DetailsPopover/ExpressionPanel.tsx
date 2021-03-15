@@ -135,7 +135,7 @@ export function ExpressionPanel({
       )}
 
       {!cellIsEmpty && results?.result !== undefined && (
-        <FormulaResultMeaning {...{ results, columnName }} />
+        <FormulaResultMeaning {...{ results, columnName, formulaIsTrivial }} />
       )}
 
       {cellIsEmpty && (

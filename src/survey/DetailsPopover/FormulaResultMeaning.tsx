@@ -6,15 +6,19 @@ import { EvaluatableColumnName } from "../../xlsform-simple-schema/types/ODKNode
 export function FormulaResultMeaning({
   results,
   columnName,
+  formulaIsTrivial,
 }: {
   results: ODKFormulaEvaluationResult;
   columnName: EvaluatableColumnName;
+  formulaIsTrivial: boolean;
 }) {
   return (
     <Text className={Classes.TEXT_MUTED}>
       {
         {
-          calculation: <>This is the result of the formula.</>,
+          calculation: !formulaIsTrivial && (
+            <>This is the result of the formula.</>
+          ),
           required: `This means you ${
             results?.result ? "can’t" : "can"
           } complete the survey without entering data in this field.`,

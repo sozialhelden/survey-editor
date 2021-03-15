@@ -56,7 +56,7 @@ const AppBody = styled.div`
 
 function App() {
   const [xlsForm, setXLSForm] = React.useState<XLSForm>();
-  const [language, setLanguage] = React.useState<string>();
+  const [language, setLanguage] = React.useState<string>("English (en)");
 
   const [worksheetName, setWorksheetName] = React.useState<WorksheetName>(
     "survey"

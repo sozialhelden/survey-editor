@@ -75,7 +75,7 @@ export function nestDoubleColonFields(
 // See reference table: https://xlsform.org/en/ref-table/
 
 export function normalizeColumnNames(
-  headerRow: Excel.CellValue[]
+  headerRow: readonly string[]
 ): readonly string[] {
   const result: string[] = [];
   for (let i = 0; i < headerRow.length; i += 1) {

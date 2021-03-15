@@ -3,6 +3,7 @@ import PaddedContainer from "../components/PaddedContainer";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import { XLSForm } from "../xlsform-simple-schema";
 import { FieldSetForKey } from "./FieldSetForKey";
+import NoSurveyFieldsState from "./NoSurveyFieldsState";
 
 export default function XLSFormSurvey(props: {
   xlsForm: XLSForm;
@@ -10,11 +11,13 @@ export default function XLSFormSurvey(props: {
   debug: boolean;
   className?: string;
 }) {
-  const { schema, languageCode, debug } = React.useContext(ODKSurveyContext);
+  const { languageCode, debug } = React.useContext(ODKSurveyContext);
 
-  const fieldSets = schema
-    ?.objectKeys()
-    .map((k) => <FieldSetForKey key={k} schemaKey={k} />);
+  // const fieldSets = schema
+  //   ?.objectKeys()
+  //   .map((k) => <FieldSetForKey key={k} schemaKey={k} />);
+  const isSurveyEmpty = props.xlsForm.flatNodes.length === 0;
+  const noSurveyFieldsState = <NoSurveyFieldsState />;
 
   return (
     <PaddedContainer
@@ -28,7 +31,13 @@ export default function XLSFormSurvey(props: {
       }}
       lang={languageCode}
     >
-      <form>{fieldSets}</form>
+      {isSurveyEmpty ? (
+        noSurveyFieldsState
+      ) : (
+        <form>
+          <FieldSetForKey key={"data"} schemaKey={"data"} />
+        </form>
+      )}
     </PaddedContainer>
   );
 }

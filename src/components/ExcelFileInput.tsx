@@ -1,10 +1,37 @@
 import { FileInput } from "@blueprintjs/core";
 import * as ExcelJS from "exceljs";
 import * as React from "react";
+import { XLSForm } from "../xlsform-simple-schema";
+import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
 
 export default function ExcelFileInput(props: {
-  onLoadWorkbook: (workbook: ExcelJS.Workbook) => void;
+  setXLSForm: (xlsForm: XLSForm | undefined) => void;
+  setLanguage: (language: string) => void;
 }) {
+  const { onFileChange } = useWorkbookFromFile(props);
+  return <FileInput onInputChange={onFileChange} large={true} />;
+}
+
+export function useWorkbookFromFile({
+  setXLSForm,
+  setLanguage,
+}: {
+  setXLSForm: (xlsForm: XLSForm) => void;
+  setLanguage: (language: string) => void;
+}) {
+  const onLoadWorkbook = React.useCallback(
+    async (workbook: ExcelJS.Workbook) => {
+      const xlsForm = await loadFormFromExcelWorkbook(workbook);
+      setXLSForm(xlsForm);
+      setLanguage(
+        xlsForm.worksheets.settings?.rows[0].default_language ||
+          [...xlsForm.languages?.values()][0] ||
+          "English (en)"
+      );
+    },
+    [setLanguage, setXLSForm]
+  );
+
   const onFileChange = React.useCallback(
     (e) => {
       const file = e.target.files[0];
@@ -20,13 +47,12 @@ export default function ExcelFileInput(props: {
           );
         }
         wb.xlsx.load(buffer).then((workbook) => {
-          console.log(workbook, "workbook instance");
-          props.onLoadWorkbook(wb);
+          onLoadWorkbook(wb);
         });
       };
     },
-    [props]
+    [onLoadWorkbook]
   );
 
-  return <FileInput onInputChange={onFileChange} large={true} />;
+  return { onFileChange };
 }

@@ -146,7 +146,11 @@ export default function XLSFormWorksheet(props: Props) {
         // numFrozenColumns={worksheetName === "survey" ? 2 : 0}
       >
         {columnNames.map((columnName) => (
-          <Column name={columnName} cellRenderer={cellRenderer} />
+          <Column
+            key={columnName}
+            name={columnName}
+            cellRenderer={cellRenderer}
+          />
         ))}
       </FlexTable>
     </OverflowScrollContainer>

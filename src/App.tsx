@@ -109,6 +109,8 @@ function App() {
           <Navbar>
             <Navbar.Group>
               <FileMenuButton {...{ setXLSForm, setLanguage, xlsForm }} />
+            </Navbar.Group>
+            <Navbar.Group>
               <Navbar.Divider />
               {viewOptions.table && (
                 <SheetTabs {...{ setWorksheetName, worksheetName }} />
@@ -116,7 +118,6 @@ function App() {
               <EditableSurveyTitle />
             </Navbar.Group>
             <Navbar.Group align={Alignment.RIGHT}>
-              <Navbar.Divider />
               {viewMenuButton}
               <Navbar.Divider />
               {xlsForm && language && (

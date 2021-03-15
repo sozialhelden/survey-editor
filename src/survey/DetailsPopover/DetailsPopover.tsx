@@ -266,8 +266,12 @@ export default function DetailsPopover(props: {
       {referencesButton}
 
       <ButtonGroup fill={false}>
-        <Popover2 content={<Menu>{nodeActionMenuItems}</Menu>} lazy={true}>
-          <Button icon={"more"} minimal={true} title="Actions" />
+        <Popover2
+          content={<Menu>{nodeActionMenuItems}</Menu>}
+          lazy={true}
+          placement="right-start"
+        >
+          <Button icon={"more"} minimal={true} text="Actions" />
         </Popover2>
       </ButtonGroup>
     </ControlGroup>
@@ -314,7 +318,7 @@ export default function DetailsPopover(props: {
         interactionKind="click"
         popoverClassName={PopoverClasses.POPOVER2_CONTENT_SIZING}
         minimal={false}
-        placement="bottom"
+        placement="top"
         rootBoundary="viewport"
         onOpening={() => setWidth(0)}
         modifiers={{

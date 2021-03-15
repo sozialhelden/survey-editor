@@ -1,4 +1,4 @@
-import { Button, Menu, MenuItem } from "@blueprintjs/core";
+import { Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { saveXLSForm } from "../lib/saveXLSForm";
@@ -30,16 +30,17 @@ export function FileMenuButton({
   const menu = (
     <Menu>
       <label htmlFor="open-file-input">
-        <MenuItem icon="folder-open" text="Open…" />
+        <MenuItem icon="import" text="Import file…" />
       </label>
-      <MenuItem text="Download" icon="download">
+      <MenuItem text="Export" icon="export">
         <MenuItem
           text="Microsoft Excel (.xlsx)"
           onClick={saveFileAs}
           disabled={!xlsForm}
         />
       </MenuItem>
-      <MenuItem icon="folder-close" text="Close" onClick={closeFile} />
+      <MenuDivider />
+      <MenuItem text="Close" onClick={closeFile} />
     </Menu>
   );
 
@@ -48,6 +49,7 @@ export function FileMenuButton({
       className="bp3-minimal"
       icon="folder-close"
       rightIcon="caret-down"
+      text="File"
     />
   );
 

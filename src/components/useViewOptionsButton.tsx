@@ -1,6 +1,5 @@
-import { Button, Classes, Menu, Switch } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
-import React, { FormEvent } from "react";
+import { Button, ButtonGroup, Navbar, Switch } from "@blueprintjs/core";
+import React from "react";
 
 export type ViewOption = "table" | "debug" | "json";
 const defaultViewOptions: Record<ViewOption, boolean> = {
@@ -30,63 +29,41 @@ export default function useViewOptionsButton() {
     Record<ViewOption, boolean>
   >(defaultViewOptions);
 
-  const onDebugChange = React.useCallback(
-    (event: FormEvent<HTMLInputElement>) => {
-      setViewOptions({ ...viewOptions, debug: !event.currentTarget.checked });
-    },
-    [viewOptions]
-  );
+  const onDebugChange = React.useCallback(() => {
+    setViewOptions({ ...viewOptions, debug: !viewOptions.debug });
+  }, [viewOptions]);
 
-  const onShowTableChange = React.useCallback(
-    (event: FormEvent<HTMLInputElement>) => {
-      setViewOptions({ ...viewOptions, table: event.currentTarget.checked });
-    },
-    [viewOptions]
-  );
+  const onShowTableChange = React.useCallback(() => {
+    setViewOptions({ ...viewOptions, table: !viewOptions.table });
+  }, [viewOptions]);
 
-  const onShowResultChange = React.useCallback(
-    (event: FormEvent<HTMLInputElement>) => {
-      setViewOptions({ ...viewOptions, json: event.currentTarget.checked });
-    },
-    [viewOptions]
-  );
+  const onShowResultChange = React.useCallback(() => {
+    setViewOptions({ ...viewOptions, json: !viewOptions.json });
+  }, [viewOptions]);
 
   const viewMenuButton = (
-    <Popover2
-      content={
-        <Menu>
-          <li className={Classes.MENU_ITEM}>
-            <NavbarSwitch
-              checked={viewOptions.table}
-              label="Table"
-              onChange={onShowTableChange}
-            />
-          </li>
-          <li className={Classes.MENU_ITEM}>
-            <NavbarSwitch
-              checked={!viewOptions.debug}
-              label="Live View"
-              onChange={onDebugChange}
-            />
-          </li>
-          <li className={Classes.MENU_ITEM}>
-            <NavbarSwitch
-              checked={viewOptions.json}
-              label="JSON"
-              onChange={onShowResultChange}
-            />
-          </li>
-        </Menu>
-      }
-      lazy={true}
-    >
-      <Button
-        icon="column-layout"
-        minimal={true}
-        rightIcon={"caret-down"}
-        title="View"
+    <>
+      <ButtonGroup>
+        <Button
+          icon="join-table"
+          text="Excel"
+          active={viewOptions.table}
+          onClick={onShowTableChange}
+        />
+        <Button
+          icon="diagram-tree"
+          text="JSON"
+          active={viewOptions.json}
+          onClick={onShowResultChange}
+        />
+      </ButtonGroup>
+      <Navbar.Divider />
+      <NavbarSwitch
+        label="Live view"
+        checked={!viewOptions.debug}
+        onChange={onDebugChange}
       />
-    </Popover2>
+    </>
   );
 
   return { viewMenuButton, viewOptions };

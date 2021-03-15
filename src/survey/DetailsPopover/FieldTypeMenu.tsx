@@ -1,5 +1,6 @@
 import { Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import * as React from "react";
+import addExampleChoices from "../../lib/addExampleChoices";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import {
@@ -24,6 +25,14 @@ export function FieldTypeMenu() {
         ...node.row,
         type: newTypeValue,
       };
+
+      if (
+        type?.match(/^select/) &&
+        context.xlsForm?.worksheets.choices?.rows.length === 0
+      ) {
+        addExampleChoices(context);
+      }
+
       context.onSpliceRows("survey", [
         {
           rowIndex: node.rowIndex,

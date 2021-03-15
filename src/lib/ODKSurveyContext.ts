@@ -6,7 +6,7 @@ import ODKFormulaEvaluationContext, {
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import useChangeHooks from "./useChangeHooks";
 
-export interface IODKSurveyContext {
+export type ODKSurveyContextType = {
   schema?: SimpleSchema;
   context?: ODKFormulaEvaluationContext;
   language?: string;
@@ -14,11 +14,9 @@ export interface IODKSurveyContext {
   languageCode?: string;
   debug: boolean;
   xlsForm?: XLSForm;
-}
+} & ReturnType<typeof useChangeHooks>;
 
-export const ODKSurveyContext = React.createContext<
-  IODKSurveyContext & ReturnType<typeof useChangeHooks>
->({
+export const ODKSurveyContext = React.createContext<ODKSurveyContextType>({
   schema: new SimpleSchema({}),
   context: getEmptyContext(),
   language: "English (en)",

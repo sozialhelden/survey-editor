@@ -1,6 +1,6 @@
 import { Callout, Colors, Icon } from "@blueprintjs/core";
 import * as React from "react";
-import HighlightedExpression from "../../components/expression/HighlightedExpression";
+import HighlightedExpression from "../../components/HighlightedODKExpression";
 import StyledMarkdown from "../../components/StyledMarkdown";
 import { alpha } from "../../lib/colors";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";

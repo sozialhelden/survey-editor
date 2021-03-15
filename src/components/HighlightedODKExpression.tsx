@@ -1,20 +1,20 @@
 import { Classes, Colors } from "@blueprintjs/core";
 import * as React from "react";
 import styled, { CSSProperties } from "styled-components";
-import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import DetailsPopover from "../../survey/DetailsPopover/DetailsPopover";
+import { ODKSurveyContext } from "../lib/ODKSurveyContext";
+import DetailsPopover from "../survey/DetailsPopover/DetailsPopover";
 import {
   findNodeByNameInCurrentAndAncestorScopes,
   findNodeByNameInsideScope,
-} from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+} from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
   Expression,
   NameExpression,
   Token,
   TokenType,
-} from "../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base";
-import { EvaluationError } from "../../xlsform-simple-schema/types/Errors";
-import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
+} from "../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base";
+import { EvaluationError } from "../xlsform-simple-schema/types/Errors";
+import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 
 const StyledCode = styled.code`
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",

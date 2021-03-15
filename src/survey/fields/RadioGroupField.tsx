@@ -74,6 +74,7 @@ export default function RadioGroupField(props: Props) {
           definedLabel === "undefined" ? choiceRow?.name : definedLabel;
         return (
           <Radio
+            key={choiceRow?.name}
             label={shownLabel}
             value={choiceRow?.name}
             inline={true}

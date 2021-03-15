@@ -23,7 +23,7 @@ export function NodeReferencesMenu(props: {
 
       {props.references?.map((reference) => {
         if (!context.context) {
-          return;
+          return null;
         }
         const href = `#//${getNodeAbsolutePathString(
           reference.node,

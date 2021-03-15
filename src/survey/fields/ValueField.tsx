@@ -8,6 +8,7 @@ import { internalFields } from "../internalFields";
 import BooleanField from "./BooleanField";
 import CheckboxGroupField from "./CheckboxGroupField";
 import DateField from "./DateField";
+import { EditableFieldHint } from "./EditableFieldHint";
 import { Label } from "./Label";
 import NumberField from "./NumberField";
 import RadioGroupField from "./RadioGroupField";
@@ -79,11 +80,9 @@ export default function ValueField(props: FieldProps) {
   if (isInternalField && !context.debug) {
     return null;
   }
-
   const detailsButton = <DetailsPopover {...{ ...props }} editable={true} />;
-  const hintString = node.row.hint?.[language] && (
-    <Callout intent="primary">{node.row.hint?.[language]}</Callout>
-  );
+
+  const hint = <EditableFieldHint {...{ node, debug }} />;
   const labelElement = (
     <Label {...{ ...props, debug, isEditable: !isBoolean && !isInternalField }}>
       {props.quickType !== "boolean" && debug && detailsButton}
@@ -113,14 +112,15 @@ export default function ValueField(props: FieldProps) {
       >
         {debug && detailsButton}
         {input}
-        {hintString}
+        {hint}
       </FormGroup>
     );
   }
 
   if (node.type === "note") {
-    return labelElement;
+    return <Callout intent="primary">{labelElement}</Callout>;
   }
+
   return (
     <FormGroup
       // helperText={hintString}
@@ -128,7 +128,7 @@ export default function ValueField(props: FieldProps) {
       labelFor={node.row.name}
     >
       {input}
-      {hintString}
+      <EditableFieldHint {...{ node, debug }} />
     </FormGroup>
   );
 }

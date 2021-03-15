@@ -25,8 +25,6 @@ import { getFirstColumnNameWithError } from "../../lib/getFirstColumnNameWithErr
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { typesToIcons } from "../../lib/typesToIcons";
-import useNodeDeletionDialog from "../../lib/useNodeDeletionDialog";
-import useRenameNodeDialog from "../../lib/useRenameNodeDialog";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
@@ -39,7 +37,7 @@ import { useNodeDragAndDrop } from "../useNodeDragAndDrop";
 import { ExpressionPanel } from "./ExpressionPanel";
 import { FieldConfigurationButton } from "./FieldConfigurationButton";
 import { FieldPathBreadcrumbs } from "./FieldPathBreadcrumbs";
-import NodeActionMenuItems from "./NodeActionMenuItems";
+import { useNodeActionMenuItems } from "./NodeActionMenuItems";
 import { NodeReferencesMenu } from "./NodeReferencesMenu";
 
 export const StyledCodeBlock = styled(Code)`
@@ -227,8 +225,9 @@ export default function DetailsPopover(props: {
     [context, node]
   );
 
-  const { alert, showRemoveConfirmationDialog } = useNodeDeletionDialog();
-  const { dialog: renameDialog, showRenameDialog } = useRenameNodeDialog();
+  const { nodeActionMenuItems, nodeActionDialogs } = useNodeActionMenuItems(
+    node
+  );
   if (!context.context) {
     return null;
   }
@@ -259,20 +258,7 @@ export default function DetailsPopover(props: {
       {referencesButton}
 
       <ButtonGroup fill={false}>
-        <Popover2
-          content={
-            <Menu>
-              <NodeActionMenuItems
-                node={node}
-                onRemove={showRemoveConfirmationDialog}
-                onRename={showRenameDialog}
-                onNestField={context.onNestNode}
-                onUngroupField={context.onUngroupNode}
-              />
-            </Menu>
-          }
-          lazy={true}
-        >
+        <Popover2 content={<Menu>{nodeActionMenuItems}</Menu>} lazy={true}>
           <Button icon={"more"} minimal={true} title="Actions" />
         </Popover2>
       </ButtonGroup>
@@ -314,8 +300,7 @@ export default function DetailsPopover(props: {
 
   return (
     <ODKNodeContext.Provider value={{ node, nodeEvaluationResults }}>
-      {alert}
-      {renameDialog}
+      {nodeActionDialogs}
       <Popover2
         lazy={true}
         interactionKind="click"

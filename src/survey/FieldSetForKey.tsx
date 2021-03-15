@@ -6,18 +6,15 @@ import {
   H4,
   Menu,
   MenuDivider,
-  MenuItem,
 } from "@blueprintjs/core";
 import { ContextMenu2, Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../lib/colors";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
-import useNodeDeletionDialog from "../lib/useNodeDeletionDialog";
-import useRenameNodeDialog from "../lib/useRenameNodeDialog";
 import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import AddFieldOrGroupMenuItem from "./AddFieldMenuItem";
-import NodeActionMenuItems from "./DetailsPopover/NodeActionMenuItems";
+import { useNodeActionMenuItems } from "./DetailsPopover/NodeActionMenuItems";
 import { FieldProps } from "./FieldProps";
 import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
@@ -94,26 +91,22 @@ export function FieldSetForKey(props: {
   readonly?: boolean;
 }) {
   const { schemaKey } = props;
-  const {
-    schema,
-    context,
-    debug,
-    onNestNode,
-    onUngroupNode,
-  } = React.useContext(ODKSurveyContext);
-  const { alert, showRemoveConfirmationDialog } = useNodeDeletionDialog();
-  const { dialog: renameDialog, showRenameDialog } = useRenameNodeDialog();
+  const { schema, context, debug } = React.useContext(ODKSurveyContext);
+
+  const quickType = schema?.getQuickTypeForKey(schemaKey);
+  const schemaKeyPath = [".", ...schemaKey.replace(/\.\$/g, "").split(".")];
+
+  const node =
+    context?.survey &&
+    findNodeByPathRelativeToScope(schemaKeyPath, context, context.survey);
+
+  const { nodeActionMenuItems, nodeActionDialogs } = useNodeActionMenuItems(
+    node instanceof Array ? undefined : node
+  );
+
   if (!context || !schema) {
     return null;
   }
-  const quickType = schema.getQuickTypeForKey(schemaKey);
-  const schemaKeyPath = [".", ...schemaKey.replace(/\.\$/g, "").split(".")];
-
-  const node = findNodeByPathRelativeToScope(
-    schemaKeyPath,
-    context,
-    context.survey
-  );
 
   if (node instanceof Array) {
     if (!debug) {
@@ -198,20 +191,10 @@ export function FieldSetForKey(props: {
   }
 
   if (debug && node !== context.survey) {
-    const nodeActionMenuItems = (
-      <NodeActionMenuItems
-        node={node}
-        onRemove={showRemoveConfirmationDialog}
-        onRename={showRenameDialog}
-        onNestField={onNestNode}
-        onUngroupField={onUngroupNode}
-      />
-    );
     const nodeActionMenu = <Menu>{nodeActionMenuItems}</Menu>;
     return (
       <>
-        {alert}
-        {renameDialog}
+        {nodeActionDialogs}
         <ContextMenu2 content={nodeActionMenu}>
           <Hoverable>
             <Stripe />
@@ -232,9 +215,7 @@ export function FieldSetForKey(props: {
                     group={true}
                   />
                   <MenuDivider />
-                  <MenuItem text="Actions" icon="more">
-                    {nodeActionMenuItems}
-                  </MenuItem>
+                  {nodeActionMenuItems}
                 </ul>
               }
               lazy={true}
@@ -250,9 +231,7 @@ export function FieldSetForKey(props: {
             <Popover2
               content={
                 <ul className={Classes.LIST_UNSTYLED}>
-                  <MenuItem text="Actions" icon="more">
-                    {nodeActionMenuItems}
-                  </MenuItem>
+                  {nodeActionMenuItems}
                   <MenuDivider />
                   <AddFieldOrGroupMenuItem
                     icon="arrow-down"

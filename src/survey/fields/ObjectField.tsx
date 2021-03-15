@@ -1,5 +1,4 @@
 import {
-  Callout,
   ControlGroup,
   EditableText,
   H1,
@@ -15,6 +14,7 @@ import { isNodeRelevant } from "../../xlsform-simple-schema/types/ODKNode";
 import DetailsPopover from "../DetailsPopover/DetailsPopover";
 import { FieldProps } from "../FieldProps";
 import { FieldSetForKey } from "../FieldSetForKey";
+import { EditableFieldHint } from "./EditableFieldHint";
 
 export default function ObjectField(props: FieldProps) {
   const { onChangeCell } = React.useContext(ODKSurveyContext);
@@ -23,57 +23,36 @@ export default function ObjectField(props: FieldProps) {
   const context = React.useContext(ODKSurveyContext);
   const { debug } = context;
 
-  const label =
-    node === context.context?.survey
-      ? context.xlsForm?.worksheets.settings?.rows[0].form_title
-      : schema.get(schemaKey, "label");
+  const labelString = schema.get(schemaKey, "label");
   const path =
     context.context && getNodeAbsolutePath(node, context.context).join("/");
 
-  const onChangeSurveyName = React.useCallback(
-    (text: string) => {
-      if (text === label || (label === undefined && text === "")) {
-        return;
-      }
-      onChangeCell("settings", 0, "form_title", text);
-    },
-    [onChangeCell, label]
-  );
+  const [editedLabelString, setEditedLabelString] = React.useState<string>();
 
   const onChangeLabel = React.useCallback(
     (text: string) => {
-      if (text === label || (label === undefined && text === "")) {
+      if (text === labelString || (labelString === undefined && text === "")) {
         return;
       }
       onChangeCell("survey", node.rowIndex, "label", text, node);
+      setEditedLabelString(undefined);
     },
-    [node, onChangeCell, label]
+    [node, onChangeCell, labelString]
   );
 
-  const labelInput =
-    node === context.context?.survey ? (
-      <EditableText
-        onChange={onChangeSurveyName}
-        onConfirm={onChangeSurveyName}
-        placeholder={`Enter a survey title…`}
-        value={label}
-        minWidth={100}
-      />
-    ) : (
-      <EditableText
-        multiline={true}
-        onChange={onChangeLabel}
-        onConfirm={onChangeLabel}
-        placeholder={`Enter a title for \`${node.row.name}\`in ${context.languageName}…`}
-        value={label}
-        minWidth={100}
-      />
-    );
+  const labelInput = node !== context.context?.survey && (
+    <EditableText
+      multiline={true}
+      onChange={setEditedLabelString}
+      onConfirm={onChangeLabel}
+      confirmOnEnterKey={true}
+      placeholder={`Enter a title for \`${node.row.name}\`in ${context.languageName}…`}
+      value={editedLabelString === undefined ? labelString : editedLabelString}
+      minWidth={100}
+    />
+  );
 
   const HeadingClass = [H1, H2, H3, H4, H5][node.indentationLevel] || H5;
-
-  const hintString =
-    typeof context.language === "string" && node.row.hint?.[context.language];
 
   const isRelevant = isNodeRelevant(node, context.context);
   if (!isRelevant && !debug) {
@@ -96,13 +75,13 @@ export default function ObjectField(props: FieldProps) {
           }}
           id={path}
         >
-          {debug ? <>{labelInput}</> : label}
+          {debug ? <>{labelInput}</> : labelString}
         </HeadingClass>
         {debug && node !== context.context?.survey && (
           <DetailsPopover {...{ ...props }} editable={true} />
         )}
       </ControlGroup>
-
+      <EditableFieldHint {...{ node, debug }} />
       {subKeys.map((subkey) => (
         <FieldSetForKey
           key={subkey}
@@ -111,8 +90,6 @@ export default function ObjectField(props: FieldProps) {
           readonly={props.readonly}
         />
       ))}
-
-      {hintString && <Callout intent={"primary"}>{hintString}</Callout>}
     </ControlGroup>
   );
 }

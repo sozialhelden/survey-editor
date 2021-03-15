@@ -1,5 +1,5 @@
-import React from "react";
 import { Alignment, Button, ButtonGroup, Navbar } from "@blueprintjs/core";
+import React from "react";
 import { WorksheetName } from "./xlsform-simple-schema";
 
 export function SheetTabs({
@@ -31,6 +31,7 @@ export function SheetTabs({
           Settings
         </Button>
       </ButtonGroup>
+      <Navbar.Divider />
     </Navbar.Group>
   );
 }

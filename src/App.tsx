@@ -1,13 +1,17 @@
 import {
   Alignment,
   Button,
+  Classes,
+  ControlGroup,
   FocusStyleManager,
+  Menu,
   Navbar,
   NonIdealState,
   Switch,
 } from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
 import * as ExcelJS from "exceljs";
-import React, { FormEvent } from "react";
+import React, { FormEvent, useCallback } from "react";
 import styled from "styled-components";
 import "./App.css";
 import ResultCodeTree from "./code/ResultCodeTree";
@@ -17,6 +21,7 @@ import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import useChangeHooks from "./lib/useChangeHooks";
 import { SheetTabs } from "./SheetTabs";
+import EditableSurveyTitle from "./survey/fields/EditableSurveyTitle";
 import { ODKNodeDragAndDropContext } from "./survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./survey/XLSFormSurvey";
 import XLSFormWorksheet from "./table/XLSFormWorksheet";
@@ -122,6 +127,36 @@ function App() {
 
   const fileInput = <ExcelFileInput onLoadWorkbook={onLoadWorkbook} />;
 
+  const loadEmptyXLSForm = useCallback(async () => {
+    const emptyWorkbook = new ExcelJS.Workbook();
+    emptyWorkbook.addWorksheet("survey");
+    emptyWorkbook.addWorksheet("choices");
+    const settingsWorksheet = emptyWorkbook.addWorksheet("settings");
+    settingsWorksheet.addRow(["default_language"]);
+    settingsWorksheet.addRow(["English (en)"]);
+
+    setXLSForm(await loadFormFromExcelWorkbook(emptyWorkbook));
+  }, []);
+
+  const nonIdealStateActions = (
+    <ControlGroup vertical={true}>
+      <p>{fileInput}</p>
+      <p>or</p>
+      <p>
+        <Button large={true} onClick={loadEmptyXLSForm}>
+          Start from scratch
+        </Button>
+      </p>
+    </ControlGroup>
+  );
+
+  const nonIdealState = (
+    <NonIdealState
+      icon="document-open"
+      title="Open an XLSForm Excel file to start."
+      action={nonIdealStateActions}
+    />
+  );
   const reset = React.useCallback(() => {
     setXLSForm(undefined);
   }, []);
@@ -156,6 +191,39 @@ function App() {
     return undefined;
   }, [xlsForm, language, context]);
 
+  const viewsButton = (
+    <Popover2
+      content={
+        <Menu>
+          <li className={Classes.MENU_ITEM}>
+            <NavbarSwitch
+              checked={showTable === true}
+              label="Table"
+              onChange={onShowTableChange}
+            />
+          </li>
+          <li className={Classes.MENU_ITEM}>
+            <NavbarSwitch
+              checked={debug === false}
+              label="Live View"
+              onChange={onDebugChange}
+            />
+          </li>
+          <li className={Classes.MENU_ITEM}>
+            <NavbarSwitch
+              checked={showResult === true}
+              label="JSON"
+              onChange={onShowResultChange}
+            />
+          </li>
+        </Menu>
+      }
+      lazy={true}
+    >
+      <Button minimal={true} text="Views" rightIcon={"caret-down"} />
+    </Popover2>
+  );
+
   return (
     <ODKNodeDragAndDropContext.Provider
       value={{ onDropNode: changeHooks.onMoveNode }}
@@ -176,25 +244,13 @@ function App() {
             {showTable && (
               <SheetTabs {...{ setWorksheetName, worksheetName }} />
             )}
-
+            <Navbar.Group>
+              <EditableSurveyTitle />
+            </Navbar.Group>
             <Navbar.Group align={Alignment.RIGHT}>
               {resetButton}
               <Navbar.Divider />
-              <NavbarSwitch
-                checked={showTable === true}
-                label="Table"
-                onChange={onShowTableChange}
-              />
-              <NavbarSwitch
-                checked={debug === false}
-                label="Live View"
-                onChange={onDebugChange}
-              />
-              <NavbarSwitch
-                checked={showResult === true}
-                label="JSON"
-                onChange={onShowResultChange}
-              />
+              {viewsButton}
               <Navbar.Divider />
               {xlsForm && language && (
                 <LanguageSelector
@@ -209,13 +265,7 @@ function App() {
 
         <AppBody>
           {!xlsForm && (
-            <OverflowScrollContainer>
-              <NonIdealState
-                icon="document-open"
-                title="Open an XLSForm Excel file to start."
-                action={fileInput}
-              />
-            </OverflowScrollContainer>
+            <OverflowScrollContainer>{nonIdealState}</OverflowScrollContainer>
           )}
           {xlsForm && language && showTable && (
             <XLSFormWorksheet

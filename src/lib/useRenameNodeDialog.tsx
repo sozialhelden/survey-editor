@@ -16,10 +16,9 @@ import findOrReplaceFieldReferences, {
 } from "./findOrReplaceFieldReferences";
 import { ODKSurveyContext } from "./ODKSurveyContext";
 
-export default function useRenameNodeDialog() {
+export default function useRenameNodeDialog(node?: ODKNode) {
   const context = useContext(ODKSurveyContext);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [node, setNode] = useState<ODKNode>();
   const [newName, setNewName] = useState<string>("");
   const [references, setChangedRows] = useState<DependentNodeWithReplacedRow[]>(
     []
@@ -68,8 +67,7 @@ export default function useRenameNodeDialog() {
     [context, newName, node]
   );
 
-  const showRenameDialog = useCallback((node: ODKNode) => {
-    setNode(node);
+  const showRenameDialog = useCallback(() => {
     setDialogOpen(true);
   }, []);
 

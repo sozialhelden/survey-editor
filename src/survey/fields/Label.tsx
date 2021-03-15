@@ -23,41 +23,35 @@ export function Label(
     children,
   } = props;
   const context = React.useContext(ODKSurveyContext);
-  const label = node.row.label?.[context.language || "English (en)"];
+  const labelString = node.row.label?.[context.language || "English (en)"];
   const evaluatedLabel = schema.get(schemaKey, "label");
   const { onChangeCell } = React.useContext(ODKSurveyContext);
   const path =
     context.context && getNodeAbsolutePath(node, context.context).join("/");
-  const [editedLabel, setEditedLabel] = React.useState(label);
-
-  const onChangeLabel = React.useCallback((text: string) => {
-    setEditedLabel(text);
-  }, []);
-
-  React.useEffect(() => {
-    setEditedLabel(label);
-  }, [label]);
+  const [editedLabelString, setEditedLabelString] = React.useState<string>();
 
   const onConfirmLabel = React.useCallback(
     (text: string) => {
-      if (text === label || (label === undefined && text === "")) {
+      if (text === labelString || (labelString === undefined && text === "")) {
         return;
       }
       onChangeCell("survey", node.rowIndex, "label", text, node);
+      setEditedLabelString(undefined);
     },
-    [node, onChangeCell, label]
+    [labelString, node, onChangeCell]
   );
 
   let labelInput =
     isEditable && debug ? (
       <EditableText
-        onChange={onChangeLabel}
+        onChange={setEditedLabelString}
         onConfirm={onConfirmLabel}
         placeholder={`Enter a title for \`${node.row.name}\` in ${context.languageName}…`}
-        value={editedLabel}
+        value={
+          editedLabelString === undefined ? labelString : editedLabelString
+        }
         minWidth={100}
-        minLines={1}
-        maxLines={5}
+        confirmOnEnterKey={true}
         multiline={true}
       />
     ) : (

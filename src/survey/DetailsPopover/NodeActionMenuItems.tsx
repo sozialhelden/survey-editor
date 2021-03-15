@@ -1,46 +1,43 @@
 import { MenuDivider, MenuItem } from "@blueprintjs/core";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import useNodeDeletionDialog from "../../lib/useNodeDeletionDialog";
+import useRenameNodeDialog from "../../lib/useRenameNodeDialog";
 import {
   isGroupNode,
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
 import AddFieldOrGroupMenuItem from "../AddFieldMenuItem";
 
-export default function NodeActionMenuItems({
-  node,
-  onRemove,
-  onRename,
-  onNestField,
-  onUngroupField,
-}: {
-  node: ODKNode;
-  onRemove: (node: ODKNode) => void;
-  onRename: (node: ODKNode) => void;
-  onNestField: (node: ODKNode) => void;
-  onUngroupField: (node: ODKNode) => void;
+export default function NodeActionMenuItems(props: {
+  node?: ODKNode;
+  removeNode: () => void;
+  renameNode: () => void;
+  nestNode: () => void;
+  ungroupNode: () => void;
+  addHintToNode: () => void;
+  removeHintFromNode: () => void;
 }) {
-  const removeNode = useCallback(() => {
-    onRemove(node);
-  }, [node, onRemove]);
-
-  const renameNode = useCallback(() => {
-    onRename(node);
-  }, [node, onRename]);
-
-  const nestField = useCallback(() => {
-    onNestField(node);
-  }, [node, onNestField]);
-
-  const ungroupField = useCallback(() => {
-    onUngroupField(node);
-  }, [node, onUngroupField]);
+  const context = useContext(ODKSurveyContext);
+  const { node } = props;
+  if (!node) {
+    return null;
+  }
 
   const isGroup = isGroupNode(node);
   const renameText = isGroup ? "Rename group…" : "Rename field…";
+  const nodeHasHint = context.language && node.row.hint?.[context.language];
+
   const items = (
     <>
-      <MenuItem icon="edit" text={renameText} onClick={renameNode} />
-
+      <MenuItem icon="edit" text={renameText} onClick={props.renameNode} />
+      {!nodeHasHint && (
+        <MenuItem
+          icon="lightbulb"
+          text="Add hint"
+          onClick={props.addHintToNode}
+        />
+      )}
       <MenuDivider />
 
       <MenuItem icon="group-objects" text="Add group">
@@ -100,13 +97,13 @@ export default function NodeActionMenuItems({
       <MenuItem
         icon="group-objects"
         text="Nest in new group"
-        onClick={nestField}
+        onClick={props.nestNode}
       />
       {isGroup && (
         <MenuItem
           icon="ungroup-objects"
           text="Ungroup"
-          onClick={ungroupField}
+          onClick={props.ungroupNode}
         />
       )}
 
@@ -116,10 +113,62 @@ export default function NodeActionMenuItems({
         intent="danger"
         icon="trash"
         text={`Remove ${isGroup ? "group" : "field"}…`}
-        onClick={removeNode}
+        onClick={props.removeNode}
       />
     </>
   );
 
   return items;
+}
+
+export function useNodeActionMenuItems(node?: ODKNode) {
+  const context = useContext(ODKSurveyContext);
+  const {
+    alert: nodeDeletionAlert,
+    showRemoveConfirmationDialog,
+  } = useNodeDeletionDialog(node);
+  const { dialog: renameDialog, showRenameDialog } = useRenameNodeDialog(node);
+  const nodeActionDialogs = (
+    <>
+      {nodeDeletionAlert}
+      {renameDialog}
+    </>
+  );
+
+  const addHintToNode = useCallback(() => {
+    if (!node) {
+      return;
+    }
+    context.onChangeCell("survey", node?.rowIndex, "hint", " ", node);
+  }, [context, node]);
+
+  const removeHintFromNode = useCallback(() => {
+    if (!node) {
+      return;
+    }
+    context.xlsForm?.languages.forEach((language) => {
+      context.onChangeCell(
+        "survey",
+        node?.rowIndex,
+        "hint",
+        "",
+        node,
+        language
+      );
+    });
+  }, [context, node]);
+
+  const nodeActionMenuItems = node && (
+    <NodeActionMenuItems
+      node={node}
+      removeNode={showRemoveConfirmationDialog}
+      renameNode={showRenameDialog}
+      nestNode={context.onNestNode.bind(undefined, node)}
+      ungroupNode={context.onUngroupNode.bind(undefined, node)}
+      addHintToNode={addHintToNode}
+      removeHintFromNode={removeHintFromNode}
+    />
+  );
+
+  return { nodeActionDialogs, nodeActionMenuItems };
 }

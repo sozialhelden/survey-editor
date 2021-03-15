@@ -1,4 +1,5 @@
 import { Code } from "@blueprintjs/core";
+import { isEqual } from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { FieldProps } from "../survey/FieldProps";
@@ -16,7 +17,10 @@ import ODKFormulaEvaluationContext, {
   getEmptyContext,
   knownLiteralsWithoutDollarSign,
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import { getNodeIndexPath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import {
+  getAncestors,
+  getNodeIndexPath,
+} from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import patchXLSFormCell from "../xlsform-simple-schema/functions/patchXLSFormCell";
 import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
@@ -104,9 +108,14 @@ export default function useChangeHooks({
       rowIndex: number,
       columnName: string,
       value: unknown,
-      node?: ODKNode
+      node?: ODKNode,
+      overrideLanguage?: string
     ) => {
-      if (!xlsForm || !context || !language) {
+      if (!xlsForm || !context) {
+        return;
+      }
+      const languageToUse = overrideLanguage || language;
+      if (!languageToUse) {
         return;
       }
       setXLSForm(
@@ -116,7 +125,7 @@ export default function useChangeHooks({
           node,
           rowIndex,
           columnName,
-          language,
+          language: languageToUse,
           value,
           context,
         })
@@ -140,11 +149,13 @@ export default function useChangeHooks({
         if (!worksheet) {
           return xlsForm;
         }
+
         const newRows = [...worksheet?.rows];
         operations.forEach(({ rowIndex, numberOfRowsToRemove, rowsToAdd }) =>
           newRows.splice(rowIndex, numberOfRowsToRemove, ...rowsToAdd)
         );
         const newWorksheet = { ...worksheet, rows: newRows };
+
         return loadXLSFormFromRows(
           worksheetName === "survey"
             ? (newWorksheet as SurveyWorksheet)
@@ -323,6 +334,23 @@ export default function useChangeHooks({
       if (!xlsForm || !context || !language) {
         return;
       }
+
+      if (
+        getAncestors(destinationNode, context)?.find((ancestor) =>
+          isEqual(ancestor, sourceNode)
+        )
+      ) {
+        AppToaster.show(
+          {
+            intent: "warning",
+            icon: "error",
+            message: "Can’t move a node into its own descendants.",
+          },
+          "cant-drop-node-on-own-descendant"
+        );
+        return;
+      }
+
       const lastRowIndexOfSourceNode = getLastRowIndexOfNode(
         xlsForm,
         sourceNode

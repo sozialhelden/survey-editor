@@ -1,6 +1,6 @@
-import * as React from "react";
 import { FileInput } from "@blueprintjs/core";
 import * as ExcelJS from "exceljs";
+import * as React from "react";
 
 export default function ExcelFileInput(props: {
   onLoadWorkbook: (workbook: ExcelJS.Workbook) => void;
@@ -28,5 +28,5 @@ export default function ExcelFileInput(props: {
     [props]
   );
 
-  return <FileInput onInputChange={onFileChange} />;
+  return <FileInput onInputChange={onFileChange} large={true} />;
 }

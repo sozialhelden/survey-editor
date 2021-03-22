@@ -1,17 +1,17 @@
 import SimpleSchema from "simpl-schema";
+import { NodeToDefinitionFunction } from "./createLeafNodeSchemaDefinition";
 import {
   getLineStringGeometrySchema,
   getPointGeometrySchema,
   getPolygonGeometrySchema,
-} from "./Geometry";
+} from "./geometry/GeoJSONGeometry";
+import getAllowedChoiceValues from "./getAllowedChoiceValues";
 import {
   getAudioObjectSchema,
   getImageObjectSchema,
   getMediaObjectSchema,
   getVideoObjectSchema,
 } from "./MediaSchemas";
-import getAllowedChoiceValues from "./getAllowedChoiceValues";
-import { NodeToDefinitionFunction } from "./createLeafNodeSchemaDefinition";
 
 export const questionTypesToSchemaGenerators: Record<
   string,

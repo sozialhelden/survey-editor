@@ -8,11 +8,11 @@ import {
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { NodeReferencesMenu } from "../survey/DetailsPopover/NodeReferencesMenu";
+import { NodeReferencesMenu } from "../survey/FieldPopoverButton/NodeReferencesMenu";
 import { AppToaster } from "../toaster";
 import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import findOrReplaceFieldReferences, {
-  DependentNodeWithReplacedRow,
+  NodeDependency,
 } from "./findOrReplaceFieldReferences";
 import { ODKSurveyContext } from "./ODKSurveyContext";
 
@@ -20,7 +20,7 @@ export default function useRenameNodeDialog(node?: ODKNode) {
   const context = useContext(ODKSurveyContext);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [newName, setNewName] = useState<string>("");
-  const [references, setChangedRows] = useState<DependentNodeWithReplacedRow[]>(
+  const [nodeDependencies, setNodeDependencies] = useState<NodeDependency[]>(
     []
   );
 
@@ -30,7 +30,7 @@ export default function useRenameNodeDialog(node?: ODKNode) {
 
   useEffect(() => {
     if (context.xlsForm && node) {
-      setChangedRows(
+      setNodeDependencies(
         findOrReplaceFieldReferences(context.xlsForm, node, newName)
       );
     }
@@ -72,13 +72,13 @@ export default function useRenameNodeDialog(node?: ODKNode) {
   }, []);
 
   const dependenciesInfo =
-    references.length > 0 ? (
+    nodeDependencies.length > 0 ? (
       <Popover2
-        content={<NodeReferencesMenu references={references} />}
+        content={<NodeReferencesMenu references={nodeDependencies} />}
         lazy={true}
       >
         <Button minimal={true} intent="primary">
-          See {references.length} updates…
+          See {nodeDependencies.length} updates…
         </Button>
       </Popover2>
     ) : undefined;

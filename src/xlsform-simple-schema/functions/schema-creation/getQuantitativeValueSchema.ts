@@ -1,13 +1,16 @@
-import SimpleSchema, { SchemaDefinition } from 'simpl-schema';
+import SimpleSchema, { SchemaDefinition } from "simpl-schema";
 
 /**
  * Inspired from https://schema.org/QuantitativeValue
  */
 
-export const getQuantitativeValueSchema = (key: string, rootDefinition?: SchemaDefinition<unknown>): Record<string, SchemaDefinition<unknown>> => ({
+export const getQuantitativeValueSchema = (
+  key: string,
+  rootDefinition?: SchemaDefinition<unknown>
+): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
     type: Object,
-    ...rootDefinition
+    ...rootDefinition,
   },
   [`${key}.maxValue`]: {
     type: Number,
@@ -29,3 +32,11 @@ export const getQuantitativeValueSchema = (key: string, rootDefinition?: SchemaD
     type: SimpleSchema.oneOf(Number, String, Boolean),
   },
 });
+
+export interface IQuantitativeValue {
+  maxValue?: number;
+  minValue?: number;
+  unitCode?: string;
+  unitText?: string;
+  value: number | string | boolean;
+}

@@ -11,9 +11,11 @@ type Props = {
 };
 
 const renderItem: ItemRenderer<string> = (language: string, options) => {
+  const [, name, code] = language.match(/^(.*) \((.*)\)$/) || [];
   return (
     <MenuItem
-      text={language}
+      text={name}
+      label={code}
       // active={true}
       onClick={options.handleClick}
       shouldDismissPopover={false}
@@ -29,6 +31,8 @@ export default function LanguageSelector(props: Props) {
     [props]
   );
 
+  const [, name] = props.language.match(/^(.*) \((.*)\)$/) || [];
+
   return (
     <LanguageSelect
       items={props.languages}
@@ -40,7 +44,7 @@ export default function LanguageSelector(props: Props) {
     >
       {/* children become the popover target; render value here */}
       <Button
-        text={props.language}
+        text={name}
         rightIcon="double-caret-vertical"
         icon="globe"
         minimal={true}

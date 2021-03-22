@@ -99,7 +99,7 @@ export function ChoiceListMenu({
                 sortedChoiceRows.length - maxChoicesCount
               } more`}
             >
-              + {sortedChoiceRows.length - maxChoicesCount}
+              +{sortedChoiceRows.length - maxChoicesCount}
             </span>
           );
           const shownLabel = (

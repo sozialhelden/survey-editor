@@ -1,6 +1,6 @@
 import { Callout, Colors, Icon } from "@blueprintjs/core";
 import * as React from "react";
-import HighlightedExpression from "../../components/HighlightedODKExpression";
+import HighlightedExpression from "../../components/HighlightedExpression/HighlightedODKExpression";
 import StyledMarkdown from "../../components/StyledMarkdown";
 import { alpha } from "../../lib/colors";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
@@ -18,7 +18,7 @@ import {
   StyledCalloutWithCode,
   StyledCodeBlock,
   StyledPanel,
-} from "./DetailsPopover";
+} from "./FieldPopoverButton";
 import { FormulaResultMeaning } from "./FormulaResultMeaning";
 
 export function ExpressionPanel({
@@ -94,8 +94,6 @@ export function ExpressionPanel({
               state={results?.state}
               error={results?.error}
               expression={results?.expression}
-              code={String(cellValue)}
-              tokens={results?.parser?.tokens}
             />
           </StyledCodeBlock>
         </>
@@ -108,9 +106,17 @@ export function ExpressionPanel({
           )}
           {results?.state !== "error" && (
             <StyledCodeBlock style={{ fontSize: "20px", lineHeight: "28px" }}>
-              {results?.result === undefined
-                ? "undefined"
-                : JSON.stringify(results.result)}
+              {results?.result === undefined ? (
+                "undefined"
+              ) : (
+                // : JSON.stringify(results.result)}
+                <HighlightedExpression
+                  node={node}
+                  state={results?.state}
+                  error={results?.error}
+                  expression={results?.expression}
+                />
+              )}
             </StyledCodeBlock>
           )}
         </>

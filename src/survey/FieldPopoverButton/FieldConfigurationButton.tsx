@@ -85,7 +85,7 @@ export function FieldConfigurationButton({
                 items={node.typeParameters}
                 visibleItemRenderer={(p) => <Code>{p}</Code>}
                 overflowRenderer={(overflowItems) => (
-                  <span>{`+ ${overflowItems.length}`}</span>
+                  <span>{`+${overflowItems.length}`}</span>
                 )}
                 style={{
                   transition: "width 0.1s ease-out",

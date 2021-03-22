@@ -14,7 +14,7 @@ import { alpha } from "../lib/colors";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import AddFieldOrGroupMenuItem from "./AddFieldMenuItem";
-import { useNodeActionMenuItems } from "./DetailsPopover/NodeActionMenuItems";
+import { useNodeActionMenuItems } from "./FieldPopoverButton/NodeActionMenuItems";
 import { FieldProps } from "./FieldProps";
 import ObjectArrayField from "./fields/ObjectArrayField";
 import ObjectField from "./fields/ObjectField";
@@ -93,7 +93,6 @@ export function FieldSetForKey(props: {
   const { schemaKey } = props;
   const { schema, context, debug } = React.useContext(ODKSurveyContext);
 
-  const quickType = schema?.getQuickTypeForKey(schemaKey);
   const schemaKeyPath = [".", ...schemaKey.replace(/\.\$/g, "").split(".")];
 
   const node =
@@ -118,10 +117,10 @@ export function FieldSetForKey(props: {
           Found multiple nodes with path <Code>{schemaKeyPath.join("/")}</Code>.
           This should not happen.
         </H4>
-        {/* <p></p> */}
       </Callout>
     );
   }
+
   if (!node) {
     if (!debug) {
       return null;
@@ -168,7 +167,6 @@ export function FieldSetForKey(props: {
     schema,
     node,
     schemaKey,
-    quickType,
     relevant,
     readonly,
   };
@@ -178,11 +176,16 @@ export function FieldSetForKey(props: {
   }
 
   let field;
-  switch (quickType) {
-    case "object":
+
+  switch (node.type) {
+    case undefined:
+    case "":
       field = <ObjectField {...fieldProps} />;
       break;
-    case "objectArray":
+    case "begin_group":
+      field = <ObjectField {...fieldProps} />;
+      break;
+    case "begin_repeat":
       field = <ObjectArrayField {...fieldProps} />;
       break;
     default:

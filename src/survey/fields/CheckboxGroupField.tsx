@@ -1,18 +1,20 @@
 import { Callout, Checkbox, Code, ControlGroup } from "@blueprintjs/core";
+import { compact } from "lodash";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import { FieldConfigurationButton } from "../DetailsPopover/FieldConfigurationButton";
+import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import getAllowedChoiceValues from "../../xlsform-simple-schema/functions/schema-creation/getAllowedChoiceValues";
+import { FieldConfigurationButton } from "../FieldPopoverButton/FieldConfigurationButton";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
   value: unknown;
-  allowedValues: string[];
 };
 
 export default function CheckboxGroupField(props: Props) {
   const { value, node, relevant, readonly } = props;
   const context = React.useContext(ODKSurveyContext);
-  const { language, onChangeAnswer } = context;
+  const { language, onChangeAnswer, xlsForm } = context;
 
   const valueIsInvalid =
     value !== undefined &&
@@ -44,7 +46,11 @@ export default function CheckboxGroupField(props: Props) {
     [props, onChangeAnswer, choices]
   );
 
-  if (typeof language !== "string") {
+  if (
+    typeof language !== "string" ||
+    context.context === undefined ||
+    xlsForm === undefined
+  ) {
     return null;
   }
 
@@ -67,14 +73,30 @@ export default function CheckboxGroupField(props: Props) {
     );
   }
 
+  const choiceLists = compact(
+    node.typeParameters.map(
+      (choiceListName) => context.xlsForm?.choicesByName[choiceListName]
+    )
+  );
+  const key = getNodeAbsolutePathString(node, context.context, ".");
+  let allowedValues = getAllowedChoiceValues({
+    node,
+    xlsForm,
+    context: context.context,
+    key,
+  });
+  if (!(allowedValues instanceof Array)) {
+    allowedValues = allowedValues();
+  }
+  const allowedValuesSet = new Set(allowedValues);
+
   return (
     <ControlGroup vertical={true}>
-      {node.typeParameters.map((choiceListName) => {
-        const choiceList = context.xlsForm?.choicesByName[choiceListName];
-        if (!choiceList) {
-          return null;
-        }
+      {choiceLists.flatMap((choiceList) => {
         return Object.keys(choiceList).map((value) => {
+          if (!allowedValuesSet.has(value)) {
+            return null;
+          }
           const choiceRow = choiceList[value];
 
           const definedLabel = choiceRow?.label?.[language];

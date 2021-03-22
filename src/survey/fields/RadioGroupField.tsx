@@ -9,27 +9,21 @@ import {
 import { FLEX_EXPANDER } from "@blueprintjs/core/lib/esm/common/classes";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import { FieldConfigurationButton } from "../DetailsPopover/FieldConfigurationButton";
+import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import getAllowedChoiceValues from "../../xlsform-simple-schema/functions/schema-creation/getAllowedChoiceValues";
+import { FieldConfigurationButton } from "../FieldPopoverButton/FieldConfigurationButton";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
   onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
   value: unknown;
   defaultValue: unknown;
-  allowedValues: string[];
 };
 
 export default function RadioGroupField(props: Props) {
-  const {
-    value,
-    onInputChange,
-    allowedValues,
-    node,
-    relevant,
-    readonly,
-  } = props;
+  const { value, onInputChange, node, relevant, readonly } = props;
   const context = React.useContext(ODKSurveyContext);
-  const { language } = context;
+  const { language, xlsForm, context: evaluationContext } = context;
 
   if (value !== undefined && typeof value !== "string") {
     return (
@@ -41,7 +35,12 @@ export default function RadioGroupField(props: Props) {
     );
   }
 
-  if (language === undefined) {
+  if (
+    language === undefined ||
+    xlsForm === undefined ||
+    context === undefined ||
+    evaluationContext === undefined
+  ) {
     return null;
   }
 
@@ -57,31 +56,55 @@ export default function RadioGroupField(props: Props) {
     );
   }
 
+  const choiceLists = node.typeParameters.map(
+    (choiceListName) => context.xlsForm?.choicesByName[choiceListName]
+  );
+  const key = getNodeAbsolutePathString(node, evaluationContext, ".");
+  let allowedValues = getAllowedChoiceValues({
+    node,
+    xlsForm,
+    context: evaluationContext,
+    key,
+  });
+  if (!(allowedValues instanceof Array)) {
+    allowedValues = allowedValues();
+  }
+  const allowedValuesSet = new Set(allowedValues);
+
   return (
     <RadioGroup
-      // label={labelElement}
       onChange={onInputChange}
-      selectedValue={value}
+      selectedValue={
+        value !== undefined && allowedValuesSet.has(value) ? value : undefined
+      }
       inline={true}
       disabled={relevant === false || readonly}
     >
-      {allowedValues.map((value) => {
-        const choiceListName = node.typeParameters[0];
-        const choiceRow =
-          context.xlsForm?.choicesByName[choiceListName]?.[value];
-        const definedLabel = choiceRow?.label?.[language];
-        const shownLabel =
-          definedLabel === "undefined" ? choiceRow?.name : definedLabel;
-        return (
-          <Radio
-            key={choiceRow?.name}
-            label={shownLabel}
-            value={choiceRow?.name}
-            inline={true}
-            large={true}
-          />
-        );
-      })}
+      {choiceLists.flatMap(
+        (choiceList) =>
+          choiceList &&
+          Object.keys(choiceList)
+            .flatMap((choiceName) => {
+              if (!allowedValuesSet.has(choiceName)) {
+                return null;
+              }
+              const choiceRow =
+                choiceName === undefined ? undefined : choiceList?.[choiceName];
+              const definedLabel = choiceRow?.label?.[language];
+              const shownLabel =
+                definedLabel === "undefined" ? choiceRow?.name : definedLabel;
+              return (
+                <Radio
+                  key={choiceRow?.name}
+                  label={shownLabel}
+                  value={choiceRow?.name}
+                  inline={true}
+                  large={true}
+                />
+              );
+            })
+            .filter(Boolean)
+      )}
     </RadioGroup>
   );
 }

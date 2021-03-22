@@ -7,10 +7,11 @@ import {
 } from "../xlsform-simple-schema/types/ODKNode";
 import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
 
-export type DependentNodeWithReplacedRow = {
+export type NodeDependency = {
   node: ODKNode;
   index: number;
   row: QuestionRow;
+  columnName: string;
 };
 
 export default function findOrReplaceFieldReferences(
@@ -19,21 +20,20 @@ export default function findOrReplaceFieldReferences(
   replaceName?: string
 ) {
   const oldName = node.row.name;
-  const dependentNodes: DependentNodeWithReplacedRow[] = [];
+  const nodeDependency: NodeDependency[] = [];
   const variableRegexp = new RegExp(`\\\${${oldName}}`);
   xlsForm.flatNodes.forEach((n) => {
-    let found = false;
     let row: QuestionRow | undefined;
     const localizableKeys = localizableColumnNames.flatMap((lcn) =>
       [...xlsForm.languages.values()].map((lang) => `${lcn}.${lang}`)
     );
     without(evaluatableColumnNames as string[], "choice_filter")
       .concat(...localizableKeys)
-      .forEach((cn) => {
-        const value = get(n.row, cn);
+      .forEach((columnName) => {
+        const value = get(n.row, columnName);
         if (typeof value !== "string" && value !== undefined) {
           throw new Error(
-            `Replacing variable names works only with string cells. Please ensure the ${cn} cell of the ${node.row.name} row has a string value.`
+            `Replacing variable names works only with string cells. Please ensure the ${columnName} cell of the ${node.row.name} row has a string value.`
           );
         }
         if (value?.match(variableRegexp)) {
@@ -43,14 +43,16 @@ export default function findOrReplaceFieldReferences(
               `\${${replaceName}}`
             );
             row = row || cloneDeep(n.row);
-            set(row, cn, newCellValue);
+            set(row, columnName, newCellValue);
           }
-          found = true;
+          nodeDependency.push({
+            node: n,
+            index: n.rowIndex,
+            row: row || n.row,
+            columnName,
+          });
         }
       });
-    if (found) {
-      dependentNodes.push({ node: n, index: n.rowIndex, row: row || n.row });
-    }
   });
-  return dependentNodes;
+  return nodeDependency;
 }

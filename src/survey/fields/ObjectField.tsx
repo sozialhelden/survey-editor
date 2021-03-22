@@ -11,7 +11,7 @@ import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import { isNodeRelevant } from "../../xlsform-simple-schema/types/ODKNode";
-import DetailsPopover from "../DetailsPopover/DetailsPopover";
+import FieldPopoverButton from "../FieldPopoverButton/FieldPopoverButton";
 import { FieldProps } from "../FieldProps";
 import { FieldSetForKey } from "../FieldSetForKey";
 import { EditableFieldHint } from "./EditableFieldHint";
@@ -19,7 +19,15 @@ import { EditableFieldHint } from "./EditableFieldHint";
 export default function ObjectField(props: FieldProps) {
   const { onChangeCell } = React.useContext(ODKSurveyContext);
   const { schema, schemaKey, node } = props;
-  const subKeys = schema.objectKeys(schemaKey);
+  const isComplexType = [
+    "image",
+    "audio",
+    "video",
+    "geopoint",
+    "geotrace",
+    "geoshape",
+  ].includes(node.type);
+  const subKeys = isComplexType ? [] : schema.objectKeys(schemaKey);
   const context = React.useContext(ODKSurveyContext);
   const { debug } = context;
 
@@ -78,7 +86,7 @@ export default function ObjectField(props: FieldProps) {
           {debug ? <>{labelInput}</> : labelString}
         </HeadingClass>
         {debug && node !== context.context?.survey && (
-          <DetailsPopover {...{ ...props }} editable={true} />
+          <FieldPopoverButton {...{ ...props }} editable={true} />
         )}
       </ControlGroup>
       <EditableFieldHint {...{ node, debug }} />

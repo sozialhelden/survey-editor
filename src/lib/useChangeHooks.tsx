@@ -1,7 +1,7 @@
-import { Code } from "@blueprintjs/core";
 import { isEqual } from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import HighlightedExpression from "../components/HighlightedExpression/HighlightedODKExpression";
 import { FieldProps } from "../survey/FieldProps";
 import { AppToaster } from "../toaster";
 import {
@@ -24,6 +24,7 @@ import {
 import patchXLSFormCell from "../xlsform-simple-schema/functions/patchXLSFormCell";
 import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
+import createLiteralExpressionFromValue from "./createLiteralExpressionFromValue";
 import { createEmptyFieldRow } from "./createUntitledFieldRow";
 import { createEmptyGroupRows } from "./createUntitledGroupRows";
 import findOrReplaceFieldReferences from "./findOrReplaceFieldReferences";
@@ -73,14 +74,20 @@ export default function useChangeHooks({
 
   const onChangeAnswer = React.useCallback(
     (value: unknown, fieldProps: FieldProps) => {
-      AppToaster.clear();
-      AppToaster.show({
-        message: (
-          <>
-            {fieldProps.schemaKey} → <Code>{JSON.stringify(value)}</Code>
-          </>
-        ),
-      });
+      AppToaster.show(
+        {
+          message: (
+            <>
+              {fieldProps.schemaKey} →{" "}
+              <HighlightedExpression
+                node={fieldProps.node}
+                expression={createLiteralExpressionFromValue(value)}
+              />
+            </>
+          ),
+        },
+        "changeField"
+      );
       if (xlsForm && context) {
         setContext((context) => {
           if (!context) {

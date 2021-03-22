@@ -20,7 +20,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../../lib/colors";
 import findOrReplaceFieldReferences, {
-  DependentNodeWithReplacedRow,
+  NodeDependency,
 } from "../../lib/findOrReplaceFieldReferences";
 import { getFirstColumnNameWithError } from "../../lib/getFirstColumnNameWithError";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
@@ -110,9 +110,11 @@ const DragStripe = styled.div`
 function RenderTarget({
   detailsButtonCaption,
   hasTypeIcon,
+  style,
 }: {
   detailsButtonCaption?: React.ReactNode;
   hasTypeIcon?: boolean;
+  style?: React.CSSProperties;
 }) {
   const context = React.useContext(ODKSurveyContext);
   const { node, nodeEvaluationResults } = React.useContext(ODKNodeContext);
@@ -139,14 +141,13 @@ function RenderTarget({
         flex: "none",
         position: "relative",
         overflow: "visible",
+        ...style,
       }}
       {...dragProps}
     >
       {isDraggedOver && <DragStripe />}
       <Button
-        // elementRef={ref}
         minimal={true}
-        // outlined={true}
         small={true}
         lang="en"
         intent={hasError ? "danger" : hasMissingParameters ? "warning" : "none"}
@@ -177,7 +178,7 @@ function RenderTarget({
   );
 }
 
-export default function DetailsPopover(props: {
+export default function FieldPopoverButton(props: {
   detailsButtonCaption?: React.ReactNode;
   detailsContent?: string | JSX.Element | undefined;
   node: ODKNode;
@@ -186,6 +187,7 @@ export default function DetailsPopover(props: {
   editable: boolean;
   nameOfOnlyShownTab?: EvaluatableColumnName;
   hasTypeIcon?: boolean;
+  buttonStyle?: React.CSSProperties;
 }) {
   const {
     node,
@@ -248,7 +250,7 @@ export default function DetailsPopover(props: {
     <ControlGroup
       style={{
         margin: "-20px",
-        marginBottom: "12px",
+        marginBottom: "24px",
         backgroundColor: Colors.LIGHT_GRAY5,
         // padding: "20px",
         background: `linear-gradient(
@@ -282,7 +284,7 @@ export default function DetailsPopover(props: {
       {editable && editHeader}
 
       <ResizeSensor onResize={handleResize} observeParents={true}>
-        <ControlGroup style={{ width: "100%", marginBottom: "8px" }}>
+        <ControlGroup style={{ width: "100%", margin: "-12px 8px 8px 0px" }}>
           <FieldPathBreadcrumbs {...{ path, width }} />
         </ControlGroup>
       </ResizeSensor>
@@ -290,7 +292,7 @@ export default function DetailsPopover(props: {
       {nameOfOnlyShownTab ? (
         <ExpressionPanel
           {...{ node, columnName: nameOfOnlyShownTab, nodeEvaluationResults }}
-          style={{ margin: "0 -20px 0 -20px" }}
+          style={{ margin: "0 -20px -20px -20px" }}
         />
       ) : (
         <Tabs
@@ -329,7 +331,9 @@ export default function DetailsPopover(props: {
         fill={false}
         targetTagName="span"
       >
-        <RenderTarget {...{ detailsButtonCaption, hasTypeIcon }} />
+        <RenderTarget
+          {...{ detailsButtonCaption, hasTypeIcon, style: props.buttonStyle }}
+        />
       </Popover2>
     </ODKNodeContext.Provider>
   );
@@ -339,7 +343,7 @@ function ReferencesButton({
   references,
   editable,
 }: {
-  references: DependentNodeWithReplacedRow[] | undefined;
+  references: NodeDependency[] | undefined;
   editable: boolean;
 }) {
   const referencesButtonTitle =

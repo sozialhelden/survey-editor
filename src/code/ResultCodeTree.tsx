@@ -1,7 +1,8 @@
-import { Icon, ITreeNode, Tree } from "@blueprintjs/core";
+import { Colors, Icon, ITreeNode, Tree } from "@blueprintjs/core";
 import * as React from "react";
+import HighlightedExpression from "../components/HighlightedExpression/HighlightedODKExpression";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
-import DetailsPopover from "../survey/DetailsPopover/DetailsPopover";
+import FieldPopoverButton from "../survey/FieldPopoverButton/FieldPopoverButton";
 import { XLSForm } from "../xlsform-simple-schema";
 import ODKFormulaEvaluationContext from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
@@ -10,6 +11,7 @@ import {
   ODKNode,
 } from "../xlsform-simple-schema/types/ODKNode";
 
+/** The label visible on the right of each tree item. */
 function SecondaryLabel(props: { node: ODKNode }) {
   const { node } = props;
   const context = React.useContext(ODKSurveyContext);
@@ -20,9 +22,16 @@ function SecondaryLabel(props: { node: ODKNode }) {
   const keysWithErrors = evaluatableColumnNames.filter(
     (k) => results.get(k)?.error
   );
-  const answer = context.context?.nodesToAnswers.get(node);
-  const valueString = answer === undefined ? null : JSON.stringify(answer);
-  const caption = <span>{valueString}</span>;
+
+  const calculationResults = results?.get("calculation");
+  const caption = (
+    <HighlightedExpression
+      node={node}
+      state={calculationResults?.state}
+      error={calculationResults?.error}
+      expression={calculationResults?.expression}
+    />
+  );
   const error = `Node has errors in the following columns: ${keysWithErrors
     .map((k) => `‘${k}’`)
     .join(", ")}`;
@@ -37,6 +46,7 @@ function SecondaryLabel(props: { node: ODKNode }) {
   );
 }
 
+/** Recursively creates ITreeNode objects from the given survey root. */
 export function getNodeTree(
   node: ODKNode,
   context: ODKFormulaEvaluationContext,
@@ -61,6 +71,7 @@ export function getNodeTree(
   });
 }
 
+/** Shows a collapsible JSON tree of the survey result data for debugging. */
 export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
   const { xlsForm } = props;
   const context = React.useContext(ODKSurveyContext);
@@ -84,7 +95,12 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
           }
 
           const label = (
-            <DetailsPopover node={node} editable={true} hasTypeIcon={true} />
+            <FieldPopoverButton
+              node={node}
+              editable={true}
+              hasTypeIcon={true}
+              buttonStyle={{ color: Colors.VIOLET3 }}
+            />
           );
 
           return {

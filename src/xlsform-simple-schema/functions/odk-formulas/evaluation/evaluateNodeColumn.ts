@@ -1,6 +1,6 @@
+import createLiteralExpressionFromValue from "../../../../lib/createLiteralExpressionFromValue";
 import { EvaluationError } from "../../../types/Errors";
 import { EvaluatableColumnName, ODKNode } from "../../../types/ODKNode";
-import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpression";
 import evaluateODKFormula from "./evaluateODKFormula";
 import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
@@ -37,11 +37,7 @@ export default function evaluateNodeColumn(
     return {
       state: "success",
       result: value,
-      expression: new LiteralExpression(
-        [],
-        value instanceof Array ? "array" : typeof value,
-        value
-      ),
+      expression: createLiteralExpressionFromValue(value),
       error: undefined,
     };
   }

@@ -5,6 +5,7 @@ import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/lo
 import { XLSForm } from "../xlsform-simple-schema/index";
 import ExcelFileInput from "./ExcelFileInput";
 
+/** Shows a load button and a 'create empty survey' button after the app just loaded. */
 export function AppEmptyState({
   setXLSForm,
   setLanguage,

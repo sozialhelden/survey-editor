@@ -28,6 +28,7 @@
     "d3-color": "^2.0.0",
     "d3-interpolate": "^2.0.1",
     "exceljs": "^4.2.0",
+    "exifreader": "^3.14.1",
     "gh-pages": "^3.1.0",
     "immer": "^8.0.1",
     "inflection": "^1.12.0",
@@ -35,17 +36,21 @@
     "marked": "^2.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-inspector": "^5.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
     "react-simple-code-editor": "^0.11.0",
     "simpl-schema": "^1.10.2",
     "styled-components": "^5.2.1",
+    "swr": "^0.5.4",
     "typescript": "^4.1.2",
     "uniforms": "^3.1.0",
     "uniforms-bridge-json-schema": "^3.1.0",
     "uniforms-bridge-simple-schema-2": "^3.1.0",
     "uniforms-semantic": "^3.1.0",
     "uniforms-unstyled": "^3.1.0",
+    "uuidv4": "^6.2.6",
+    "uuidv5": "^1.0.0",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
@@ -75,6 +80,7 @@
     ]
   },
   "devDependencies": {
-    "@types/marked": "^1.2.2"
+    "@types/marked": "^1.2.2",
+    "@types/react-inspector": "^4.0.1"
   }
 }

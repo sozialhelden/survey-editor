@@ -2,52 +2,78 @@ import { Callout, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import evaluateNodeColumn from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
-import DetailsPopover from "../DetailsPopover/DetailsPopover";
+import FieldPopoverButton from "../FieldPopoverButton/FieldPopoverButton";
 import { FieldProps } from "../FieldProps";
 import { internalFields } from "../internalFields";
 import BooleanField from "./BooleanField";
 import CheckboxGroupField from "./CheckboxGroupField";
 import DateField from "./DateField";
 import { EditableFieldHint } from "./EditableFieldHint";
+import FileUploadField from "./FileUploadField";
 import { Label } from "./Label";
 import NumberField from "./NumberField";
 import RadioGroupField from "./RadioGroupField";
 import TextField from "./TextField";
 
-export function AutoField(
-  props: FieldProps & {
-    value: unknown;
-    defaultValue: unknown;
-    onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
-    labelElement: JSX.Element;
-  }
-) {
-  const { quickType, schema, schemaKey } = props;
-  if (quickType === "number") {
-    return <NumberField {...props} />;
-  } else if (quickType === "date") {
-    return <DateField {...props} />;
-  } else if (quickType === "boolean") {
-    return <BooleanField {...props} />;
-  }
+type AutoFieldProps = FieldProps & {
+  value: any;
+  defaultValue: unknown;
+  onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
+  labelElement: JSX.Element;
+};
 
-  if (quickType === "stringArray") {
-    const allowedValues = schema.get(schemaKey + ".$", "allowedValues");
-    if (allowedValues instanceof Array) {
-      return <CheckboxGroupField {...{ ...props, allowedValues }} />;
-    }
-  }
-  const allowedValues = schema.get(schemaKey, "allowedValues");
-  if (allowedValues instanceof Array) {
-    return <RadioGroupField {...{ ...props, allowedValues }} />;
-  }
+export function AutoField(props: AutoFieldProps) {
+  const { node } = props;
 
-  return <TextField {...props} />;
+  const FieldComponentMap: Record<
+    string,
+    React.FunctionComponent<AutoFieldProps>
+  > = {
+    integer: NumberField,
+    decimal: NumberField,
+    range: NumberField,
+    text: TextField,
+    select_one: RadioGroupField,
+    select_one_from_file: RadioGroupField,
+    select_multiple: CheckboxGroupField,
+    select_multiple_from_file: CheckboxGroupField,
+    rank: TextField,
+    note: TextField,
+    geopoint: TextField,
+    geotrace: TextField,
+    geoshape: TextField,
+    date: DateField,
+    time: DateField,
+    datetime: DateField,
+    image: FileUploadField,
+    audio: FileUploadField,
+    video: FileUploadField,
+    file: FileUploadField,
+    barcode: TextField,
+    calculate: TextField,
+    acknowledge: BooleanField,
+    hidden: TextField,
+    "xml-external": TextField,
+    start: DateField,
+    end: DateField,
+    today: DateField,
+    deviceid: TextField,
+    simserial: TextField,
+    subscriberid: TextField,
+    phonenumber: TextField,
+    username: TextField,
+    email: TextField,
+    audit: TextField,
+  };
+
+  const FieldComponent = FieldComponentMap[node.type] || TextField;
+
+  return <FieldComponent {...props} />;
 }
 
 export default function ValueField(props: FieldProps) {
   const { node } = props;
-  const isBoolean = props.quickType === "boolean";
+  const isBoolean = props.node.type === "acknowlege";
   const context = React.useContext(ODKSurveyContext);
   const {
     language,
@@ -80,12 +106,14 @@ export default function ValueField(props: FieldProps) {
   if (isInternalField && !context.debug) {
     return null;
   }
-  const detailsButton = <DetailsPopover {...{ ...props }} editable={true} />;
+  const detailsButton = (
+    <FieldPopoverButton {...{ ...props }} editable={true} />
+  );
 
   const hint = <EditableFieldHint {...{ node, debug }} />;
   const labelElement = (
     <Label {...{ ...props, debug, isEditable: !isBoolean && !isInternalField }}>
-      {props.quickType !== "boolean" && debug && detailsButton}
+      {!isBoolean && debug && detailsButton}
     </Label>
   );
   const evaluationResult = evaluateNodeColumn(
@@ -105,11 +133,7 @@ export default function ValueField(props: FieldProps) {
   let input = <AutoField {...autoFieldProps} />;
   if (isBoolean) {
     return (
-      <FormGroup
-        // helperText={hintString}
-        labelFor={node.row.name}
-        style={{ display: "flex" }}
-      >
+      <FormGroup labelFor={node.row.name} style={{ display: "flex" }}>
         {debug && detailsButton}
         {input}
         {hint}
@@ -122,11 +146,7 @@ export default function ValueField(props: FieldProps) {
   }
 
   return (
-    <FormGroup
-      // helperText={hintString}
-      label={labelElement}
-      labelFor={node.row.name}
-    >
+    <FormGroup label={labelElement} labelFor={node.row.name}>
       {input}
       <EditableFieldHint {...{ node, debug }} />
     </FormGroup>

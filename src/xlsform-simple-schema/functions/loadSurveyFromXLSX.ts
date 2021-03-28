@@ -20,6 +20,16 @@ import {
   XLSForm,
 } from "../types/XLSForm";
 
+export const localizableColumnNames = [
+  "label",
+  "hint",
+  "constraint_message",
+  "required_message",
+  "image",
+  "audio",
+  "video",
+];
+
 /**
  * XLSForm uses double colons (`::`) in column names to allow multilingual variants of the same
  * column, like ‘label::русский (ru)’ or ‘label::English (en)’, and for custom namespacing.
@@ -183,16 +193,6 @@ export function loadSettingsRow(row: Record<string, unknown>): SettingsRow {
 }
 
 type LoadRowFunction<T> = (row: Record<string, unknown>) => T;
-
-export const localizableColumnNames = [
-  "label",
-  "hint",
-  "constraint_message",
-  "required_message",
-  "image",
-  "audio",
-  "video",
-];
 
 // Turns a plain ExcelJS row into a handier data model, cleaning it up and throwing if it’s invalid.
 export function loadExcelRow<RowT>({

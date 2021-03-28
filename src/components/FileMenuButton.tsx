@@ -1,10 +1,11 @@
 import { Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
-import { saveXLSForm } from "../lib/saveXLSForm";
+import { saveXLSForm } from "../xlsform-simple-schema/functions/editing/saveXLSForm";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import { useWorkbookFromFile } from "./ExcelFileInput";
 
+/** Button showing a 'File' menu */
 export function FileMenuButton({
   xlsForm,
   setXLSForm,

@@ -36,7 +36,8 @@ export function getAccessibilityCloudImageUrl(
   }/images.json?context=${context}&surveyResultId=${objectId}&appToken=${appToken}`;
 }
 
-export function createImageObjectFromAccessibilityCloudImage(
+/** @returns a Schema.org JSON-LD object for a given remotely stored image. */
+export function createImageObjectFromRemoteImage(
   image: AccessibilityCloudImage
 ): ImageObject {
   return {
@@ -75,11 +76,7 @@ export async function uploadPhoto(
   surveyResultId: string,
   /** the image's local File object. */
   file: File
-): Promise<{
-  result?: AccessibilityCloudImage;
-  success: boolean;
-  error: unknown;
-}> {
+): Promise<AccessibilityCloudImage> {
   const url = `${uncachedBaseUrl}/image-upload/survey-result/image?surveyResultId=${surveyResultId}&appToken=${appToken}`;
   const resizedImage = await readAndCompressImage(file, imageResizeConfig);
   const response = await fetch(url, {
@@ -91,10 +88,20 @@ export async function uploadPhoto(
     body: resizedImage,
   });
 
+  const json = await response.json();
+
   if (!response.ok) {
-    const json = await response.json();
-    throw new Error(json.error.reason);
+    throw new Error(json.error?.reason || json.error);
   }
 
-  return response.json();
+  if (!json.success) {
+    const message = `Sorry, your upload failed: ${String(json.error)}`;
+    throw new Error(message);
+  }
+  if (!json.result) {
+    const message = "Sorry, your upload failed: Empty server response.";
+    throw new Error(message);
+  }
+
+  return json.result;
 }

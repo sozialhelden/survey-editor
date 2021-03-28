@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Navbar, Switch } from "@blueprintjs/core";
+import { Button, ButtonGroup, Navbar } from "@blueprintjs/core";
 import React from "react";
 
 export type ViewOption = "table" | "debug" | "json";
@@ -8,22 +8,7 @@ const defaultViewOptions: Record<ViewOption, boolean> = {
   json: false,
 };
 
-function NavbarSwitch(props: {
-  checked: boolean;
-  onChange: (event: React.FormEvent<HTMLInputElement>) => void;
-  label: string;
-}) {
-  return (
-    <Switch
-      checked={props.checked}
-      label={props.label}
-      onChange={props.onChange}
-      inline={true}
-      style={{ marginBottom: "0" }}
-    />
-  );
-}
-
+/** Custom React hook returning app's main view options and a button to configure these options. */
 export default function useViewOptionsButton() {
   const [viewOptions, setViewOptions] = React.useState<
     Record<ViewOption, boolean>
@@ -58,11 +43,20 @@ export default function useViewOptionsButton() {
         />
       </ButtonGroup>
       <Navbar.Divider />
-      <NavbarSwitch
-        label="Live view"
-        checked={!viewOptions.debug}
-        onChange={onDebugChange}
-      />
+      <ButtonGroup>
+        <Button
+          icon="settings"
+          text="Debug"
+          active={viewOptions.debug}
+          onClick={onDebugChange}
+        />
+        <Button
+          icon="presentation"
+          text="Live"
+          active={!viewOptions.debug}
+          onClick={onDebugChange}
+        />
+      </ButtonGroup>
     </>
   );
 

@@ -22,7 +22,7 @@ const StyledCode = styled.code`
   }
 
   .expression-name {
-    color: ${Colors.GREEN3};
+    color: ${Colors.VIOLET5};
   }
 
   &.expression-call > .expression-name:first-child,
@@ -48,7 +48,7 @@ const StyledCode = styled.code`
 
   .token-LEFT_PAREN,
   .token-RIGHT_PAREN {
-    color: ${Colors.BLUE2};
+    color: ${Colors.BLUE2} !important;
     font-weight: bold;
   }
 
@@ -73,7 +73,7 @@ const StyledCode = styled.code`
       content: " ";
     }
     font-weight: bold;
-    color: ${Colors.RED2};
+    color: ${Colors.VERMILION3};
   }
 
   .token-COLON,
@@ -87,7 +87,7 @@ const StyledCode = styled.code`
     word-break: break-word;
     display: block;
     font-weight: bold;
-    color: ${Colors.RED2};
+    color: ${Colors.VERMILION2};
   }
 `;
 

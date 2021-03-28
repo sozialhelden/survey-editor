@@ -19,13 +19,14 @@ import { without } from "lodash";
 import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../../lib/colors";
-import findOrReplaceFieldReferences, {
-  NodeDependency,
-} from "../../lib/findOrReplaceFieldReferences";
-import { getFirstColumnNameWithError } from "../../lib/getFirstColumnNameWithError";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import { typesToIcons } from "../../lib/typesToIcons";
+import { fieldTypesToIcons } from "../../xlsform-simple-schema/field-types/fieldTypesToIcons";
+import { internalFieldTypes } from "../../xlsform-simple-schema/field-types/internalFieldTypes";
+import findOrReplaceFieldReferences, {
+  NodeDependency,
+} from "../../xlsform-simple-schema/functions/editing/findOrReplaceFieldReferences";
+import { getFirstColumnNameWithError } from "../../xlsform-simple-schema/functions/getFirstColumnNameWithError";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
@@ -34,11 +35,10 @@ import {
   isNodeRelevant,
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
-import { internalFields } from "../internalFields";
 import { useNodeDragAndDrop } from "../useNodeDragAndDrop";
 import { ExpressionPanel } from "./ExpressionPanel";
-import { FieldConfigurationButton } from "./FieldConfigurationButton";
 import { FieldPathBreadcrumbs } from "./FieldPathBreadcrumbs";
+import { FieldTypeButtonGroup } from "./FieldTypeButtonGroup";
 import { useNodeActionMenuItems } from "./NodeActionMenuItems";
 import { NodeReferencesMenu } from "./NodeReferencesMenu";
 
@@ -118,9 +118,9 @@ function RenderTarget({
 }) {
   const context = React.useContext(ODKSurveyContext);
   const { node, nodeEvaluationResults } = React.useContext(ODKNodeContext);
-  const isInternalFieldType = internalFields.includes(node.type);
+  const isInternalFieldType = internalFieldTypes.includes(node.type);
   const isVisible =
-    !isInternalFieldType && isNodeRelevant(node, context.context);
+    !isInternalFieldType && isNodeRelevant(node, context.evaluationContext);
   const hasMissingParameters =
     node.type.match(/^select/) && node.typeParameters.length === 0;
   const firstColumnNameWithError = getFirstColumnNameWithError(
@@ -129,7 +129,7 @@ function RenderTarget({
   const hasError = !!firstColumnNameWithError;
   const [isDraggedOver, setIsDraggedOver] = React.useState(false);
   const dragProps = useNodeDragAndDrop({
-    context: context.context,
+    evaluationContext: context.evaluationContext,
     node,
     setIsDraggedOver,
   });
@@ -150,11 +150,22 @@ function RenderTarget({
         minimal={true}
         small={true}
         lang="en"
-        intent={hasError ? "danger" : hasMissingParameters ? "warning" : "none"}
+        intent={
+          hasError ? "danger" : hasMissingParameters ? "warning" : undefined
+        }
         rightIcon={hasError ? "error" : undefined}
-        icon={hasTypeIcon ? typesToIcons[node.type] : undefined}
+        icon={
+          hasTypeIcon ? (
+            <Icon
+              icon={fieldTypesToIcons[node.type]}
+              color={
+                hasError || hasMissingParameters ? undefined : Colors.VIOLET3
+              }
+            />
+          ) : undefined
+        }
         style={{
-          color: hasError || hasMissingParameters ? undefined : "inherit",
+          color: hasError || hasMissingParameters ? undefined : Colors.VIOLET3,
           fontSize: "inherit",
           padding: 0,
         }}
@@ -197,12 +208,14 @@ export default function FieldPopoverButton(props: {
     hasTypeIcon,
   } = props;
   const context = React.useContext(ODKSurveyContext);
-  const nodeEvaluationResults = context.context?.evaluationResults.get(node);
+  const nodeEvaluationResults = context.evaluationContext?.evaluationResults.get(
+    node
+  );
   const firstColumnNameWithError = getFirstColumnNameWithError(
     nodeEvaluationResults
   );
   const { row } = node;
-  const isInternalField = internalFields.includes(node.type);
+  const isInternalField = internalFieldTypes.includes(node.type);
   const columnNames = isInternalField
     ? without(evaluatableColumnNames, "relevant", "readonly")
     : evaluatableColumnNames;
@@ -238,11 +251,11 @@ export default function FieldPopoverButton(props: {
   const { nodeActionMenuItems, nodeActionDialogs } = useNodeActionMenuItems(
     node
   );
-  if (!context.context) {
+  if (!context.evaluationContext) {
     return null;
   }
 
-  const path = getNodeAbsolutePath(node, context.context).slice(1);
+  const path = getNodeAbsolutePath(node, context.evaluationContext).slice(1);
 
   const referencesButton = ReferencesButton({ references, editable });
 
@@ -261,7 +274,7 @@ export default function FieldPopoverButton(props: {
         gap: "8px",
       }}
     >
-      <FieldConfigurationButton node={node} showType={true} />
+      <FieldTypeButtonGroup node={node} showType={true} />
 
       <div className={Classes.FLEX_EXPANDER} />
 

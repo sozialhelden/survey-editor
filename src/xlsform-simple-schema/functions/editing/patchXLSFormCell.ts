@@ -1,14 +1,19 @@
 import produce from "immer";
 import { set } from "lodash";
-import { ODKNode } from "../types/ODKNode";
-import { WorksheetName, XLSForm } from "../types/XLSForm";
+import { ODKNode } from "../../types/ODKNode";
+import { WorksheetName, XLSForm } from "../../types/XLSForm";
 import {
   localizableColumnNames,
   normalizeColumnNames,
-} from "./loadSurveyFromXLSX";
-import ODKFormulaEvaluationContext from "./odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import { getNodeIndexPath } from "./odk-formulas/evaluation/XPath";
+} from "../loadSurveyFromXLSX";
+import ODKFormulaEvaluationContext from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import { getNodeIndexPath } from "../odk-formulas/evaluation/XPath";
 
+/**
+ * Changes the content of a single XLSForm cell.
+ *
+ * @returns a new XLSForm reference with the applied patch.
+ */
 export default function patchXLSFormCell({
   worksheetName,
   xlsForm,
@@ -19,8 +24,8 @@ export default function patchXLSFormCell({
   columnName,
   value,
 }: {
-  worksheetName: WorksheetName;
   xlsForm: XLSForm;
+  worksheetName: WorksheetName;
   node?: ODKNode;
   rowIndex: number;
   context: ODKFormulaEvaluationContext;
@@ -28,14 +33,20 @@ export default function patchXLSFormCell({
   columnName: string;
   value: unknown;
 }) {
-  const indexPath = node && getNodeIndexPath(node, context);
+  const changeIsInSurveyWorksheet = worksheetName === "survey";
+  if (changeIsInSurveyWorksheet && !node) {
+    throw new Error(
+      "This is a bug: Tried to change the `survey` worksheet, but no node was supplied."
+    );
+  }
+
   const valuePathInRow = localizableColumnNames.includes(columnName)
     ? [columnName, language]
     : [columnName];
 
-  const changeIsInSurveyWorksheet = worksheetName === "survey";
+  // This creates a new object for each parent of a changed property inside the whole object tree
+  // of the given XLSForm.
 
-  // This creates a new object for each parent of a changed property inside the whole object tree of the given xlsForm.
   // https://immerjs.github.io/immer/docs/introduction
 
   return produce(xlsForm, (draft) => {
@@ -47,6 +58,7 @@ export default function patchXLSFormCell({
 
     if (changeIsInSurveyWorksheet) {
       set(draft, ["flatNodes", rowIndex, "row", ...valuePathInRow], value);
+      const indexPath = node && getNodeIndexPath(node, context);
       if (indexPath) {
         set(
           draft,
@@ -65,6 +77,7 @@ export default function patchXLSFormCell({
     if (language !== undefined && !draft.languages.has(language)) {
       draft.languages.add(language);
     }
+
     const worksheet = draft.worksheets[worksheetName];
     if (worksheet) {
       if (language !== undefined && !worksheet.languages.has(language)) {

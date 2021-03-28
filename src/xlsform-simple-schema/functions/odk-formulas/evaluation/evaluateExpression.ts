@@ -115,8 +115,26 @@ function evaluateCallExpression(
   const nameExpressionOrString =
     expression.fn instanceof NameExpression
       ? expression.fn
-      : evaluateExpression(expression.fn, context, scope);
+      : String(evaluateExpression(expression.fn, context, scope));
   let fn: unknown = undefined;
+
+  const error = (
+    message: string,
+    name: string,
+    underlyingEvaluationError?: EvaluationError
+  ) => {
+    throw new EvaluationError(
+      message,
+      name,
+      expression,
+      context,
+      scope,
+      underlyingEvaluationError
+    );
+  };
+
+  // Allow to determine a function name dynamically by using an expression to allow things like
+  // (get-function-name())()
   if (nameExpressionOrString instanceof NameExpression) {
     fn = evaluateNameExpression(
       nameExpressionOrString,
@@ -128,25 +146,15 @@ function evaluateCallExpression(
   } else if (typeof nameExpressionOrString === "string") {
     fn = functions[nameExpressionOrString];
   } else {
-    throw new EvaluationError(
+    error(
       `Can’t call a function without knowing its name — the name must be either defined as string, return a name string or a function reference.`,
-      "functionNotFound",
-      expression,
-      context,
-      scope
+      "functionNotFound"
     );
   }
 
   if (!fn) {
-    throw new EvaluationError(
-      `Could not find a function named \`${stringFromStringOrExpression(
-        nameExpressionOrString
-      )}\`.`,
-      "functionNotFound",
-      expression,
-      context,
-      scope
-    );
+    const name = stringFromStringOrExpression(nameExpressionOrString);
+    error(`Could not find a function named \`${name}\`().`, "functionNotFound");
   }
 
   const evaluatedArgs = expression.args.map((arg, i) => {
@@ -154,27 +162,21 @@ function evaluateCallExpression(
       return evaluateExpression(arg, context, scope);
     } catch (e) {
       const number = ordinalize(String(i + 1));
-
-      throw new EvaluationError(
-        `Error in ${number} argument in \`${stringFromStringOrExpression(
-          nameExpressionOrString
-        )}() function call\`: ${e.message}`,
+      const name = stringFromStringOrExpression(nameExpressionOrString);
+      error(
+        `Error in ${number} argument in \`${name}() function call\`: ${e.message}`,
         "functionEvalError",
-        expression,
-        context,
-        scope,
         e
       );
     }
   });
+
   if (typeof fn !== "function") {
-    throw new EvaluationError(
+    error(
       `Found name \`${fn}\`, but it is not a function.`,
-      "functionNotFound",
-      expression,
-      context,
-      scope
+      "functionNotFound"
     );
+    return; // will never be reached because error() throws
   }
 
   try {
@@ -183,12 +185,9 @@ function evaluateCallExpression(
   } catch (e) {
     let string = "";
     expression.print((s) => (string += s));
-    throw new EvaluationError(
+    error(
       `Error while calling \`${string}\`: ${e.message}`,
       "functionEvalError",
-      expression,
-      context,
-      scope,
       e
     );
   }

@@ -12,7 +12,8 @@ export function evaluateDynamicChoiceListName(
   choiceListString: string,
   /** Context information needed for evaluating a formula, if applicable */
   options: NodeToDefinitionFunctionOptions,
-  choicesByName: Record<string, Record<string, ChoiceRow>>
+  /** Map of available choice lists */
+  choiceListsByName: Record<string, Record<string, ChoiceRow>>
 ) {
   const evaluationResult = evaluateODKFormula(
     choiceListString,
@@ -38,7 +39,7 @@ export function evaluateDynamicChoiceListName(
     );
   }
   const choiceListName = evaluationResult.result;
-  if (!choicesByName[choiceListName]) {
+  if (!choiceListsByName[choiceListName]) {
     throw new EvaluationError(
       `Evaluating \`${choiceListString}\` yielded string \`'${choiceListName}'\`, but the according choices list does not exist. Please ensure that the field calculates an existing list name.`,
       "invalidDynamicChoices",

@@ -1,9 +1,9 @@
 import SimpleSchema from "simpl-schema";
-import createLeafNodeSchemaDefinition from "./createLeafNodeSchemaDefinition";
 import loadFormFromXLSXFile from "../loadSurveyFromXLSX";
 import ODKFormulaEvaluationContext, {
   knownLiteralsWithoutDollarSign,
 } from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import createLeafNodeSchemaDefinition from "./createLeafNodeSchemaDefinition";
 
 describe("createLeafNodeSchemaDefinition()", () => {
   it("creates a SimpleSchema-compatible definition", async () => {
@@ -14,6 +14,8 @@ describe("createLeafNodeSchemaDefinition()", () => {
       survey: xlsForm.rootSurveyGroup,
       stackDepth: 0,
       knownLiteralsWithoutDollarSign,
+      nodesToAnswers: new Map(),
+      evaluationResults: new Map(),
     };
     const node = xlsForm.rootSurveyGroup.children[0];
     const definition = createLeafNodeSchemaDefinition(

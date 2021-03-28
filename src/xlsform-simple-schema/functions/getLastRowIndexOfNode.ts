@@ -1,7 +1,11 @@
 import { isEqual } from "lodash";
-import { XLSForm } from "../xlsform-simple-schema";
-import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import { isGroupNode, ODKNode } from "../types/ODKNode";
+import { XLSForm } from "../types/XLSForm";
 
+/**
+ * Returns the last row index of a given node in the given XLSForm. For normal fields, this is the
+ * field's row index, for groups/repeats, this is the `end_group` or `end_repeat` row index.
+ */
 export default function getLastRowIndexOfNode(xlsForm: XLSForm, node: ODKNode) {
   const isGroup = isGroupNode(node);
 

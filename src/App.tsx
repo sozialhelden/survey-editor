@@ -10,13 +10,12 @@ import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import useViewOptionsButton from "./components/useViewOptionsButton";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import useChangeHooks from "./lib/useChangeHooks";
-import { SheetTabs } from "./SheetTabs";
 import EditableSurveyTitle from "./survey/fields/EditableSurveyTitle";
 import { ODKNodeDragAndDropContext } from "./survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./survey/XLSFormSurvey";
-import XLSFormWorksheet from "./table/XLSFormWorksheet";
+import XLSFormWorkbook from "./table/XLSFormWorkbook";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
-import { WorksheetName, XLSForm } from "./xlsform-simple-schema/index";
+import { XLSForm } from "./xlsform-simple-schema/index";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -58,10 +57,6 @@ function App() {
   const [xlsForm, setXLSForm] = React.useState<XLSForm>();
   const [language, setLanguage] = React.useState<string>("English (en)");
 
-  const [worksheetName, setWorksheetName] = React.useState<WorksheetName>(
-    "survey"
-  );
-
   const resultCodeElement = xlsForm && (
     <OverflowScrollContainer
       className={"bp3-code-block"}
@@ -77,7 +72,7 @@ function App() {
     setXLSForm,
   });
 
-  const { context } = changeHooks;
+  const { evaluationContext: context } = changeHooks;
   const [, languageName, languageCode] =
     language?.match(/^(.*) \((\w+)\)$/) || [];
 
@@ -112,9 +107,6 @@ function App() {
             </Navbar.Group>
             <Navbar.Group>
               <Navbar.Divider />
-              {viewOptions.table && (
-                <SheetTabs {...{ setWorksheetName, worksheetName }} />
-              )}
               <EditableSurveyTitle />
             </Navbar.Group>
             <Navbar.Group align={Alignment.RIGHT}>
@@ -138,12 +130,11 @@ function App() {
             </OverflowScrollContainer>
           )}
           {xlsForm && language && viewOptions.table && (
-            <XLSFormWorksheet
+            <XLSFormWorkbook
               xlsForm={xlsForm}
               language={language}
               debug={viewOptions.debug}
-              style={{ width: "50%" }}
-              worksheetName={worksheetName}
+              style={{ flex: 1, display: "flex" }}
             />
           )}
           {xlsForm && language && (

@@ -1,21 +1,20 @@
 import {
-  default as PrattParser,
-  TokenType,
-  // AssignParselet,
   BinaryOperatorParselet,
   CallParselet,
   ConditionalParselet,
+  default as PrattParser,
+  Expression,
   GroupParselet,
   NameParselet,
   PostfixOperatorParselet,
   PrefixOperatorParselet,
   Token,
-  Expression,
+  TokenType,
 } from "../pratt-parser-base/index";
-import Precedence from "./ODKFormulaPrecedence";
 import LiteralParselet from "../pratt-parser-base/parselets/LiteralParselet";
 import SelectorParselet from "../pratt-parser-base/parselets/SelectorParselet";
 import { ParserOptions } from "../pratt-parser-base/Parser";
+import Precedence from "./ODKFormulaPrecedence";
 
 /**
  * Extends the generic PrattParser class with support for parsing ODK formula grammar.

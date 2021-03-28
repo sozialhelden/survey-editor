@@ -10,7 +10,8 @@ import {
 import { Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import { fieldTypeNames, typesToIcons } from "../../lib/typesToIcons";
+import { fieldTypeNames } from "../../xlsform-simple-schema/field-types/fieldTypeNames";
+import { fieldTypesToIcons } from "../../xlsform-simple-schema/field-types/fieldTypesToIcons";
 import {
   isGroupNode,
   ODKNode,
@@ -19,7 +20,11 @@ import { ChoiceListMenu } from "./ChoiceListMenu";
 import { FieldTypeMenu } from "./FieldTypeMenu";
 import { NoChoicesState } from "./NoChoicesState";
 
-export function FieldConfigurationButton({
+/**
+ * Shows a survey field’s type and type parameters (if existing). The type and parameters are
+ * clickable and allow to reconfigure the field.
+ */
+export function FieldTypeButtonGroup({
   node,
   showType,
 }: {
@@ -36,7 +41,7 @@ export function FieldConfigurationButton({
   );
   const noChoicesAvailable = NoChoicesState();
   const typeName = fieldTypeNames[node.type];
-  const icon = typesToIcons[node.type];
+  const icon = fieldTypesToIcons[node.type];
   const hasItems = node.typeParameters.length > 0;
 
   if (isGroup)

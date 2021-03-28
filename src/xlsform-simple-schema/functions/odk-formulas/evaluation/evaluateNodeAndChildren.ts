@@ -2,12 +2,16 @@ import {
   EvaluatableColumnName,
   evaluatableColumnNames,
   ODKNode,
-} from "../types/ODKNode";
-import { XLSForm } from "../types/XLSForm";
-import evaluateNodeColumn from "./odk-formulas/evaluation/evaluateNodeColumn";
-import ODKFormulaEvaluationContext from "./odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import ODKFormulaEvaluationResult from "./odk-formulas/evaluation/ODKFormulaEvaluationResult";
+} from "../../../types/ODKNode";
+import { XLSForm } from "../../../types/XLSForm";
+import evaluateNodeColumn from "./evaluateNodeColumn";
+import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
+import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
+/**
+ * @returns the calculated or answered value of a given branch (incl. children) or leaf in the node
+ * tree. Calls a callback function for each found result.
+ */
 export function evaluateNodeAndChildren(
   node: ODKNode,
   context: ODKFormulaEvaluationContext,
@@ -36,6 +40,11 @@ export function evaluateNodeAndChildren(
     evaluateNodeAndChildren(child, context, onEval)
   );
 }
+
+/**
+ * @returns the calculated or answered value of all leaves in the node tree. Saves the calculated
+ * results in the given evaluation context as a side effect.
+ */
 
 export default function getEvaluatedXLSFormResult(
   xlsForm: XLSForm,

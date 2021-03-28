@@ -13,50 +13,50 @@ function isLetter(char: string) {
  * something to work with.
  */
 export default class BantamLexer implements Iterator<Token> {
-  private mPunctuators = new Map<string, TokenType>();
-  private mIndex = 0;
-  private mText: string;
+  private punctuators = new Map<string, TokenType>();
+  private index = 0;
+  private text: string;
 
   /**
    * Creates a new Lexer to tokenize the given string.
    * @param text String to tokenize.
    */
   constructor(text: string) {
-    this.mIndex = 0;
-    this.mText = text;
+    this.index = 0;
+    this.text = text;
 
     // Register all of the TokenTypes that are explicit punctuators.
     for (const type of tokenTypes) {
       const p = punctuator(type);
       if (typeof p !== "undefined") {
-        this.mPunctuators.set(p, type);
+        this.punctuators.set(p, type);
       }
     }
   }
 
   next(): { value: Token } {
-    while (this.mIndex < this.mText.length) {
-      const c = this.mText.charAt(this.mIndex++);
+    while (this.index < this.text.length) {
+      const c = this.text.charAt(this.index++);
 
-      if (this.mPunctuators.has(c)) {
+      if (this.punctuators.has(c)) {
         // Handle punctuation.
-        const type = this.mPunctuators.get(c);
+        const type = this.punctuators.get(c);
         if (typeof type === "undefined") {
           throw new Error(`Didnt find type ${type} in punctuators. Stopping.`);
         }
-        return { value: { type, text: c, index: this.mIndex } };
+        return { value: { type, text: c, index: this.index } };
       } else if (isLetter(c)) {
         // Handle names.
-        const start = this.mIndex - 1;
-        while (this.mIndex < this.mText.length) {
-          if (!isLetter(this.mText.charAt(this.mIndex))) break;
-          this.mIndex++;
+        const start = this.index - 1;
+        while (this.index < this.text.length) {
+          if (!isLetter(this.text.charAt(this.index))) break;
+          this.index++;
         }
         return {
           value: {
             type: TokenType.NAME,
-            text: this.mText.substring(start, this.mIndex),
-            index: this.mIndex,
+            text: this.text.substring(start, this.index),
+            index: this.index,
           },
         };
       } else {
@@ -67,7 +67,7 @@ export default class BantamLexer implements Iterator<Token> {
     // Once we've reached the end of the string, just return EOF tokens. We'll
     // just keeping returning them as many times as we're asked so that the
     // parser's lookahead doesn't have to worry about running out of tokens.
-    return { value: { type: TokenType.EOF, text: "", index: this.mIndex } };
+    return { value: { type: TokenType.EOF, text: "", index: this.index } };
   }
   public remove(): void {
     throw new Error("Unsupported operation");

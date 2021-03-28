@@ -13,10 +13,10 @@ import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-f
 import { isNodeRelevant } from "../../xlsform-simple-schema/types/ODKNode";
 import FieldPopoverButton from "../FieldPopoverButton/FieldPopoverButton";
 import { FieldProps } from "../FieldProps";
-import { FieldSetForKey } from "../FieldSetForKey";
+import { SurveyField } from "../SurveyField";
 import { EditableFieldHint } from "./EditableFieldHint";
 
-export default function ObjectField(props: FieldProps) {
+export default function FieldGroup(props: FieldProps) {
   const { onChangeCell } = React.useContext(ODKSurveyContext);
   const { schema, schemaKey, node } = props;
   const isComplexType = [
@@ -33,7 +33,8 @@ export default function ObjectField(props: FieldProps) {
 
   const labelString = schema.get(schemaKey, "label");
   const path =
-    context.context && getNodeAbsolutePath(node, context.context).join("/");
+    context.evaluationContext &&
+    getNodeAbsolutePath(node, context.evaluationContext).join("/");
 
   const [editedLabelString, setEditedLabelString] = React.useState<string>();
 
@@ -48,7 +49,7 @@ export default function ObjectField(props: FieldProps) {
     [node, onChangeCell, labelString]
   );
 
-  const labelInput = node !== context.context?.survey && (
+  const labelInput = node !== context.evaluationContext?.survey && (
     <EditableText
       multiline={true}
       onChange={setEditedLabelString}
@@ -62,7 +63,7 @@ export default function ObjectField(props: FieldProps) {
 
   const HeadingClass = [H1, H2, H3, H4, H5][node.indentationLevel] || H5;
 
-  const isRelevant = isNodeRelevant(node, context.context);
+  const isRelevant = isNodeRelevant(node, context.evaluationContext);
   if (!isRelevant && !debug) {
     return null;
   }
@@ -85,13 +86,13 @@ export default function ObjectField(props: FieldProps) {
         >
           {debug ? <>{labelInput}</> : labelString}
         </HeadingClass>
-        {debug && node !== context.context?.survey && (
+        {debug && node !== context.evaluationContext?.survey && (
           <FieldPopoverButton {...{ ...props }} editable={true} />
         )}
       </ControlGroup>
       <EditableFieldHint {...{ node, debug }} />
       {subKeys.map((subkey) => (
-        <FieldSetForKey
+        <SurveyField
           key={subkey}
           schemaKey={[schemaKey, subkey].join(".")}
           relevant={props.relevant}

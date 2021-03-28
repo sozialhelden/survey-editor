@@ -11,8 +11,8 @@ import {
 import * as React from "react";
 import { uuid as getUUID } from "uuidv4";
 import {
-  createImageObjectFromAccessibilityCloudImage,
   createImageObjectFromFile,
+  createImageObjectFromRemoteImage,
   uploadPhoto,
 } from "../../lib/images/uploadPhoto";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
@@ -133,23 +133,8 @@ export default function FileUploadField(props: Props) {
       onChangeAnswer(createImageObjectFromFile(file), props);
 
       uploadPhoto(uuid, file)
-        .then((responseBody) => {
-          if (!responseBody.success) {
-            const message = `Sorry, your upload failed: ${String(
-              responseBody.error
-            )}`;
-            showPersistentErrorToast(message, uuid);
-            throw new Error(message);
-          }
-          if (!responseBody.result) {
-            const message = "Sorry, your upload failed: Empty server response.";
-            showPersistentErrorToast(message, uuid);
-            throw new Error(message);
-          }
-          onChangeAnswer(
-            createImageObjectFromAccessibilityCloudImage(responseBody.result),
-            props
-          );
+        .then((response) => {
+          onChangeAnswer(createImageObjectFromRemoteImage(response), props);
           AppToaster.show(
             { message: "Upload successful!", intent: "success", timeout: 5000 },
             uuid

@@ -1,4 +1,3 @@
-import { Colors } from "@blueprintjs/core";
 import { isObject } from "lodash";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
@@ -16,7 +15,7 @@ import {
 } from "../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base";
 import LiteralExpression from "../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base/expressions/LiteralExpression";
 import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
-import ObjectLiteral from "./ObjectLiteral";
+import ObjectLiteralButtonWithPopover from "./ObjectLiteral";
 
 /** Shows a function name as a link to the function's documentation. */
 function FunctionCallTokenElement({
@@ -108,11 +107,17 @@ export function TokenElement({
     token.type === TokenType.NAME &&
     token.text.startsWith("$") &&
     expression instanceof NameExpression &&
-    context.context
+    context.evaluationContext
   ) {
     return (
       <VariableReferenceTokenElement
-        {...{ expression, context: context.context, className, token, node }}
+        {...{
+          expression,
+          context: context.evaluationContext,
+          className,
+          token,
+          node,
+        }}
       />
     );
   }
@@ -123,13 +128,11 @@ export function TokenElement({
     expression.type === "object"
   ) {
     return (
-      <ObjectLiteral object={expression.value as Record<string, unknown>} />
+      <ObjectLiteralButtonWithPopover
+        object={expression.value as Record<string, unknown>}
+      />
     );
   }
 
-  return (
-    <span className={className} style={{ color: Colors.RED4 }}>
-      {token.text}
-    </span>
-  );
+  return <span className={className}>{token.text}</span>;
 }

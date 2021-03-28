@@ -22,8 +22,7 @@ const tokenPatterns: [TokenType, RegExp][] = [
   [TokenType.MINUS, /^-/],
   [TokenType.ASTERISK, /^\*/],
   [TokenType.COMPARISON, /^(>=|>|<=|<|=|!=)/],
-  [TokenType.COMPARISON, /^(>=|>|<=|<|=|!=)/],
-  [TokenType.INVALID, /^(\w+|[\s\S])/],
+  [TokenType.INVALID, /^(\w+|[\s\S])/], // must be last
 ];
 
 /** Divides a strings into tokens defined by ODK formula token patterns. */

@@ -1,11 +1,8 @@
-import { cloneDeep, get, set, without } from "lodash";
-import { XLSForm } from "../xlsform-simple-schema";
-import { localizableColumnNames } from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
-import {
-  evaluatableColumnNames,
-  ODKNode,
-} from "../xlsform-simple-schema/types/ODKNode";
-import { QuestionRow } from "../xlsform-simple-schema/types/RowTypes";
+import { cloneDeep, get, set } from "lodash";
+import { evaluatableColumnNames, ODKNode } from "../../types/ODKNode";
+import { QuestionRow } from "../../types/RowTypes";
+import { XLSForm } from "../../types/XLSForm";
+import { localizableColumnNames } from "../loadSurveyFromXLSX";
 
 export type NodeDependency = {
   node: ODKNode;
@@ -14,6 +11,10 @@ export type NodeDependency = {
   columnName: string;
 };
 
+/**
+ * Refactoring feature: Finds or replaces all references to a given field in other fields, so the
+ * survey developer doesn't have to rename every reference manually.
+ */
 export default function findOrReplaceFieldReferences(
   xlsForm: XLSForm,
   node: ODKNode,
@@ -27,7 +28,7 @@ export default function findOrReplaceFieldReferences(
     const localizableKeys = localizableColumnNames.flatMap((lcn) =>
       [...xlsForm.languages.values()].map((lang) => `${lcn}.${lang}`)
     );
-    without(evaluatableColumnNames as string[], "choice_filter")
+    (evaluatableColumnNames as string[])
       .concat(...localizableKeys)
       .forEach((columnName) => {
         const value = get(n.row, columnName);

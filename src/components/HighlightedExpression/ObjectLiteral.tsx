@@ -21,9 +21,14 @@ const StyledCode = styled.button`
 /**
  * Shows a JavaScript object literal like Chrome inspector would show it.
  */
-export default function ObjectLiteral({ object }: { object: unknown }) {
+export default function ObjectLiteralButtonWithPopover({
+  object,
+}: {
+  object: unknown;
+}) {
   const isDate = object instanceof Date;
-  const type = get(object, "@type") || (isDate && "Date");
+  const linkedDataType = get(object, "@type");
+  const type = linkedDataType || (isDate && "Date");
   const inspector = (
     <div style={{ margin: "-20px", padding: "20px", overflow: "auto" }}>
       <Inspector

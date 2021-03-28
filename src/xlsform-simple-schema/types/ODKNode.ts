@@ -1,12 +1,9 @@
-import { createLabelInAllLanguages } from "../../lib/createLabelInAllLanguages";
 import ODKFormulaEvaluationContext from "../functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import {
   IBeginGroupMarkerRow,
   IBeginRepeatMarkerRow,
 } from "./BeginOrEndMarkerRow";
 import { QuestionRow } from "./RowTypes";
-
-export type ODKNodeAnswer = {};
 
 /**
  * Represents a 'raw' survey variable, input, field group or repeat group, before its content is
@@ -49,25 +46,6 @@ export type ODKNode =
       indentationLevel: number;
       rowIndex: number;
     };
-
-let i = 0;
-export function getEmptyNode(
-  languages: Readonly<Set<string>>
-): Readonly<ODKNode> {
-  i += 1;
-  return Object.freeze({
-    row: {
-      type: "text",
-      name: `empty_node_${i}`,
-      label: createLabelInAllLanguages(`Empty node ${i}`, languages),
-    },
-    type: "text",
-    typeParameters: [],
-    children: [],
-    indentationLevel: 0,
-    rowIndex: -2,
-  });
-}
 
 /** Maps `ODKNode` references to values, for example, answers, or formula evaluation results. */
 export type NodesToValues<T = unknown> = Readonly<Map<Readonly<ODKNode>, T>>;

@@ -2,15 +2,23 @@ import * as React from "react";
 import SimpleSchema from "simpl-schema";
 import { XLSForm } from "../xlsform-simple-schema";
 import ODKFormulaEvaluationContext, {
-  getEmptyContext,
+  getEmptyEvaluationContext,
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import useChangeHooks from "./useChangeHooks";
 
 /** Provides the current XLSForm survey, its evaluation results, and its metadata. */
 export type ODKSurveyContextType = {
+  /** `true` if the survey should show editing/debugging UI features, `false` otherwise. */
+  debug: boolean;
+
+  /** The current survey’s XLSForm model. */
+  xlsForm?: XLSForm;
+
   /** A schema that allows to validate answer results for the current survey. */
   schema?: SimpleSchema;
-  context?: ODKFormulaEvaluationContext;
+
+  /** The ODK/XLSForm evaluation context for the survey. Contains evaluated answers and formulas. */
+  evaluationContext?: ODKFormulaEvaluationContext;
 
   /** The currently selected language used for survey display. */
   language?: string;
@@ -20,8 +28,6 @@ export type ODKSurveyContextType = {
 
   /** Language tag of the currently selected language used for survey display (e.g. 'de-AT'). */
   languageCode?: string;
-  debug: boolean;
-  xlsForm?: XLSForm;
 } & ReturnType<typeof useChangeHooks>;
 
 /**
@@ -30,13 +36,17 @@ export type ODKSurveyContextType = {
  */
 export const ODKSurveyContext = React.createContext<ODKSurveyContextType>({
   schema: new SimpleSchema({}),
-  context: getEmptyContext(),
+  debug: true,
+  xlsForm: undefined,
+
+  evaluationContext: getEmptyEvaluationContext(),
+
   language: "English (en)",
   languageCode: "en",
   languageName: "English",
-  debug: true,
-  xlsForm: undefined,
-  setContext: () => {},
+
+  setEvaluationContext: () => {},
+  setXLSForm: () => {},
   onChangeAnswer: () => {},
   onChangeCell: () => {},
   onMoveNode: () => {},

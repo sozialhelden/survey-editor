@@ -1,5 +1,8 @@
-import ODKFormulaEvaluationResult from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
+import ODKFormulaEvaluationResult from "./odk-formulas/evaluation/ODKFormulaEvaluationResult";
 
+/**
+ * @returns name of the first found column with a formula parsing/evaluation error.
+ */
 export function getFirstColumnNameWithError(
   nodeEvaluationResults: Map<string, ODKFormulaEvaluationResult> | undefined
 ) {

@@ -10,10 +10,10 @@ import { Popover2 } from "@blueprintjs/popover2";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { NodeReferencesMenu } from "../survey/FieldPopoverButton/NodeReferencesMenu";
 import { AppToaster } from "../toaster";
-import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import findOrReplaceFieldReferences, {
   NodeDependency,
-} from "./findOrReplaceFieldReferences";
+} from "../xlsform-simple-schema/functions/editing/findOrReplaceFieldReferences";
+import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { ODKSurveyContext } from "./ODKSurveyContext";
 
 /**

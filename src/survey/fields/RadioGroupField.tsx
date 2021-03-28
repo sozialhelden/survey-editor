@@ -11,7 +11,7 @@ import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import getAllowedChoiceValues from "../../xlsform-simple-schema/functions/schema-creation/getAllowedChoiceValues";
-import { FieldConfigurationButton } from "../FieldPopoverButton/FieldConfigurationButton";
+import { FieldTypeButtonGroup } from "../FieldPopoverButton/FieldTypeButtonGroup";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
@@ -23,7 +23,7 @@ type Props = FieldProps & {
 export default function RadioGroupField(props: Props) {
   const { value, onInputChange, node, relevant, readonly } = props;
   const context = React.useContext(ODKSurveyContext);
-  const { language, xlsForm, context: evaluationContext } = context;
+  const { language, xlsForm, evaluationContext: evaluationContext } = context;
 
   if (value !== undefined && typeof value !== "string") {
     return (
@@ -50,7 +50,7 @@ export default function RadioGroupField(props: Props) {
         <ControlGroup fill={true}>
           <H4>No choice list set.</H4>
           <div className={FLEX_EXPANDER} />
-          <FieldConfigurationButton node={node} showType={false} />
+          <FieldTypeButtonGroup node={node} showType={false} />
         </ControlGroup>
       </Callout>
     );

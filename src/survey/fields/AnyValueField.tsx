@@ -1,16 +1,16 @@
 import { Callout, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { internalFieldTypes } from "../../xlsform-simple-schema/field-types/internalFieldTypes";
 import evaluateNodeColumn from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
 import FieldPopoverButton from "../FieldPopoverButton/FieldPopoverButton";
 import { FieldProps } from "../FieldProps";
-import { internalFields } from "../internalFields";
 import BooleanField from "./BooleanField";
 import CheckboxGroupField from "./CheckboxGroupField";
 import DateField from "./DateField";
 import { EditableFieldHint } from "./EditableFieldHint";
+import { EditableFieldLabel } from "./EditableFieldLabel";
 import FileUploadField from "./FileUploadField";
-import { Label } from "./Label";
 import NumberField from "./NumberField";
 import RadioGroupField from "./RadioGroupField";
 import TextField from "./TextField";
@@ -71,16 +71,11 @@ export function AutoField(props: AutoFieldProps) {
   return <FieldComponent {...props} />;
 }
 
-export default function ValueField(props: FieldProps) {
+export default function AnyValueField(props: FieldProps) {
   const { node } = props;
   const isBoolean = props.node.type === "acknowlege";
   const context = React.useContext(ODKSurveyContext);
-  const {
-    language,
-    debug,
-    context: evaluationContext,
-    onChangeAnswer,
-  } = context;
+  const { language, debug, evaluationContext, onChangeAnswer } = context;
 
   const onInputChange = React.useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
@@ -102,7 +97,7 @@ export default function ValueField(props: FieldProps) {
     return null;
   }
 
-  const isInternalField = internalFields.includes(node.type);
+  const isInternalField = internalFieldTypes.includes(node.type);
   if (isInternalField && !context.debug) {
     return null;
   }
@@ -112,9 +107,11 @@ export default function ValueField(props: FieldProps) {
 
   const hint = <EditableFieldHint {...{ node, debug }} />;
   const labelElement = (
-    <Label {...{ ...props, debug, isEditable: !isBoolean && !isInternalField }}>
+    <EditableFieldLabel
+      {...{ ...props, debug, isEditable: !isBoolean && !isInternalField }}
+    >
       {!isBoolean && debug && detailsButton}
-    </Label>
+    </EditableFieldLabel>
   );
   const evaluationResult = evaluateNodeColumn(
     node,

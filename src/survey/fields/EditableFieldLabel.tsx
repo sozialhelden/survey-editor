@@ -5,7 +5,10 @@ import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import { FieldProps } from "../FieldProps";
 
-export function Label(
+/**
+ * Displays an editable field label. Supports Markdown when rendering the result.
+ */
+export function EditableFieldLabel(
   props: FieldProps & {
     debug: boolean;
     minimal?: boolean;
@@ -27,7 +30,8 @@ export function Label(
   const evaluatedLabel = schema.get(schemaKey, "label");
   const { onChangeCell } = React.useContext(ODKSurveyContext);
   const path =
-    context.context && getNodeAbsolutePath(node, context.context).join("/");
+    context.evaluationContext &&
+    getNodeAbsolutePath(node, context.evaluationContext).join("/");
   const [editedLabelString, setEditedLabelString] = React.useState<string>();
 
   const onConfirmLabel = React.useCallback(

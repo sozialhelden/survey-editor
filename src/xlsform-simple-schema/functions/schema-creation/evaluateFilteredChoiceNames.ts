@@ -25,7 +25,6 @@ import { Expression } from "../odk-formulas/pratt-parser-base";
  */
 
 export function evaluateFilteredChoiceNames(
-  choiceFilterString: string,
   /** The condition formula specifying which choices to include in the list. */
   choiceFilterFormula: string,
   /** Applicable array of rows from the `choices` worksheet. */
@@ -35,9 +34,11 @@ export function evaluateFilteredChoiceNames(
   /** Context in which the formula should be evaluated. */
   context: ODKFormulaEvaluationContext
 ) {
-  const lexer = new ODKFormulaLexer(choiceFilterString);
+  const lexer = new ODKFormulaLexer(choiceFilterFormula);
   const parser = new ODKFormulaParser({ tokens: lexer });
+
   const choiceFilterExpression: Expression = parser.parseExpression();
+
   const result = function filteredChoiceValues() {
     return choiceObjects
       .flatMap((choiceObject) => Object.values(choiceObject))

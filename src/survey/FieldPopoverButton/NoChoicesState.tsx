@@ -1,45 +1,22 @@
 import { Button, ControlGroup, NonIdealState } from "@blueprintjs/core";
 import * as React from "react";
-import { createLabelInAllLanguages } from "../../lib/createLabelInAllLanguages";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import { ChoiceRow } from "../../xlsform-simple-schema/types/RowTypes";
-
+import addExampleChoices from "../../xlsform-simple-schema/functions/editing/addExampleChoices";
 /**
  * Shown when no choice lists are defined in the survey, allowing to create an example choice list.
  */
 export function NoChoicesState() {
   const context = React.useContext(ODKSurveyContext);
 
-  const addExampleChoices = React.useCallback(() => {
-    const languages = context.xlsForm?.languages || new Set(["English (en)"]);
-    const choiceRows: ChoiceRow[] = [
-      {
-        "list name": "yes_no_maybe",
-        name: "yes",
-        label: createLabelInAllLanguages("yes", languages),
-      },
-      {
-        "list name": "yes_no_maybe",
-        name: "no",
-        label: createLabelInAllLanguages("no", languages),
-      },
-      {
-        "list name": "yes_no_maybe",
-        name: "maybe",
-        label: createLabelInAllLanguages("maybe", languages),
-      },
-    ];
-    context.onSpliceRows("choices", [
-      {
-        rowIndex: 0,
-        numberOfRowsToRemove: 0,
-        rowsToAdd: choiceRows,
-      },
-    ]);
+  const onAddExampleChoices = React.useCallback(() => {
+    if (!context.xlsForm) {
+      return;
+    }
+    context.setXLSForm(addExampleChoices(context.xlsForm));
   }, [context]);
 
   const addExampleChoicesButton = (
-    <Button large={true} intent="primary" onClick={addExampleChoices}>
+    <Button large={true} intent="primary" onClick={onAddExampleChoices}>
       Create example choice list
     </Button>
   );

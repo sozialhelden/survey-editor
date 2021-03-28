@@ -1,11 +1,12 @@
 import * as ExcelJS from "exceljs";
 import { get } from "lodash";
+import { WorksheetName, XLSForm } from "../../types/XLSForm";
 import {
   localizableColumnNames,
   normalizeColumnNames,
-} from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
-import { WorksheetName, XLSForm } from "../xlsform-simple-schema/index";
+} from "../loadSurveyFromXLSX";
 
+/** Creates an XLSForm Excel file and starts its download in the browser.  */
 export async function saveXLSForm(xlsForm: XLSForm) {
   const workbook = new ExcelJS.Workbook();
   workbook.modified = workbook.created = new Date();

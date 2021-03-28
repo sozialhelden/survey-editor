@@ -11,8 +11,3 @@ export type AccessibilityCloudImage = {
     height: number;
   };
 };
-
-export type AccessibilityCloudImages = {
-  totalCount: number;
-  images: AccessibilityCloudImage[];
-};

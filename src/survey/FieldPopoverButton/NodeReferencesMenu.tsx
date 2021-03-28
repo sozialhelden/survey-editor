@@ -1,8 +1,8 @@
 import { Menu, MenuItem } from "@blueprintjs/core";
 import * as React from "react";
-import { NodeDependency } from "../../lib/findOrReplaceFieldReferences";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import { typesToIcons } from "../../lib/typesToIcons";
+import { fieldTypesToIcons } from "../../xlsform-simple-schema/field-types/fieldTypesToIcons";
+import { NodeDependency } from "../../xlsform-simple-schema/functions/editing/findOrReplaceFieldReferences";
 import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 
 /**
@@ -23,19 +23,19 @@ export function NodeReferencesMenu(props: { references: NodeDependency[] }) {
       </li>
 
       {props.references?.map((reference) => {
-        if (!context.context) {
+        if (!context.evaluationContext) {
           return null;
         }
         const href = `#//${getNodeAbsolutePathString(
           reference.node,
-          context.context,
+          context.evaluationContext,
           "/"
         )}`;
 
         return (
           <MenuItem
             text={<code>{reference.node?.row.name}</code>}
-            icon={typesToIcons[reference.node.type]}
+            icon={fieldTypesToIcons[reference.node.type]}
             href={href}
             label={reference.columnName}
           />

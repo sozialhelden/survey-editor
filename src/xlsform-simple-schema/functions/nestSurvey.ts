@@ -73,19 +73,21 @@ export default function nestSurvey({
   while (i < rows.length) {
     const row = rows[i];
     const [type, ...typeParameters] = normalizeType(row.type).split(" ");
-    const currentGroup = stack[stack.length - 1];
+    const lastOpenedGroup = stack[stack.length - 1];
 
-    if (currentGroup.type === "begin_group" && type === "end_group") {
+    if (lastOpenedGroup.type === "begin_group" && type === "end_group") {
+      // Found an end marker row for the currently open group
       stack.pop();
-      onRow?.(row, currentGroup);
+      onRow?.(row, lastOpenedGroup);
     } else if (
-      currentGroup.type === "begin_repeat" &&
+      // Found an end marker row for the currently open repeat
+      lastOpenedGroup.type === "begin_repeat" &&
       row.type === "end_repeat"
     ) {
       stack.pop();
-      onRow?.(row, currentGroup);
+      onRow?.(row, lastOpenedGroup);
     } else if (type.match(/^begin_(?:repeat|group)$/)) {
-      // Found the beginning of a nested group or repeat
+      // Found the beginning of a new nested group or repeat
       const newGroupNode: ODKNode = {
         row: row as BeginMarkerRow,
         type,
@@ -94,11 +96,11 @@ export default function nestSurvey({
         indentationLevel: stack.length - 1,
         rowIndex: i,
       };
-      currentGroup.children.push(newGroupNode);
+      lastOpenedGroup.children.push(newGroupNode);
       stack.push(newGroupNode);
       onRow?.(row, newGroupNode);
     } else {
-      // Found a 'normal' survey question
+      // Assume we found a 'normal', non-nested row
       assertNoEndMarker(row, i);
       const newChildNode: ODKNode = {
         row,
@@ -108,7 +110,7 @@ export default function nestSurvey({
         rowIndex: i,
         children: [],
       };
-      currentGroup.children.push(newChildNode);
+      lastOpenedGroup.children.push(newChildNode);
       onRow?.(row, newChildNode);
     }
 

@@ -1,15 +1,13 @@
 import { Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import * as React from "react";
-import addExampleChoices from "../../lib/addExampleChoices";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
-import {
-  fieldCategoriesToIcons,
-  fieldCategoryNames,
-  fieldTypeNames,
-  fieldTypesToCategories,
-  typesToIcons,
-} from "../../lib/typesToIcons";
+import { fieldCategoriesToIcons } from "../../xlsform-simple-schema/field-types/fieldCategoriesToIcons";
+import { fieldCategoryNames } from "../../xlsform-simple-schema/field-types/fieldCategoryNames";
+import { fieldTypeNames } from "../../xlsform-simple-schema/field-types/fieldTypeNames";
+import { fieldTypesToCategories } from "../../xlsform-simple-schema/field-types/fieldTypesToCategories";
+import { fieldTypesToIcons } from "../../xlsform-simple-schema/field-types/fieldTypesToIcons";
+import addExampleChoices from "../../xlsform-simple-schema/functions/editing/addExampleChoices";
 import { QuestionRow } from "../../xlsform-simple-schema/types/RowTypes";
 
 export function FieldTypeMenu() {
@@ -30,7 +28,7 @@ export function FieldTypeMenu() {
         type?.match(/^select/) &&
         context.xlsForm?.worksheets.choices?.rows.length === 0
       ) {
-        addExampleChoices(context);
+        context.setXLSForm(addExampleChoices(context.xlsForm));
       }
 
       context.onSpliceRows("survey", [
@@ -62,7 +60,7 @@ export function FieldTypeMenu() {
               .map((type) => (
                 <MenuItem
                   text={fieldTypeNames[type]}
-                  icon={typesToIcons[type]}
+                  icon={fieldTypesToIcons[type]}
                   onClick={onClick}
                   data-type={type}
                 />
@@ -77,7 +75,7 @@ export function FieldTypeMenu() {
         .map((type) => (
           <MenuItem
             text={fieldTypeNames[type]}
-            icon={typesToIcons[type]}
+            icon={fieldTypesToIcons[type]}
             onClick={onClick}
             data-type={type}
           />

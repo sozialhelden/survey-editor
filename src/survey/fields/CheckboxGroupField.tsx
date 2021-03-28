@@ -4,7 +4,7 @@ import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import getAllowedChoiceValues from "../../xlsform-simple-schema/functions/schema-creation/getAllowedChoiceValues";
-import { FieldConfigurationButton } from "../FieldPopoverButton/FieldConfigurationButton";
+import { FieldTypeButtonGroup } from "../FieldPopoverButton/FieldTypeButtonGroup";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
@@ -48,7 +48,7 @@ export default function CheckboxGroupField(props: Props) {
 
   if (
     typeof language !== "string" ||
-    context.context === undefined ||
+    context.evaluationContext === undefined ||
     xlsForm === undefined
   ) {
     return null;
@@ -68,7 +68,7 @@ export default function CheckboxGroupField(props: Props) {
   if (context.debug && node.typeParameters.length === 0) {
     return (
       <Callout intent="warning" title="No choice list set.">
-        <FieldConfigurationButton node={node} showType={false} />
+        <FieldTypeButtonGroup node={node} showType={false} />
       </Callout>
     );
   }
@@ -78,11 +78,11 @@ export default function CheckboxGroupField(props: Props) {
       (choiceListName) => context.xlsForm?.choicesByName[choiceListName]
     )
   );
-  const key = getNodeAbsolutePathString(node, context.context, ".");
+  const key = getNodeAbsolutePathString(node, context.evaluationContext, ".");
   let allowedValues = getAllowedChoiceValues({
     node,
     xlsForm,
-    context: context.context,
+    context: context.evaluationContext,
     key,
   });
   if (!(allowedValues instanceof Array)) {

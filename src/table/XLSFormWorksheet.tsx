@@ -17,7 +17,8 @@ type Props = {
 };
 
 const FlexTable = styled(Table)`
-  /* flex: 1; */
+  flex: 1;
+  width: 33.33333vw;
 `;
 
 /**
@@ -142,20 +143,18 @@ export default function XLSFormWorksheet(props: Props) {
   }
 
   return (
-    <OverflowScrollContainer style={{ ...props.style }}>
-      <FlexTable
-        numRows={numRows}
-        enableRowResizing={false}
-        // numFrozenColumns={worksheetName === "survey" ? 2 : 0}
-      >
-        {columnNames.map((columnName) => (
-          <Column
-            key={columnName}
-            name={columnName}
-            cellRenderer={cellRenderer}
-          />
-        ))}
-      </FlexTable>
-    </OverflowScrollContainer>
+    <FlexTable
+      numRows={numRows}
+      enableRowResizing={false}
+      // numFrozenColumns={worksheetName === "survey" ? 2 : 0}
+    >
+      {columnNames.map((columnName) => (
+        <Column
+          key={columnName}
+          name={columnName}
+          cellRenderer={cellRenderer}
+        />
+      ))}
+    </FlexTable>
   );
 }

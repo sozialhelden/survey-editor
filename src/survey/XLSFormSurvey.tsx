@@ -1,9 +1,27 @@
 import * as React from "react";
-import PaddedContainer from "../components/PaddedContainer";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import { XLSForm } from "../xlsform-simple-schema";
-import { FieldSetForKey } from "./FieldSetForKey";
 import NoSurveyFieldsState from "./NoSurveyFieldsState";
+import { SurveyField } from "./SurveyField";
+
+function PaddedContainer(
+  props: React.HTMLAttributes<HTMLDivElement> & {
+    horizontal: number;
+    vertical: number;
+  }
+) {
+  return (
+    <div
+      {...{ props }}
+      style={{
+        margin: `${props.horizontal}rem ${props.vertical}rem`,
+        ...props.style,
+      }}
+    >
+      {props.children}
+    </div>
+  );
+}
 
 export default function XLSFormSurvey(props: {
   xlsForm: XLSForm;
@@ -35,7 +53,7 @@ export default function XLSFormSurvey(props: {
         noSurveyFieldsState
       ) : (
         <form>
-          <FieldSetForKey key={"data"} schemaKey={"data"} />
+          <SurveyField key={"data"} schemaKey={"data"} />
         </form>
       )}
     </PaddedContainer>

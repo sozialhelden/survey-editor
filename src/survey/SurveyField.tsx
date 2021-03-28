@@ -16,9 +16,9 @@ import { findNodeByPathRelativeToScope } from "../xlsform-simple-schema/function
 import AddFieldOrGroupMenuItem from "./AddFieldMenuItem";
 import { useNodeActionMenuItems } from "./FieldPopoverButton/NodeActionMenuItems";
 import { FieldProps } from "./FieldProps";
-import ObjectArrayField from "./fields/ObjectArrayField";
-import ObjectField from "./fields/ObjectField";
-import ValueField from "./fields/ValueField";
+import AnyValueField from "./fields/AnyValueField";
+import FieldGroup from "./fields/FieldGroup";
+import RepeatField from "./fields/RepeatField";
 
 const Stripe = styled.div`
   &:after {
@@ -85,13 +85,15 @@ const Hoverable = styled.div`
   }
 `;
 
-export function FieldSetForKey(props: {
+export function SurveyField(props: {
   schemaKey: string;
   relevant?: boolean;
   readonly?: boolean;
 }) {
   const { schemaKey } = props;
-  const { schema, context, debug } = React.useContext(ODKSurveyContext);
+  const { schema, evaluationContext: context, debug } = React.useContext(
+    ODKSurveyContext
+  );
 
   const schemaKeyPath = [".", ...schemaKey.replace(/\.\$/g, "").split(".")];
 
@@ -180,16 +182,16 @@ export function FieldSetForKey(props: {
   switch (node.type) {
     case undefined:
     case "":
-      field = <ObjectField {...fieldProps} />;
+      field = <FieldGroup {...fieldProps} />;
       break;
     case "begin_group":
-      field = <ObjectField {...fieldProps} />;
+      field = <FieldGroup {...fieldProps} />;
       break;
     case "begin_repeat":
-      field = <ObjectArrayField {...fieldProps} />;
+      field = <RepeatField {...fieldProps} />;
       break;
     default:
-      field = <ValueField {...fieldProps} />;
+      field = <AnyValueField {...fieldProps} />;
       break;
   }
 

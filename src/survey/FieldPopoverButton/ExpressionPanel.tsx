@@ -4,6 +4,7 @@ import HighlightedExpression from "../../components/HighlightedExpression/Highli
 import StyledMarkdown from "../../components/StyledMarkdown";
 import { alpha } from "../../lib/colors";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import createLiteralExpressionFromValue from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/createLiteralExpressionFromValue";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import { NameExpression } from "../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base";
@@ -42,9 +43,9 @@ export function ExpressionPanel({
   const cellIsEmpty = cellValue === undefined;
   const isLiteral = results?.expression?.kind === "literal";
   const isName = results?.expression?.kind === "name";
-  const answer = context.context?.nodesToAnswers.get(node);
-  const nodeName = context.context
-    ? getNodeAbsolutePathString(node, context.context)
+  const answer = context.evaluationContext?.nodesToAnswers.get(node);
+  const nodeName = context.evaluationContext
+    ? getNodeAbsolutePathString(node, context.evaluationContext)
     : node.row.name;
 
   const formulaIsTrivial =
@@ -111,15 +112,15 @@ export function ExpressionPanel({
           )}
           {results?.state !== "error" && (
             <StyledCodeBlock style={{ fontSize: "20px", lineHeight: "28px" }}>
+              {!formulaIsTrivial && <>=&nbsp;</>}
               {results?.result === undefined ? (
                 "undefined"
               ) : (
-                // : JSON.stringify(results.result)}
                 <HighlightedExpression
                   node={node}
                   state={results?.state}
                   error={results?.error}
-                  expression={results?.expression}
+                  expression={createLiteralExpressionFromValue(results?.result)}
                 />
               )}
             </StyledCodeBlock>

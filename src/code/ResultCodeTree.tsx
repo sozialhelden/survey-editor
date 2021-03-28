@@ -15,7 +15,7 @@ import {
 function SecondaryLabel(props: { node: ODKNode }) {
   const { node } = props;
   const context = React.useContext(ODKSurveyContext);
-  const results = context.context?.evaluationResults.get(node);
+  const results = context.evaluationContext?.evaluationResults.get(node);
   if (!results) {
     return <Icon icon="calculator" intent="none" />;
   }
@@ -75,7 +75,7 @@ export function getNodeTree(
 export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
   const { xlsForm } = props;
   const context = React.useContext(ODKSurveyContext);
-  const evaluationContext = context.context;
+  const evaluationContext = context.evaluationContext;
 
   const result = React.useMemo(() => {
     return xlsForm && evaluationContext
@@ -88,7 +88,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
             );
           }
 
-          if (!context.context) {
+          if (!context.evaluationContext) {
             throw new Error(
               "No context defined. Please define a context before using this component."
             );
@@ -113,7 +113,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
           } as ITreeNode<ODKNode>;
         })
       : null;
-  }, [context.context, evaluationContext, xlsForm]);
+  }, [context.evaluationContext, evaluationContext, xlsForm]);
 
   return result ? <Tree contents={[result]} /> : <div></div>;
 }

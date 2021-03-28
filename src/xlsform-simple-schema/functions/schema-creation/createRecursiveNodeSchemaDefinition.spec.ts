@@ -1,7 +1,7 @@
 import SimpleSchema from "simpl-schema";
-import createRecursiveNodeSchemaDefinition from "./createRecursiveNodeSchemaDefinition";
 import loadFormFromXLSXFile from "../loadSurveyFromXLSX";
 import ODKFormulaEvaluationContext from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import createRecursiveNodeSchemaDefinition from "./createRecursiveNodeSchemaDefinition";
 
 describe("createGroupNodeSchemaDefinition()", () => {
   it("creates a SimpleSchema", async () => {
@@ -12,6 +12,8 @@ describe("createGroupNodeSchemaDefinition()", () => {
       stackDepth: 0,
       survey: xlsForm.rootSurveyGroup,
       knownLiteralsWithoutDollarSign: {},
+      evaluationResults: new Map(),
+      nodesToAnswers: new Map(),
     };
     const definition = createRecursiveNodeSchemaDefinition({
       node: xlsForm.rootSurveyGroup,

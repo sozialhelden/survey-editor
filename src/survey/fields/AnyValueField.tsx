@@ -1,5 +1,6 @@
 import { Callout, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
+import ErrorBoundary from "../../components/ErrorBoundary";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { internalFieldTypes } from "../../xlsform-simple-schema/field-types/internalFieldTypes";
 import evaluateNodeColumn from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
@@ -144,8 +145,10 @@ export default function AnyValueField(props: FieldProps) {
 
   return (
     <FormGroup label={labelElement} labelFor={node.row.name}>
-      {input}
-      <EditableFieldHint {...{ node, debug }} />
+      <ErrorBoundary>
+        {input}
+        <EditableFieldHint {...{ node, debug }} />
+      </ErrorBoundary>
     </FormGroup>
   );
 }

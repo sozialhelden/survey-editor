@@ -3,7 +3,7 @@ import { SchemaDefinition } from "simpl-schema";
 /**
  * [GeoJSON](https://tools.ietf.org/html/rfc7946) `Point` object.
  */
-export interface PointGeometry {
+export interface GeoJSONPointGeometry {
   type: "Point";
   coordinates: [number, number];
 }
@@ -11,7 +11,7 @@ export interface PointGeometry {
 /**
  * [GeoJSON](https://tools.ietf.org/html/rfc7946) `LineString` object.
  */
-export interface LineStringGeometry {
+export interface GeoJSONLineStringGeometry {
   type: "LineString";
   coordinates: [[number, number]];
 }
@@ -19,7 +19,7 @@ export interface LineStringGeometry {
 /**
  * [GeoJSON](https://tools.ietf.org/html/rfc7946) `Polygon` object.
  */
-export interface PolygonGeometry {
+export interface GeoJSONPolygonGeometry {
   type: "Polygon";
   coordinates: [[[number, number]]];
 }
@@ -27,7 +27,7 @@ export interface PolygonGeometry {
 /**
  * [GeoJSON](https://tools.ietf.org/html/rfc7946) `Point` SimpleSchema.
  */
-export const getPointGeometrySchema = (
+export const getGeoJSONPointGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
@@ -53,7 +53,7 @@ export const getPointGeometrySchema = (
 /**
  * [GeoJSON](https://tools.ietf.org/html/rfc7946) `LineString` SimpleSchema.
  */
-export const getLineStringGeometrySchema = (
+export const getGeoJSONLineStringGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
@@ -83,7 +83,7 @@ export const getLineStringGeometrySchema = (
 /**
  * [GeoJSON](https://tools.ietf.org/html/rfc7946) `Polygon` SimpleSchema.
  */
-export const getPolygonGeometrySchema = (
+export const getGeoJSONPolygonGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
@@ -116,4 +116,7 @@ export const getPolygonGeometrySchema = (
   },
 });
 
-export type Geometry = PointGeometry | LineStringGeometry | PolygonGeometry;
+export type GeoJSONGeometry =
+  | GeoJSONPointGeometry
+  | GeoJSONLineStringGeometry
+  | GeoJSONPolygonGeometry;

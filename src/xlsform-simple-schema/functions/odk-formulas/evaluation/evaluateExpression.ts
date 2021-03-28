@@ -169,6 +169,7 @@ function evaluateCallExpression(
         e
       );
     }
+    return undefined; // can't be reached but necessary for typecheck
   });
 
   if (typeof fn !== "function") {

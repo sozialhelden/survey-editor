@@ -1,10 +1,10 @@
 import SimpleSchema from "simpl-schema";
 import { NodeToDefinitionFunction } from "./createLeafNodeSchemaDefinition";
 import {
-  getLineStringGeometrySchema,
-  getPointGeometrySchema,
-  getPolygonGeometrySchema,
-} from "./geometry/GeoJSONGeometry";
+  getSchemaOrgLineStringGeometrySchema,
+  getSchemaOrgPointGeometrySchema,
+  getSchemaOrgPolygonGeometrySchema,
+} from "./geometry/SchemaOrgGeometry";
 import getAllowedChoiceValues from "./getAllowedChoiceValues";
 import {
   getAudioObjectSchema,
@@ -39,9 +39,9 @@ export const questionTypesToSchemaGenerators: Record<
   }),
   rank: (o) => ({ [o.key]: { type: String } }),
   note: (o) => ({ [o.key]: { type: String } }),
-  geopoint: (o) => getPointGeometrySchema(o.key),
-  geotrace: (o) => getLineStringGeometrySchema(o.key),
-  geoshape: (o) => getPolygonGeometrySchema(o.key),
+  geopoint: (o) => getSchemaOrgPointGeometrySchema(o.key),
+  geotrace: (o) => getSchemaOrgLineStringGeometrySchema(o.key),
+  geoshape: (o) => getSchemaOrgPolygonGeometrySchema(o.key),
   date: (o) => ({ [o.key]: { type: Date } }),
   time: (o) => ({ [o.key]: { type: Date } }),
   datetime: (o) => ({ [o.key]: { type: Date } }),

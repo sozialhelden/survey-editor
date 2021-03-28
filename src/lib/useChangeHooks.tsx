@@ -48,7 +48,7 @@ export default function useChangeHooks({
     setContext((context: ODKFormulaEvaluationContext | undefined) => {
       if (context && context.survey === xlsForm.rootSurveyGroup) {
         console.log(
-          "Context exists already and survey model has the same identity, keeping context."
+          "Context exists already and survey model is identical, keeping context."
         );
         return context;
       }

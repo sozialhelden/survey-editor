@@ -12,6 +12,7 @@ import DateField from "./DateField";
 import { EditableFieldHint } from "./EditableFieldHint";
 import { EditableFieldLabel } from "./EditableFieldLabel";
 import FileUploadField from "./FileUploadField";
+import GeoPointField from "./GeoPointField";
 import NumberField from "./NumberField";
 import RadioGroupField from "./RadioGroupField";
 import TextField from "./TextField";
@@ -40,7 +41,7 @@ export function AutoField(props: AutoFieldProps) {
     select_multiple_from_file: CheckboxGroupField,
     rank: TextField,
     note: TextField,
-    geopoint: TextField,
+    geopoint: GeoPointField,
     geotrace: TextField,
     geoshape: TextField,
     date: DateField,

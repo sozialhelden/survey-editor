@@ -1,13 +1,20 @@
-import { SchemaDefinition } from "simpl-schema";
+import SimpleSchema, { SchemaDefinition } from "simpl-schema";
 
 /**
  * The geographic coordinates of a place or event.
  * @see https://schema.org/GeoCoordinates
  */
-export interface PointGeometry {
+export interface SchemaOrgPointGeometry {
   "@type": "GeoCoordinates";
   latitude: number;
   longitude: number;
+}
+
+export function assertSchemaOrgPointGeometry(
+  point: unknown
+): asserts point is SchemaOrgPointGeometry {
+  const schema = new SimpleSchema(getSchemaOrgPointGeometrySchema("point"));
+  schema.validate({ point });
 }
 
 /**
@@ -16,7 +23,7 @@ export interface PointGeometry {
  * @see https://schema.org/GeoShape
  */
 
-export interface LineStringGeometry {
+export interface SchemaOrgLineStringGeometry {
   "@type": "GeoShape";
   line: string;
 }
@@ -26,13 +33,13 @@ export interface LineStringGeometry {
  *
  * @see https://schema.org/GeoShape
  */
-export interface PolygonGeometry {
+export interface SchemaOrgPolygonGeometry {
   "@type": "GeoShape";
   polygon: string;
 }
 
 /** @returns a SimpleSchema definition for a Schema.org point geometry. */
-export const getPointGeometrySchema = (
+export const getSchemaOrgPointGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
@@ -52,7 +59,7 @@ export const getPointGeometrySchema = (
 });
 
 /** @returns a SimpleSchema definition for a Schema.org line string geometry. */
-export const getLineStringGeometrySchema = (
+export const getSchemaOrgLineStringGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
@@ -69,7 +76,7 @@ export const getLineStringGeometrySchema = (
 });
 
 /** @returns a SimpleSchema definition for a Schema.org polygon geometry. */
-export const getPolygonGeometrySchema = (
+export const getSchemaOrgPolygonGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
   [key]: {
@@ -85,4 +92,7 @@ export const getPolygonGeometrySchema = (
   },
 });
 
-export type Geometry = PointGeometry | LineStringGeometry | PolygonGeometry;
+export type SchemaoOrgGeometry =
+  | SchemaOrgPointGeometry
+  | SchemaOrgLineStringGeometry
+  | SchemaOrgPolygonGeometry;

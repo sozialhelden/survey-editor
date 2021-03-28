@@ -55,7 +55,9 @@ export default function evaluateExpression(
     stackDepth: context.stackDepth + 1,
   };
 
-  // XXX: This could be caseless, for example by having Expression subclasses that have their own evaluator
+  // This looks as if it could be caseless, for example by having Expression subclasses that have
+  // their own evaluator. This would complicate the design though, and make the expression
+  // implementation dependent on an expressions use - a two-way dependency to rather avoid.
   if (expression instanceof LiteralExpression) {
     result = evaluateLiteralExpression(expression);
   } else if (expression instanceof NameExpression) {
@@ -81,6 +83,9 @@ export default function evaluateExpression(
   return result;
 }
 
+/**
+ * A literal contains a defined value already. Return this value.
+ */
 function evaluateLiteralExpression(
   expression: LiteralExpression<ODKNodeValue>
 ): ODKNodeValue {
@@ -95,6 +100,12 @@ function stringFromStringOrExpression(n: string | Expression) {
   n.print((str: string) => (string += str));
   return string;
 }
+
+/**
+ * Evaluate a CallExpression's (dynamic) function name, then each of its arguments. Then, call the
+ * referred function (in this source code) by name. This evaluation does not use eval(), so it
+ * shouldn't be possible to break out of this sandbox (fingers crossed)
+ */
 
 function evaluateCallExpression(
   expression: CallExpression,
@@ -203,6 +214,10 @@ function assertBoolean(
   }
 }
 
+/**
+ * Evaluates operands of the expression, and calculates the result from combining them with the
+ * operator referenced by the expression's operator string.
+ */
 function evaluateOperatorExpression(
   expression: OperatorExpression,
   context: ODKFormulaEvaluationContext,
@@ -321,11 +336,25 @@ function evaluateOperatorExpression(
   }
 }
 
+/**
+ * Returns the value of a scoped NameExpression in a given evaluation context.
+ *
+ * Handled cases:
+ *
+ * - The name references a single node: Returns the node's answer or `calculation` value in this case.
+ * - The name references a node set: Returns the answers/calculations of all nodes, as list.
+ * - The name has no dollar sign: Look up the name as key in the supplied `literalBag` map, and return its value.
+ */
 function evaluateNameExpression(
   expression: NameExpression,
   context: ODKFormulaEvaluationContext,
   scope: ODKNode,
+  /** By default, throw if the name is not defined somewhere. */
   allowUndefinedNames = false,
+  /**
+   * Hand over a mapping of literal names to values. These literals can be used legally inside
+   * the formula, and will be evaluated to their values in the map.
+   */
   literalBag: Record<string, unknown> = context.knownLiteralsWithoutDollarSign
 ): unknown {
   if (expression.text.startsWith("$")) {
@@ -335,6 +364,7 @@ function evaluateNameExpression(
         context,
         scope
       ) || findNodeByNameInsideScope(expression.name, context);
+
     if (!nodeOrNodes) {
       throw new EvaluationError(
         `Could not find a node with name \`${expression.name}\`.`,
@@ -344,7 +374,10 @@ function evaluateNameExpression(
         scope
       );
     }
+
     if (nodeOrNodes instanceof Array) {
+      // Return a list of the values of all nodes referenced by this name.
+      // TODO: Check specs and examples if this is standard + correct ODK behavior.
       return nodeOrNodes.map((node) =>
         evaluateNodeColumn(
           node,
@@ -354,12 +387,14 @@ function evaluateNameExpression(
         )
       );
     }
+
     const evaluationResult = evaluateNodeColumn(
       nodeOrNodes,
       context,
       "calculation",
       context.nodesToAnswers.get(nodeOrNodes)
     );
+
     if (evaluationResult.error) {
       throw new EvaluationError(
         `Error in expression ${expression.text}.`,
@@ -372,14 +407,17 @@ function evaluateNameExpression(
           : undefined
       );
     }
+
     return evaluationResult.result;
   } else if (expression.text === expression.name) {
     const value = context.evaluateNonDollarNameFn
       ? context.evaluateNonDollarNameFn({ expression, context, scope })
       : literalBag[expression.name];
+
     if (value !== undefined || allowUndefinedNames) {
       return value;
     }
+
     throw new EvaluationError(
       `Unknown name \`${expression.text}\` — did you mean to use \`\${${expression.name}}\` instead of \`${expression.name}\`?`,
       "unknownNameWithoutDollarSign",
@@ -388,6 +426,7 @@ function evaluateNameExpression(
       scope
     );
   }
+
   throw new EvaluationError(
     `Don’t know how to evaluate ${expression}.`,
     "unsupportedNameExpression",
@@ -397,6 +436,10 @@ function evaluateNameExpression(
   );
 }
 
+/**
+ * Finds a single node or multiple nodes that match the given node selector, then returns their
+ * value(s).
+ */
 export function evaluateSelectorExpression(
   expression: SelectorExpression<string[]>,
   context: ODKFormulaEvaluationContext,

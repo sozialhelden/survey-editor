@@ -21,6 +21,10 @@ import {
 } from "./FieldPopoverButton";
 import { FormulaResultMeaning } from "./FormulaResultMeaning";
 
+/**
+ * Visual debugger for XLSForm cells that support formulas. Shows the cell's syntax-highlighted
+ * formula, the calculated result, and explanations.
+ */
 export function ExpressionPanel({
   node,
   columnName,
@@ -81,6 +85,7 @@ export function ExpressionPanel({
       }}
     >
       <h4>{title}</h4>
+
       {!cellIsEmpty && (
         <>
           <StyledCodeBlock

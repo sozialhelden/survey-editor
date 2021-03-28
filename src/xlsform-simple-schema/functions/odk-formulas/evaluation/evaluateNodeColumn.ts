@@ -1,12 +1,12 @@
-import createLiteralExpressionFromValue from "../../../../lib/createLiteralExpressionFromValue";
 import { EvaluationError } from "../../../types/Errors";
 import { EvaluatableColumnName, ODKNode } from "../../../types/ODKNode";
+import createLiteralExpressionFromValue from "./createLiteralExpressionFromValue";
 import evaluateODKFormula from "./evaluateODKFormula";
 import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
 /**
- * Evaluates the JavaScript value of a survey node, returning either a user answer or a calculated
+ * @returns the JavaScript value of a survey node, returning either a user answer or a calculated
  * formula result.
  *
  * @param node The node containing the survey answer / calculation to evaluate.

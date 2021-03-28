@@ -10,6 +10,7 @@ type Props = FieldProps & {
   defaultValue: unknown;
 };
 
+/** An input field for a decimal or integer number. */
 export default function NumberField(props: Props) {
   const { value, schemaKey, relevant, readonly } = props;
   const { onChangeAnswer } = React.useContext(ODKSurveyContext);

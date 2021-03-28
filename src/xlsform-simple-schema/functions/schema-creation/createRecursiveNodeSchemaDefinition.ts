@@ -6,6 +6,10 @@ import createLeafNodeSchemaDefinition from "./createLeafNodeSchemaDefinition";
 import { getNodeOptionalFunction } from "./getNodeOptionalFunction";
 import { getStringInterpolationFunctionOrString } from "./getStringInterpolationFunctionOrString";
 
+/**
+ * @returns a `SimpleSchema` definition of a nested tree of `ODKNode`s that you can use to validate
+ * survey results at runtime.
+ */
 export default function createRecursiveNodeSchemaDefinition(options: {
   node: ODKNode;
   language: string;

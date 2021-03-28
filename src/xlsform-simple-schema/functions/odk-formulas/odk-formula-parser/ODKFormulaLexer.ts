@@ -26,6 +26,7 @@ const tokenPatterns: [TokenType, RegExp][] = [
   [TokenType.INVALID, /^(\w+|[\s\S])/],
 ];
 
+/** Divides a strings into tokens defined by ODK formula token patterns. */
 export default class ODKFormulaLexer implements Iterator<Token> {
   index = 0;
   constructor(readonly text: string) {}

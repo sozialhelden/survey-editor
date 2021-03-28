@@ -37,6 +37,10 @@ function assertIsODKNode(node: any): asserts node is ODKNode {
   }
   node.children.forEach(assertIsODKNode);
 }
+/**
+ * @returns a set of props that you can add to a React node to add field drag & drop features to
+ * it. Makes the element draggable, and allows to drag ODK nodes over and onto the element.
+ */
 
 export function useNodeDragAndDrop({
   context,
@@ -44,10 +48,18 @@ export function useNodeDragAndDrop({
   setIsDraggedOver,
 }: {
   context?: ODKFormulaEvaluationContext;
+  /** The ODK node model that will be transferred when dragging & dropping */
   node: ODKNode;
+  /** The source evaluation context in which to find the source node */
+  evaluationContext?: ODKFormulaEvaluationContext;
+  /**
+   * A React state setter method to allow the UI to show that it is a potential drop target while
+   * dragging over it
+   */
   setIsDraggedOver: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { onDropNode } = React.useContext(ODKNodeDragAndDropContext);
+
   const onDragStart = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       if (!context) {

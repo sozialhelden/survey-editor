@@ -20,6 +20,9 @@ const FlexTable = styled(Table)`
   /* flex: 1; */
 `;
 
+/**
+ * Displays a single XLSForm worksheet as a table - like in Excel.
+ */
 export default function XLSFormWorksheet(props: Props) {
   const { language, xlsForm, worksheetName } = props;
   const context = React.useContext(ODKSurveyContext);

@@ -17,6 +17,10 @@ export type NodeToDefinitionFunction<T> = (
   options: NodeToDefinitionFunctionOptions
 ) => Record<string, SchemaDefinition<T>>;
 
+/**
+ * @returns a `SimpleSchema` definition of a field node. Use this to validate a survey result at
+ * runtime.
+ */
 export default function createLeafNodeSchemaDefinition(
   node: ODKNode,
   language: string,
@@ -43,9 +47,10 @@ export default function createLeafNodeSchemaDefinition(
       `Could not find schema generator for node type ${JSON.stringify(row)}`
     );
   }
+
   const schema = schemaGeneratorFunction({ key, node, xlsForm, context });
   const firstField = schema[Object.keys(schema)[0]];
   Object.assign(firstField, defaults, { ...firstField });
-  // console.log('Schema for node', JSON.stringify(node.row.name), ':', schema);
+
   return schema;
 }

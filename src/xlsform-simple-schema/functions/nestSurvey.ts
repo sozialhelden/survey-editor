@@ -21,13 +21,30 @@ function assertNoEndMarker(
 }
 
 /**
- * Calculates a nested `Node` survey model for an array of non-nested survey worksheet rows.
+ * Calculates a nested `Node` survey tree model for an array of non-nested survey worksheet rows.
+ *
+ * This nests everything between `begin_group`…`end_group` and `begin_repeat`…`end_repeat` row
+ * markers.
  */
 export default function nestSurvey({
+  /** flat array of non-nested rows to tree-ify */
   rows,
+  /** Language name to assume if a column is not localized, for example, `"English (en)"` */
   defaultLanguage,
+  /**
+   * In the XLSForm standard, the root survey node is reachable under the `//data` selector, so we
+   * name it `"data"` by default - you can customize this name, if necessary.
+   */
   formRootNameFromSettings = "data",
+  /**
+   * Because it looks intuitive, you can give the root node a title, too. If you supply no title,
+   * the survey form's title is used (if it is defined in the `settings` worksheet).
+   */
   titleFromSettings = "",
+  /**
+   * Called back for each row that is found, with the row and its generated `ODKNode` (if
+   * applicable).
+   */
   onRow,
 }: {
   rows: readonly (QuestionRow | BeginOrEndMarkerRow)[];

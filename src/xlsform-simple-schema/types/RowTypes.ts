@@ -4,10 +4,16 @@ import {
   settingsRowSchema,
 } from "./RowSchemas";
 
-/** Represents a row in the 'survey' worksheet */
-
 export type StringMap = Record<string, string>;
+
+/**
+ * Object with language codes as keys and strings as values, representing localized variants of a
+ * string.
+ */
+
 export type LocalizedString = StringMap;
+
+/** Represents a row in the 'survey' worksheet */
 
 export type QuestionRow = Record<
   string,
@@ -75,11 +81,13 @@ export function assertValidQuestionRow(
 ): asserts row is QuestionRow {
   return questionRowSchema.validate(row);
 }
+
 export function assertValidChoiceRow(
   row: Record<string, unknown>
 ): asserts row is ChoiceRow {
   return choiceRowSchema.validate(row, { keys: ["list name", "name"] });
 }
+
 export function assertValidSettingsRow(
   row: Record<string, unknown>
 ): asserts row is SettingsRow {

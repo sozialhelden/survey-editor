@@ -5,7 +5,9 @@ import {
 } from "./getQuantitativeValueSchema";
 
 /**
- * Inspired from https://schema.org/MediaObject
+ * A Schema.org `MediaObject` JSON-LD object.
+ *
+ * @see https://schema.org/MediaObject
  */
 
 export interface IMediaObject {
@@ -38,7 +40,9 @@ type MediaObject = IMediaObject & {
 };
 
 /**
- * Inspired from https://schema.org/MediaObject
+ * A Schema.org `MediaObject` JSON-LD object, as `SimpleSchema` definition.
+ *
+ * @see https://schema.org/MediaObject
  */
 
 export const getMediaObjectSchema = (
@@ -115,12 +119,22 @@ export const getMediaObjectSchema = (
   }),
 });
 
+/**
+ * A Schema.org `AudioObject` JSON-LD object.
+ *
+ * @see https://schema.org/AudioObject
+ */
 export type AudioObject = IMediaObject & {
   "@type": "AudioObject";
   transcript?: string;
   caption?: string | MediaObject;
 };
 
+/**
+ * A Schema.org `AudioObject` JSON-LD object, as `SimpleSchema` definition.
+ *
+ * @see https://schema.org/AudioObject
+ */
 export const getAudioObjectSchema = (
   key: string,
   rootDefinition?: Partial<SchemaDefinition<unknown>>
@@ -147,6 +161,11 @@ export const getAudioObjectSchema = (
   }),
 });
 
+/**
+ * A Schema.org `ImageObject` JSON-LD object.
+ *
+ * @see https://schema.org/ImageObject
+ */
 export type ImageObject = IMediaObject & {
   "@type": "ImageObject";
   exifData?: Record<string, unknown>;
@@ -155,6 +174,11 @@ export type ImageObject = IMediaObject & {
   thumbnail?: string | ImageObject;
 };
 
+/**
+ * A Schema.org `ImageObject` JSON-LD object, as `SimpleSchema` definition.
+ *
+ * @see https://schema.org/ImageObject
+ */
 export const getImageObjectSchema = (
   key: string,
   withThumbnail = true,
@@ -195,6 +219,11 @@ export const getImageObjectSchema = (
     : {}),
 });
 
+/**
+ * A Schema.org `VideoObject` JSON-LD object.
+ *
+ * @see https://schema.org/VideoObject
+ */
 export type VideoObject = IMediaObject & {
   "@type": "VideoObject";
   exifData?: Record<string, unknown>;
@@ -205,6 +234,12 @@ export type VideoObject = IMediaObject & {
   videoQuality?: string;
   thumbnail?: string | ImageObject;
 };
+
+/**
+ * A Schema.org `VideoObject` JSON-LD object, as `SimpleSchema` definition.
+ *
+ * @see https://schema.org/VideoObject
+ */
 export const getVideoObjectSchema = (
   key: string,
   rootDefinition?: Partial<SchemaDefinition<unknown>>

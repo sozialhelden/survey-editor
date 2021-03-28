@@ -4,6 +4,9 @@ import { createLabelInAllLanguages } from "../../lib/createLabelInAllLanguages";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { ChoiceRow } from "../../xlsform-simple-schema/types/RowTypes";
 
+/**
+ * Shown when no choice lists are defined in the survey, allowing to create an example choice list.
+ */
 export function NoChoicesState() {
   const context = React.useContext(ODKSurveyContext);
 

@@ -8,8 +8,12 @@ import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
 /**
  * Contains global information that can be used in a single formula evaluation. The evaluation
- * process needs this to find values of other nodes, for example, when a formulas uses a relative
- * XPath selector to refer to a NodeSet.
+ * process can use this to:
+ *
+ * - tracking stack overflows and potential create stack traces
+ * - store state of the end user's survey answers
+ * - store evaluated values of formulas
+ * - find answer values of other nodes referenced in formulas
  */
 
 type ODKFormulaEvaluationContext = {
@@ -41,7 +45,8 @@ export const knownLiteralsWithoutDollarSign: Record<string, unknown> = {
   false: false,
 };
 
-export const getEmptyContext: (
+/** Returns a blank context to start evaluating from scratch. */
+export const getEmptyEvaluationContext: (
   survey?: ODKNode
 ) => ODKFormulaEvaluationContext = (survey?: ODKNode) => ({
   survey: survey || {

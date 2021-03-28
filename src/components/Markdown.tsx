@@ -1,8 +1,8 @@
 import { Callout } from "@blueprintjs/core";
 import { omit } from "lodash";
+import marked from "marked";
 import * as React from "react";
 import unindent from "./unindent";
-import marked from "marked";
 
 interface IProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode;
@@ -25,6 +25,7 @@ function MarkdownDiv(props: IProps) {
   );
 }
 
+// Use this code to load the component lazily at runtime.
 // const Markdown = LoadableMap({
 //   loader: {
 //     marked: () => import("marked"),
@@ -35,7 +36,24 @@ function MarkdownDiv(props: IProps) {
 //   loading: () => null,
 // });
 
-function Markdown(props: { children: React.ReactNode }) {
+/**
+ * React component that displays a given Markdown as formatted output. Allows arbitrary indentation
+ * of the whole code for readability.
+ *
+ * @example
+ *   <Markdown>{`
+ *     # A header
+ *
+ *     ## A secondary header
+ *
+ *     - a list item
+ *     - another list item
+ *   `}</Markdown>
+ */
+function Markdown(props: {
+  /** */
+  children: React.ReactNode;
+}) {
   return <MarkdownDiv {...props} marked={marked} />;
 }
 

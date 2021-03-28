@@ -143,6 +143,7 @@ function getReverseNodeAbsolutePath(
   ];
 }
 
+/** @returns the key path of a given node in the survey tree as an array of node names.*/
 export function getNodeAbsolutePath(
   node: ODKNode,
   context: ODKFormulaEvaluationContext
@@ -150,6 +151,10 @@ export function getNodeAbsolutePath(
   return getReverseNodeAbsolutePath(node, context)?.reverse();
 }
 
+/**
+ * @returns the key path of a given node in the survey tree as a string of node names joined by a
+ * given delimiter (usually '.' or '/').
+ */
 export function getNodeAbsolutePathString(
   node: ODKNode,
   context: ODKFormulaEvaluationContext,
@@ -158,10 +163,17 @@ export function getNodeAbsolutePathString(
   return getNodeAbsolutePath(node, context).slice(1).join(delimiter);
 }
 
+/**
+ * @returns `true` if a string is a valid XPath, `false` otherwise.
+ */
 export function isXPath(string: string): boolean {
   return !!string.match(/^\/(\/?[\w*]+(?:\[[^]+?])?)$/);
 }
 
+/**
+ * @returns a list of array indexes that allow finding a given node inside the scope by looking it
+ * up using each ancestor's `children` array.
+ */
 export function getScopedNodeIndexPath(
   node: ODKNode,
   scope: ODKNode,
@@ -184,6 +196,11 @@ export function getScopedNodeIndexPath(
   return undefined;
 }
 
+/**
+ * @returns a list of array indexes that allow finding a given node from the root by looking it
+ * up using each ancestor's `children` array.
+ */
+
 export function getNodeIndexPath(
   node: ODKNode,
   context: ODKFormulaEvaluationContext
@@ -191,6 +208,9 @@ export function getNodeIndexPath(
   return getScopedNodeIndexPath(node, context.survey);
 }
 
+/**
+ * @returns the list of ancestors of a node (as node references), using the given scope as root.
+ */
 export function getScopedAncestors(
   node: ODKNode,
   scope: ODKNode,
@@ -211,6 +231,11 @@ export function getScopedAncestors(
     stack.pop();
   }
 }
+
+/**
+ * @returns the list of ancestors of a node (as node references) up to (and including) the survey
+ * root node.
+ */
 
 export function getAncestors(
   node: ODKNode,

@@ -20,9 +20,44 @@ import {
   XLSForm,
 } from "../types/XLSForm";
 
+/**
+ * XLSForm uses double colons (`::`) in column names to allow multilingual variants of the same
+ * column, like ‘label::русский (ru)’ or ‘label::English (en)’, and for custom namespacing.
+ *
+ * For each column name that supports this concept, the function finds matching columns in the
+ * given row, and merges them them into a single object.
+ *
+ * You can supply a default suffix to always obtain namespaced objects after processing a row.
+ *
+ * @see [‘Advanced use and extensibility’](https://xlsform.org/en/#advanced-use-and-extensibility)
+ * in the XLSForm specification.
+ *
+ * @example
+ * // before
+ *
+ * {
+ *   'label::русский (ru)': 'Как тебя зовут?',
+ *   'label::English (en)': 'What is your name?'
+ * }
+ *
+ * // after
+ *
+ * {
+ *   label: {
+ *     'русский (ru)': 'Как тебя зовут?',
+ *     'English (en)': 'What is your name?'
+ *   }
+ * }
+ */
 export function nestDoubleColonFields(
+  /** The row to process. */
   row: Record<string, unknown>,
+  /** The prefixes before the :: that you want nested */
   namespacePrefixes: string[],
+  /**
+   * Use this to enforce the result to be always nested, even if a localizable column is not
+   * localized.
+   */
   defaultSuffix?: string
 ): {
   result: Readonly<Record<string, unknown>>;
@@ -94,7 +129,9 @@ export function normalizeColumnNames(
   return Object.freeze(result);
 }
 
-// See reference table: https://xlsform.org/en/ref-table/
+// See reference table: https://xlsform.org/en/ref-table/. For groups and repeats, we deviate from
+// the reference to always use underscores, making a type name recognizable with a [a-z_]+ regex
+// pattern.
 
 export function normalizeType(type: string): string {
   return type
@@ -118,6 +155,7 @@ const autoCleanOptions = {
   mutate: false,
 };
 
+// Loads a plain object, cleans it up and throws if it’s not a valid row from a `survey` worksheet.
 export function loadQuestionRow(row: Record<string, unknown>): QuestionRow {
   const cleanRow = questionRowSchema.clean(
     { ...row, type: normalizeType(String(row.type)) },
@@ -127,6 +165,7 @@ export function loadQuestionRow(row: Record<string, unknown>): QuestionRow {
   return cleanRow;
 }
 
+// Loads a plain object, cleans it up and throws if it’s not a valid row from a `choices` worksheet.
 export function loadChoicesRow(row: Record<string, unknown>): ChoiceRow {
   const cleanRow = choiceRowSchema.clean(row, {
     ...autoCleanOptions,
@@ -136,6 +175,7 @@ export function loadChoicesRow(row: Record<string, unknown>): ChoiceRow {
   return cleanRow;
 }
 
+// Loads a plain object, cleans it up and throws if it’s not a valid row from a `settings` worksheet.
 export function loadSettingsRow(row: Record<string, unknown>): SettingsRow {
   const cleanRow = settingsRowSchema.clean(row, autoCleanOptions);
   assertValidSettingsRow(cleanRow);
@@ -154,6 +194,7 @@ export const localizableColumnNames = [
   "video",
 ];
 
+// Turns a plain ExcelJS row into a handier data model, cleaning it up and throwing if it’s invalid.
 export function loadExcelRow<RowT>({
   row,
   columnNames,
@@ -195,6 +236,17 @@ export function loadExcelRow<RowT>({
   }
 }
 
+/**
+ * @returns a set of localization language names from a given list of column names.
+ *
+ * @example
+ * findLanguagesInColumnNames([
+ *   'label::русский (ru)',
+ *   'label::English (en)'
+ * ]) // -> ['русский (ru)', 'English (en)']
+ *
+ * findLanguagesInColumnNames(['label']) // -> ['English (en)']
+ */
 function findLanguagesInColumnNames(
   columnNames: readonly string[],
   defaultLanguage?: string
@@ -211,10 +263,17 @@ function findLanguagesInColumnNames(
   return foundSuffixes;
 }
 
+/**
+ * Loads an worksheet from an ExcelJS workbook and returns the sheet in our internal data model.
+ */
 function loadWorksheet<RowT>(
+  /** The ExcelJS `Workbook` from which the sheet should be loaded. */
   workbook: Excel.Workbook,
+  /** Name of the worksheet, for example, `"survey"` */
   sheetName: WorksheetName,
+  /** Function to process, clean up, and load a single row into our internal row data model. */
   loadRowFn: LoadRowFunction<RowT>,
+  /** Default language to assume if a column is not localized. */
   defaultLanguage?: string
 ): WorksheetRowsWithMetadata<RowT> | undefined {
   const excelWorksheet = workbook.getWorksheet(sheetName);
@@ -231,15 +290,18 @@ function loadWorksheet<RowT>(
     );
   }
 
-  // console.log('Column names before normalization:', firstRow.values.slice(1));
+  // Normalize column names because XLSForm implementations vary, unfortunately
   const columnNames = firstRow.values
     .slice(1)
     .map((cellValue) => cellValue?.toString() || "");
   const columnNamesNormalized = normalizeColumnNames(columnNames);
+
   const languages = findLanguagesInColumnNames(
     columnNamesNormalized,
     defaultLanguage
   );
+
+  // Apply given row loading function to all rows
   excelWorksheet.eachRow((row, rowIndex) => {
     if (rowIndex === 1) {
       return;
@@ -257,7 +319,13 @@ function loadWorksheet<RowT>(
   return { rows, languages, columnNames, columnNamesNormalized };
 }
 
+/**
+ * Loads a given ExcelJS workbook.
+ *
+ * @returns an `XLSForm` model.
+ */
 export async function loadFormFromExcelWorkbook(
+  /** The ExcelJS workbook to load as XLSForm model. */
   workbook: Excel.Workbook
 ): Promise<XLSForm> {
   const settings = loadWorksheet(workbook, "settings", loadSettingsRow);
@@ -288,13 +356,17 @@ export async function loadFormFromExcelWorkbook(
     choices
   );
 
-  // console.log(xlsForm);
-  // console.log(xlsForm.rootSurveyGroup);
-
   return xlsForm;
 }
 
+/**
+ * Loads a given ExcelJS workbook from a local file (works only in NodeJS environment, not in a
+ * browser).
+ *
+ * @returns an `XLSForm` model.
+ */
 export default async function loadFormFromXLSXFile(
+  /** Name of the Excel (.xlsx) file containing the XLSForm definition. */
   filename: string
 ): Promise<XLSForm> {
   const workbook = new Excel.Workbook();

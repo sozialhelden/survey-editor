@@ -2,6 +2,7 @@ import { Classes, Text } from "@blueprintjs/core";
 import * as React from "react";
 import { EvaluatableColumnName } from "../../xlsform-simple-schema/types/ODKNode";
 
+/** Shows a text explaining what happens if a formula-based XLSForm cell is empty. */
 export function DefaultValueExplanation({
   answer,
   columnName,

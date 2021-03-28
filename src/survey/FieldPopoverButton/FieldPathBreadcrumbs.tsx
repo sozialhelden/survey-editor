@@ -1,6 +1,9 @@
 import { Breadcrumbs } from "@blueprintjs/core";
 import * as React from "react";
 
+/**
+ * Shows all parent groups of a field and the field’s name in breadcrumb layout.
+ */
 export function FieldPathBreadcrumbs({
   path,
   width,

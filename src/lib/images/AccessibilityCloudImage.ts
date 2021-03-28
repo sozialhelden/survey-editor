@@ -1,3 +1,4 @@
+/** An accessibility.cloud image as stored in the DB. */
 export type AccessibilityCloudImage = {
   _id: string;
   isoDate: string;

@@ -18,10 +18,9 @@ import SelectorParselet from "../pratt-parser-base/parselets/SelectorParselet";
 import { ParserOptions } from "../pratt-parser-base/Parser";
 
 /**
- * Extends the generic Parser class with support for parsing the actual ODK formula grammar.
- * grammar.
+ * Extends the generic PrattParser class with support for parsing ODK formula grammar.
  *
- * Example based on a blog post by Bob Nystrom:
+ * Based on a blog post by Bob Nystrom:
  *
  * http://journal.stuffwithstuff.com/2011/03/19/pratt-parsers-expression-parsing-made-easy/
  */

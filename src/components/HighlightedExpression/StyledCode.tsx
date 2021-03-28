@@ -1,7 +1,7 @@
 import { Colors } from "@blueprintjs/core";
 import styled from "styled-components";
 
-/** CSS container for highlighted code. */
+/** CSS container for highlighted formula code. */
 
 const StyledCode = styled.code`
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",

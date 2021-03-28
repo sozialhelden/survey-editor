@@ -9,6 +9,9 @@ import {
 } from "../../xlsform-simple-schema/types/ODKNode";
 import AddFieldOrGroupMenuItem from "../AddFieldMenuItem";
 
+/**
+ * Anonymous React component with menu items for doing something with a given field.
+ */
 export default function NodeActionMenuItems(props: {
   node?: ODKNode;
   removeNode: () => void;

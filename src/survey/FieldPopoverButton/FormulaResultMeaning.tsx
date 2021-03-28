@@ -3,6 +3,9 @@ import * as React from "react";
 import ODKFormulaEvaluationResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationResult";
 import { EvaluatableColumnName } from "../../xlsform-simple-schema/types/ODKNode";
 
+/**
+ * Displays an explanation of a formula result — what effect will it have for end users?
+ */
 export function FormulaResultMeaning({
   results,
   columnName,

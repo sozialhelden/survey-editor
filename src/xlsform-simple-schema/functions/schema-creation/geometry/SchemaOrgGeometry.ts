@@ -1,7 +1,8 @@
 import { SchemaDefinition } from "simpl-schema";
 
 /**
- * [GeoJSON](https://tools.ietf.org/html/rfc7946) `Point` object.
+ * The geographic coordinates of a place or event.
+ * @see https://schema.org/GeoCoordinates
  */
 export interface PointGeometry {
   "@type": "GeoCoordinates";
@@ -9,16 +10,28 @@ export interface PointGeometry {
   longitude: number;
 }
 
+/**
+ * A line string as Schema.org type.
+ *
+ * @see https://schema.org/GeoShape
+ */
+
 export interface LineStringGeometry {
   "@type": "GeoShape";
   line: string;
 }
 
+/**
+ * A polygon string as Schema.org type.
+ *
+ * @see https://schema.org/GeoShape
+ */
 export interface PolygonGeometry {
   "@type": "GeoShape";
   polygon: string;
 }
 
+/** @returns a SimpleSchema definition for a Schema.org point geometry. */
 export const getPointGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
@@ -38,6 +51,7 @@ export const getPointGeometrySchema = (
   },
 });
 
+/** @returns a SimpleSchema definition for a Schema.org line string geometry. */
 export const getLineStringGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({
@@ -54,6 +68,7 @@ export const getLineStringGeometrySchema = (
   },
 });
 
+/** @returns a SimpleSchema definition for a Schema.org polygon geometry. */
 export const getPolygonGeometrySchema = (
   key: string
 ): Record<string, SchemaDefinition<unknown>> => ({

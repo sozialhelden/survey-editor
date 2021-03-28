@@ -16,6 +16,9 @@ import findOrReplaceFieldReferences, {
 } from "./findOrReplaceFieldReferences";
 import { ODKSurveyContext } from "./ODKSurveyContext";
 
+/**
+ * Custom React hook returning a function to show a nice-looking rename prompt for a field.
+ */
 export default function useRenameNodeDialog(node?: ODKNode) {
   const context = useContext(ODKSurveyContext);
   const [isDialogOpen, setDialogOpen] = useState(false);

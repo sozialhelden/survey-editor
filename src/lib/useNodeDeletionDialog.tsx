@@ -4,6 +4,10 @@ import { AppToaster } from "../toaster";
 import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { ODKSurveyContext } from "./ODKSurveyContext";
 
+/**
+ * Custom React hook returning a function to show a nice looking field deletion confirmation
+ * prompt. The prompt contains a list of fields that are affected by the deletion.
+ */
 export default function useNodeDeletionDialog(node?: ODKNode) {
   const context = useContext(ODKSurveyContext);
   const [isAlertOpen, setAlertOpen] = useState(false);

@@ -5,6 +5,9 @@ import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { typesToIcons } from "../../lib/typesToIcons";
 import { getNodeAbsolutePathString } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 
+/**
+ * Displays a menu showing all fields that reference the given field.
+ */
 export function NodeReferencesMenu(props: { references: NodeDependency[] }) {
   const context = React.useContext(ODKSurveyContext);
 

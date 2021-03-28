@@ -3,8 +3,14 @@ import { ChoiceRow } from "../../types/RowTypes";
 import evaluateODKFormula from "../odk-formulas/evaluation/evaluateODKFormula";
 import { NodeToDefinitionFunctionOptions } from "./createLeafNodeSchemaDefinition";
 
+/**
+ * Determine the name of a referenced choice list dynamically at runtime, allowing to calculate the
+ * name of the choice list by using a formula.
+ */
 export function evaluateDynamicChoiceListName(
+  /** Choice list name, or a formula that evaluates to a choice list name */
   choiceListString: string,
+  /** Context information needed for evaluating a formula, if applicable */
   options: NodeToDefinitionFunctionOptions,
   choicesByName: Record<string, Record<string, ChoiceRow>>
 ) {

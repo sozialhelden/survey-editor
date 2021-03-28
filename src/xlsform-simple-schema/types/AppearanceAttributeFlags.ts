@@ -1,3 +1,7 @@
+/*
+ * A map of string flags that can appear in the `appearance` column of a row in the `survey`
+ * worksheet, each with a boolean value indicating if it is set.
+ */
 type AppearanceAttributeFlags = Record<string, boolean> & {
   /** Best if used with web clients, makes the text box multiple lines long. */
   multiline?: boolean;
@@ -35,6 +39,7 @@ type AppearanceAttributeFlags = Record<string, boolean> & {
   draw?: boolean;
 };
 
+/** A set of flags that can appear in the `appearance` column of a row in the `survey` worksheet */
 const appearanceAttributeFlags: Record<keyof AppearanceAttributeFlags, true> = {
   multiline: true,
   minimal: true,

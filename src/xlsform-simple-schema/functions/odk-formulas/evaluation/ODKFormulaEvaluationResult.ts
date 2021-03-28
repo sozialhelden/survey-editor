@@ -3,7 +3,7 @@ import ODKFormulaParser from "../odk-formula-parser/ODKFormulaParser";
 import { Expression } from "../pratt-parser-base";
 
 /**
- * Contains information about the result of a single evaluation process.
+ * Contains information about the result of a single formula's evaluation.
  */
 type ODKFormulaEvaluationResult =
   | {

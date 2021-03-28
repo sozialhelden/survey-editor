@@ -56,6 +56,7 @@ export function createImageObjectFromAccessibilityCloudImage(
   };
 }
 
+/** @returns a Schema.org JSON-LD object for a given local File object. */
 export function createImageObjectFromFile(file: File): ImageObject {
   return {
     "@type": "ImageObject",
@@ -65,8 +66,14 @@ export function createImageObjectFromFile(file: File): ImageObject {
   };
 }
 
+/**
+ * Uploads a photo to accessibility.cloud, returning accessibility.cloud's internal JSON
+ * representation of the image.
+ */
 export async function uploadPhoto(
+  /** The survey result's ID to attach the image to. */
   surveyResultId: string,
+  /** the image's local File object. */
   file: File
 ): Promise<{
   result?: AccessibilityCloudImage;

@@ -22,7 +22,7 @@ Based on code from these repositories:
 - https://github.com/rossturner/HTML5-ImageUploader
 - https://github.com/ericnograles/browser-image-resizer
 
-Converted to TypeScript, added some error handling.
+Converted to TypeScript, added some error handling, use blobs instead of data URLs.
 
 */
 

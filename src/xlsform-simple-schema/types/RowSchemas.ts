@@ -6,6 +6,10 @@ import SimpleSchema, {
 import ODKFormulaLexer from "../functions/odk-formulas/odk-formula-parser/ODKFormulaLexer";
 import ODKFormulaParser from "../functions/odk-formulas/odk-formula-parser/ODKFormulaParser";
 
+/**
+ * @returns a `SimpleSchema` definition for validating an object with string keys and string
+ * values, e.g. for representing localized strings.
+ */
 export const getStringMapSchemaDefinition = <T>(
   schemaDefinition: Partial<SchemaDefinition<T>> = {}
 ): SchemaDefinition<T> => {
@@ -33,6 +37,10 @@ export const getStringMapSchemaDefinition = <T>(
   };
 };
 
+/**
+ * @returns a `SimpleSchema` definition for validating an object with language codes as keys and
+ * string values, representing localized variants of a string.
+ */
 export const getLocalizedStringSchemaDefinition = getStringMapSchemaDefinition;
 
 const optionalLocalizedString = getLocalizedStringSchemaDefinition({
@@ -40,6 +48,9 @@ const optionalLocalizedString = getLocalizedStringSchemaDefinition({
 });
 const optionalStringMap = getStringMapSchemaDefinition({ optional: true });
 
+/**
+ * A `SimpleSchema` validation function that validates if an ODK formula value is evaluatable.
+ */
 const formulaValidationFunction: ValidationFunction<unknown> = function () {
   try {
     const lexer = new ODKFormulaLexer(this.value);
@@ -56,6 +67,7 @@ const formulaValidationFunction: ValidationFunction<unknown> = function () {
   }
 };
 
+/** `SimpleSchema` for a row in the `survey` worksheet of an XLSForm. */
 export const questionRowSchema = new SimpleSchema({
   type: {
     type: String,
@@ -153,6 +165,7 @@ export const questionRowSchema = new SimpleSchema({
   body: optionalStringMap,
 });
 
+/** `SimpleSchema` for a row in the `choice` worksheet of an XLSForm. */
 export const choiceRowSchema = new SimpleSchema({
   "list name": {
     type: String,
@@ -163,6 +176,7 @@ export const choiceRowSchema = new SimpleSchema({
   label: getLocalizedStringSchemaDefinition(),
 });
 
+/** `SimpleSchema` for a row in the `settings` worksheet of an XLSForm. */
 export const settingsRowSchema = new SimpleSchema({
   form_title: {
     type: String,

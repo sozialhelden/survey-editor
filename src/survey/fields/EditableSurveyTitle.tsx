@@ -2,6 +2,8 @@ import { Classes, EditableText } from "@blueprintjs/core";
 import * as React from "react";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 
+/** Displays the survey’s configured title (and file name), editable. */
+
 export default function EditableSurveyTitle() {
   const context = React.useContext(ODKSurveyContext);
   const surveyName = context.xlsForm?.worksheets.settings?.rows[0].form_title;

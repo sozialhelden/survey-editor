@@ -14,6 +14,7 @@ import { XLSForm } from "../../xlsform-simple-schema";
 import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
 import { QuestionRow } from "../../xlsform-simple-schema/types/RowTypes";
 
+/** Displays all defined XLSForm survey choice lists as selectable checkboxes. */
 export function ChoiceListMenu({
   xlsForm,
   node,

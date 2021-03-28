@@ -1,7 +1,10 @@
 import SimpleSchema, { SchemaDefinition } from "simpl-schema";
 
 /**
- * Inspired from https://schema.org/QuantitativeValue
+ * @returns a `SimpleSchema` definition that validates a Schema.org `QuantitativeValue` JSON-LD
+ * object.
+ *
+ * Inspired by https://schema.org/QuantitativeValue.
  */
 
 export const getQuantitativeValueSchema = (

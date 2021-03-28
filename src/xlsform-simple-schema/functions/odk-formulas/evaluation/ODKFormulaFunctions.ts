@@ -49,7 +49,13 @@ function assertBoolean(
   }
 }
 
-// Documentation: https://docs.getodk.org/form-operators-functions/
+// TODO: Could use reflection or code generation to find argument types automatically and avoid bugs
+
+/**
+ * Map of function names to their JS implementations.
+ *
+ * Documentation / specification: https://docs.getodk.org/form-operators-functions/
+ */
 export const functions: Record<string, FormulaFunction> = {
   if<T, U>(expression: unknown, then: T, elseExpression: U): T | U {
     assertBoolean(expression, 0);

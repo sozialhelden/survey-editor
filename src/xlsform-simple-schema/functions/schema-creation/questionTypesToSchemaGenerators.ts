@@ -13,6 +13,9 @@ import {
   getVideoObjectSchema,
 } from "./MediaSchemas";
 
+/**
+ * Map of survey question types to functions that generate a `SimpleSchema` definition.
+ */
 export const questionTypesToSchemaGenerators: Record<
   string,
   NodeToDefinitionFunction<unknown> | undefined

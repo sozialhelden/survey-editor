@@ -27,6 +27,7 @@ type Props = FieldProps & {
   defaultValue: unknown;
 };
 
+/** Displays the uploaded image, with an editable caption and a 'remove' button. */
 function ImageCard({
   contentUrl,
   uuid,

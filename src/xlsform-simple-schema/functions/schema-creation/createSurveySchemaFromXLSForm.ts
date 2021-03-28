@@ -3,6 +3,10 @@ import { XLSForm } from "../../types/XLSForm";
 import ODKFormulaEvaluationContext from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import createRecursiveNodeSchemaDefinition from "./createRecursiveNodeSchemaDefinition";
 
+/**
+ * @returns a `SimpleSchema` definition for a whole XLSFormthat you can use to validate
+ * survey results at runtime.
+ */
 export function createSurveySchemaFromXLSForm(
   xlsForm: XLSForm,
   context: ODKFormulaEvaluationContext,

@@ -6,8 +6,15 @@
 @import "~@blueprintjs/datetime/lib/css/blueprint-datetime.css";
 @import "~@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 
+
 html {
-    background-color: #EBF1F5;
+  background-color: #EBF1F5;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    background-color: #22313c;
+  }
 }
 
 .bp3-popover2.bp3-popover2-content-sizing .bp3-popover2-content {

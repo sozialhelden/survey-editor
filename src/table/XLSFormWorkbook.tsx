@@ -22,6 +22,9 @@ const Container = styled.div`
       padding: 0px 16px 0 16px;
       .bp3-tab-indicator-wrapper {
         background: #f6f7f7;
+        @media (prefers-color-scheme: dark) {
+          background: #30404d;
+        }
         .bp3-tab-indicator {
           /* bottom: unset; */
           border-bottom-left-radius: 4px;
@@ -44,6 +47,10 @@ const Container = styled.div`
       &[aria-hidden="false"] {
         box-shadow: 0 0 0 1px rgba(159, 183, 194, 0.1),
           0 2px 4px rgba(159, 183, 194, 0.2), 0 4px 8px rgba(159, 183, 194, 0.1);
+        @media (prefers-color-scheme: dark) {
+          box-shadow: 0 0 0 1px rgba(12, 20, 24, 0.1),
+            0 2px 4px rgba(12, 20, 24, 0.2), 0 4px 8px rgba(12, 20, 24, 0.1);
+        }
         display: flex;
       }
     }

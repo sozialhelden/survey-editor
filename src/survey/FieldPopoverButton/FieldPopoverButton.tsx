@@ -75,11 +75,14 @@ export const StyledCalloutWithCode = styled(Callout)`
   pre {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-    color: ${Colors.DARK_GRAY1};
+    color: inherit;
     /* border: 1px solid rgba(0, 0, 0, 0.2); */
     margin: -1px;
     padding: 2px 4px;
     background-color: rgba(255, 255, 255, 0.3);
+    @media (prefers-color-scheme: dark) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
   }
 
   pre {
@@ -159,13 +162,13 @@ function RenderTarget({
             <Icon
               icon={fieldTypesToIcons[node.type]}
               color={
-                hasError || hasMissingParameters ? undefined : Colors.VIOLET3
+                hasError || hasMissingParameters ? undefined : Colors.VIOLET5
               }
             />
           ) : undefined
         }
         style={{
-          color: hasError || hasMissingParameters ? undefined : Colors.VIOLET3,
+          color: hasError || hasMissingParameters ? undefined : Colors.VIOLET5,
           fontSize: "inherit",
           padding: 0,
         }}
@@ -404,6 +407,7 @@ function getTab({
   return (
     <Tab
       id={columnName}
+      key={columnName}
       panel={panel}
       title={
         <>

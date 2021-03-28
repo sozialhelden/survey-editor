@@ -1,4 +1,3 @@
-import { Colors } from "@blueprintjs/core";
 import styled from "styled-components";
 import Markdown from "./Markdown";
 
@@ -15,18 +14,19 @@ const StyledMarkdown = styled(Markdown)`
   pre {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-    color: ${Colors.DARK_GRAY1};
-    /* border: 1px solid rgba(0, 0, 0, 0.2); */
+    color: inherit;
     margin: -1px;
     padding: 2px 3px;
     background-color: rgba(255, 255, 255, 0.3);
+    @media (prefers-color-scheme: dark) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
   }
 
   pre {
     padding: 0.5em 0.55em;
     margin: 0.5em 0;
     line-height: 1.3em;
-    background: white;
     white-space: pre-wrap;
   }
 

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import "./App.css";
 import ResultCodeTree from "./code/ResultCodeTree";
 import { AppEmptyState } from "./components/AppEmptyState";
+import DarkModeContainer from "./components/DarkModeContainer";
 import { FileMenuButton } from "./components/FileMenuButton";
 import LanguageSelector from "./components/LanguageSelector";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
@@ -86,72 +87,76 @@ function App() {
   const { viewMenuButton, viewOptions } = useViewOptionsButton();
 
   return (
-    <ODKNodeDragAndDropContext.Provider
-      value={{ onDropNode: changeHooks.onMoveNode }}
+    <DarkModeContainer
+      style={{ height: "100%", display: "flex", flexDirection: "column" }}
     >
-      <ODKSurveyContext.Provider
-        value={{
-          schema,
-          language,
-          languageCode,
-          languageName,
-          debug: viewOptions.debug,
-          xlsForm,
-          ...changeHooks,
-        }}
+      <ODKNodeDragAndDropContext.Provider
+        value={{ onDropNode: changeHooks.onMoveNode }}
       >
-        {xlsForm && (
-          <Navbar>
-            <Navbar.Group>
-              <FileMenuButton {...{ setXLSForm, setLanguage, xlsForm }} />
-            </Navbar.Group>
-            <Navbar.Group>
-              <Navbar.Divider />
-              <EditableSurveyTitle />
-            </Navbar.Group>
-            <Navbar.Group align={Alignment.RIGHT}>
-              {viewMenuButton}
-              <Navbar.Divider />
-              {xlsForm && language && (
-                <LanguageSelector
-                  languages={Array.from(xlsForm.languages.values())}
-                  language={language}
-                  onChange={setLanguage}
-                />
-              )}
-            </Navbar.Group>
-          </Navbar>
-        )}
+        <ODKSurveyContext.Provider
+          value={{
+            schema,
+            language,
+            languageCode,
+            languageName,
+            debug: viewOptions.debug,
+            xlsForm,
+            ...changeHooks,
+          }}
+        >
+          {xlsForm && (
+            <Navbar>
+              <Navbar.Group>
+                <FileMenuButton {...{ setXLSForm, setLanguage, xlsForm }} />
+              </Navbar.Group>
+              <Navbar.Group>
+                <Navbar.Divider />
+                <EditableSurveyTitle />
+              </Navbar.Group>
+              <Navbar.Group align={Alignment.RIGHT}>
+                {viewMenuButton}
+                <Navbar.Divider />
+                {xlsForm && language && (
+                  <LanguageSelector
+                    languages={Array.from(xlsForm.languages.values())}
+                    language={language}
+                    onChange={setLanguage}
+                  />
+                )}
+              </Navbar.Group>
+            </Navbar>
+          )}
 
-        <AppBody>
-          {!xlsForm && (
-            <OverflowScrollContainer>
-              <AppEmptyState {...{ setXLSForm, setLanguage }} />
-            </OverflowScrollContainer>
-          )}
-          {xlsForm && language && viewOptions.table && (
-            <XLSFormWorkbook
-              xlsForm={xlsForm}
-              language={language}
-              debug={viewOptions.debug}
-              style={{ flex: 1, display: "flex" }}
-            />
-          )}
-          {xlsForm && language && (
-            <OverflowScrollContainer
-              style={{ boxShadow: "0 0px 30px #9fb7c2", zIndex: 1 }}
-            >
-              <StyledXLSFormSurvey
+          <AppBody>
+            {!xlsForm && (
+              <OverflowScrollContainer>
+                <AppEmptyState {...{ setXLSForm, setLanguage }} />
+              </OverflowScrollContainer>
+            )}
+            {xlsForm && language && viewOptions.table && (
+              <XLSFormWorkbook
                 xlsForm={xlsForm}
                 language={language}
                 debug={viewOptions.debug}
+                style={{ flex: 1, display: "flex" }}
               />
-            </OverflowScrollContainer>
-          )}
-          {xlsForm && language && viewOptions.json && resultCodeElement}
-        </AppBody>
-      </ODKSurveyContext.Provider>
-    </ODKNodeDragAndDropContext.Provider>
+            )}
+            {xlsForm && language && (
+              <OverflowScrollContainer
+                style={{ boxShadow: "0 0px 30px #0b161c", zIndex: 1 }}
+              >
+                <StyledXLSFormSurvey
+                  xlsForm={xlsForm}
+                  language={language}
+                  debug={viewOptions.debug}
+                />
+              </OverflowScrollContainer>
+            )}
+            {xlsForm && language && viewOptions.json && resultCodeElement}
+          </AppBody>
+        </ODKSurveyContext.Provider>
+      </ODKNodeDragAndDropContext.Provider>
+    </DarkModeContainer>
   );
 }
 

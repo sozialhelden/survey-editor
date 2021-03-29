@@ -1,9 +1,11 @@
-import { Colors, Icon, ITreeNode, Tree } from "@blueprintjs/core";
+import { Colors, ControlGroup, Icon, ITreeNode, Tree } from "@blueprintjs/core";
+import { Tooltip2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import HighlightedExpression from "../components/HighlightedExpression/HighlightedODKExpression";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import FieldPopoverButton from "../survey/FieldPopoverButton/FieldPopoverButton";
 import { XLSForm } from "../xlsform-simple-schema";
+import createLiteralExpressionFromValue from "../xlsform-simple-schema/functions/odk-formulas/evaluation/createLiteralExpressionFromValue";
 import ODKFormulaEvaluationContext from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeAbsolutePath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
@@ -29,20 +31,27 @@ function SecondaryLabel(props: { node: ODKNode }) {
       node={node}
       state={calculationResults?.state}
       error={calculationResults?.error}
-      expression={calculationResults?.expression}
+      expression={createLiteralExpressionFromValue(calculationResults?.result)}
     />
   );
-  const error = `Node has errors in the following columns: ${keysWithErrors
-    .map((k) => `‘${k}’`)
-    .join(", ")}`;
-  const icon = keysWithErrors.length ? (
-    <Icon icon="error" intent="danger" title={error} htmlTitle={error} />
+  const error =
+    keysWithErrors.length > 0 &&
+    `Node has errors in the following columns: ${keysWithErrors
+      .map((k) => `‘${k}’`)
+      .join(", ")}`;
+  const icon = error ? (
+    <>
+      &nbsp;
+      <Tooltip2 content={error}>
+        <Icon icon="error" intent="danger" title={error} htmlTitle={error} />
+      </Tooltip2>
+    </>
   ) : null;
   return (
-    <>
+    <ControlGroup>
       {caption}
       {icon}
-    </>
+    </ControlGroup>
   );
 }
 

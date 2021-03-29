@@ -12,7 +12,10 @@ export interface SchemaOrgPointGeometry {
 
 export function assertSchemaOrgPointGeometry(
   point: unknown
-): asserts point is SchemaOrgPointGeometry {
+): asserts point is SchemaOrgPointGeometry | undefined {
+  if (point === undefined) {
+    return;
+  }
   const schema = new SimpleSchema(getSchemaOrgPointGeometrySchema("point"));
   schema.validate({ point });
 }

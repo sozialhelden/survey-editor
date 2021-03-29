@@ -1,4 +1,5 @@
 import ODKFormulaEvaluationContext from "../functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import AppearanceAttributeFlags from "./AppearanceAttributeFlags";
 import {
   IBeginGroupMarkerRow,
   IBeginRepeatMarkerRow,
@@ -34,6 +35,7 @@ export type ODKNode =
       row: QuestionRow & (IBeginRepeatMarkerRow | IBeginGroupMarkerRow);
       type: string;
       typeParameters: string[];
+      appearance?: AppearanceAttributeFlags;
       children: ODKNode[];
       indentationLevel: number;
       rowIndex: number;
@@ -42,6 +44,7 @@ export type ODKNode =
       row: QuestionRow;
       type: string;
       typeParameters: string[];
+      appearance?: AppearanceAttributeFlags;
       children: ODKNode[];
       indentationLevel: number;
       rowIndex: number;

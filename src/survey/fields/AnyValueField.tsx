@@ -1,12 +1,13 @@
 import { Callout, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
 import ErrorBoundary from "../../components/ErrorBoundary";
+import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { internalFieldTypes } from "../../xlsform-simple-schema/field-types/internalFieldTypes";
-import evaluateNodeColumn from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeColumn";
 import FieldPopoverButton from "../FieldPopoverButton/FieldPopoverButton";
 import { FieldProps } from "../FieldProps";
 import BooleanField from "./BooleanField";
+import CalculateField from "./CalculateField";
 import CheckboxGroupField from "./CheckboxGroupField";
 import DateField from "./DateField";
 import { EditableFieldHint } from "./EditableFieldHint";
@@ -52,7 +53,7 @@ export function AutoField(props: AutoFieldProps) {
     video: FileUploadField,
     file: FileUploadField,
     barcode: TextField,
-    calculate: TextField,
+    calculate: CalculateField,
     acknowledge: BooleanField,
     hidden: TextField,
     "xml-external": TextField,
@@ -115,17 +116,22 @@ export default function AnyValueField(props: FieldProps) {
       {!isBoolean && debug && detailsButton}
     </EditableFieldLabel>
   );
-  const evaluationResult = evaluateNodeColumn(
-    node,
-    evaluationContext,
-    "calculation",
-    evaluationContext.nodesToAnswers.get(node)
+  // const evaluationResult = evaluateNodeColumn(
+  //   node,
+  //   evaluationContext,
+  //   "calculation",
+  //   evaluationContext.nodesToAnswers.get(node)
+  // );
+
+  const nodeEvaluationResults = context.evaluationContext?.evaluationResults.get(
+    node
   );
+
   const autoFieldProps = {
     ...props,
     labelElement,
     onInputChange,
-    value: evaluationResult.result,
+    value: nodeEvaluationResults?.get("calculation")?.result,
     defaultValue: node.row.default,
   };
 
@@ -145,11 +151,13 @@ export default function AnyValueField(props: FieldProps) {
   }
 
   return (
-    <FormGroup label={labelElement} labelFor={node.row.name}>
-      <ErrorBoundary>
-        {input}
-        <EditableFieldHint {...{ node, debug }} />
-      </ErrorBoundary>
-    </FormGroup>
+    <ODKNodeContext.Provider value={{ node, nodeEvaluationResults }}>
+      <FormGroup label={labelElement} labelFor={node.row.name}>
+        <ErrorBoundary>
+          {input}
+          <EditableFieldHint {...{ node, debug }} />
+        </ErrorBoundary>
+      </FormGroup>
+    </ODKNodeContext.Provider>
   );
 }

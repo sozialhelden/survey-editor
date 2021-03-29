@@ -46,13 +46,13 @@ export default function useViewOptionsButton() {
       <ButtonGroup>
         <Button
           icon="settings"
-          text="Debug"
+          text="Develop"
           active={viewOptions.debug}
           onClick={onDebugChange}
         />
         <Button
           icon="presentation"
-          text="Live"
+          text="Preview"
           active={!viewOptions.debug}
           onClick={onDebugChange}
         />

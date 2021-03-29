@@ -1,7 +1,11 @@
-import { Colors } from "@blueprintjs/core";
+import { Colors, ControlGroup, NumericInput } from "@blueprintjs/core";
+import { throttle } from "lodash";
+import "mapbox-gl/dist/mapbox-gl.css";
 import * as React from "react";
 import ReactMapGL, { GeolocateControl, ViewportProps } from "react-map-gl";
 import styled from "styled-components";
+import { useDarkMode } from "../../components/DarkModeContainer";
+import { alpha } from "../../lib/colors";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import {
   assertSchemaOrgPointGeometry,
@@ -35,7 +39,6 @@ const MapContainer = styled.section`
   width: 100%;
   height: 500px;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
   overflow: hidden;
   position: relative;
 `;
@@ -72,7 +75,7 @@ function getLatitudeFromValue(value: SchemaOrgPointGeometry) {
 }
 
 function getLongitudeFromValue(value: SchemaOrgPointGeometry) {
-  return value.latitude;
+  return value.longitude;
 }
 
 type Props = FieldProps & {
@@ -94,14 +97,21 @@ function GeoPointField(props: Props) {
   >({
     width: 100,
     height: 100,
-    latitude: value && (getLatitudeFromValue(value) || 37.7577),
-    longitude: value && (getLongitudeFromValue(value) || -122.4376),
-    zoom: 18,
+    latitude: (value && getLatitudeFromValue(value)) || 37.7577,
+    longitude: (value && getLongitudeFromValue(value)) || -122.4376,
+    zoom: 10,
   });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChangeAnswerDebounced = React.useCallback(
+    throttle((value: unknown, props: FieldProps) => {
+      onChangeAnswer(value, props);
+    }, 500),
+    [onChangeAnswer]
+  );
 
   const setViewportCallback = React.useCallback(
     (viewState, interactionState) => {
-      // console.log('Setting viewport because of callback:', viewState, interactionState);
       setViewport({ ...viewport, ...viewState });
       if (!viewport.longitude || !viewport.latitude) {
         return;
@@ -110,41 +120,44 @@ function GeoPointField(props: Props) {
         viewport.longitude,
         viewport.latitude,
       ]);
+      onChangeAnswerDebounced(newPoint, props);
+    },
+    [viewport, onChangeAnswerDebounced, props]
+  );
+
+  const changeLatitude = React.useCallback(
+    (newLatitudeNumber: number, newLatitudeString: string) => {
+      if (!viewport.longitude || !viewport.latitude) {
+        return;
+      }
+      setViewport({ ...viewport, latitude: newLatitudeNumber });
+      const newPoint = getPointForCoordinates([
+        viewport.longitude,
+        newLatitudeNumber,
+      ]);
       onChangeAnswer(newPoint, props);
     },
     [viewport, onChangeAnswer, props]
   );
 
-  const changeLatitude = React.useCallback(
-    (event) => {
-      if (!viewport.longitude || !viewport.latitude) {
-        return;
-      }
-      const newPoint = getPointForCoordinates([
-        viewport.longitude,
-        event.currentTarget.value,
-      ]);
-      onChangeAnswer(newPoint, props);
-    },
-    [viewport.longitude, viewport.latitude, onChangeAnswer, props]
-  );
-
   const changeLongitude = React.useCallback(
-    (event) => {
+    (newLongitudeNumber: number, newLongitudeString: string) => {
       if (!viewport.longitude || !viewport.latitude) {
         return;
       }
+      setViewport({ ...viewport, longitude: newLongitudeNumber });
       const newPoint = getPointForCoordinates([
-        event.currentTarget.value,
+        newLongitudeNumber,
         viewport.latitude,
       ]);
       onChangeAnswer(newPoint, props);
     },
-    [viewport.longitude, viewport.latitude, onChangeAnswer, props]
+    [viewport, onChangeAnswer, props]
   );
 
-  const latitude = getLatitudeFromValue(value);
-  const longitude = getLongitudeFromValue(value);
+  const isDarkMode = useDarkMode();
+  const latitude = value && getLatitudeFromValue(value);
+  const longitude = value && getLongitudeFromValue(value);
   const inputs = (
     <FieldContainer>
       <MapContainer>
@@ -152,13 +165,24 @@ function GeoPointField(props: Props) {
           longitude={longitude}
           latitude={latitude}
           {...viewport}
-          mapboxApiAccessToken={process.env.MAPBOX_API_TOKEN}
+          mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           width="100%"
           height="100%"
           onViewportChange={setViewportCallback}
-          mapStyle="mapbox://styles/mapbox/streets-v10"
+          mapStyle={
+            isDarkMode
+              ? "mapbox://styles/mapbox/streets-dark-v10"
+              : "mapbox://styles/mapbox/streets-v10"
+          }
         >
           <GeolocateControl
+            style={{
+              margin: "8px",
+              boxShadow: `0 2px 2px ${alpha(
+                Colors.DARK_GRAY4,
+                0.2
+              )}, 0 2px 10px ${alpha(Colors.DARK_GRAY4, 0.3)}`,
+            }}
             className="geolocateControl"
             positionOptions={{ enableHighAccuracy: true }}
             trackUserLocation={false}
@@ -168,28 +192,45 @@ function GeoPointField(props: Props) {
         <CenteredPoint />
       </MapContainer>
 
-      <footer>
-        <label htmlFor={`${props.schemaKey}-latitude`}>{"Latitude"}</label>
-        <input
-          className="form-control"
-          type="number"
-          step="0.01"
-          value={latitude}
-          disabled={props.readonly}
-          id={`${props.schemaKey}-latitude`}
-          onChange={changeLatitude}
-        />
-        <label htmlFor={`${props.schemaKey}-longitude`}>{"Longitude"}</label>
-        <input
-          className="form-control"
-          type="number"
-          step="0.01"
-          value={longitude}
-          disabled={props.readonly}
-          id={`${props.schemaKey}-longitude`}
-          onChange={changeLongitude}
-        />
-      </footer>
+      {context.debug && (
+        <ControlGroup style={{ alignItems: "center", margin: "8px 0" }}>
+          <ControlGroup vertical={true}>
+            <label htmlFor={`${props.schemaKey}-latitude`}>{"Latitude"}</label>
+            <NumericInput
+              style={{ width: "8em" }}
+              stepSize={0.001}
+              minorStepSize={0.0001}
+              majorStepSize={0.01}
+              min={-90}
+              max={90}
+              value={latitude}
+              asyncControl={true}
+              disabled={props.readonly}
+              id={`${props.schemaKey}-latitude`}
+              onValueChange={changeLatitude}
+            />
+          </ControlGroup>
+
+          <ControlGroup vertical={true} style={{ marginLeft: "16px" }}>
+            <label htmlFor={`${props.schemaKey}-longitude`}>
+              {"Longitude"}
+            </label>
+            <NumericInput
+              style={{ width: "8em" }}
+              stepSize={0.001}
+              minorStepSize={0.0001}
+              majorStepSize={0.01}
+              min={-180}
+              max={180}
+              asyncControl={true}
+              value={longitude}
+              disabled={props.readonly}
+              id={`${props.schemaKey}-longitude`}
+              onValueChange={changeLongitude}
+            />
+          </ControlGroup>
+        </ControlGroup>
+      )}
     </FieldContainer>
   );
 

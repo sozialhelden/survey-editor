@@ -1,3 +1,4 @@
+import { parseAttributeFlags } from "../types/AppearanceAttributeFlags";
 import {
   BeginMarkerRow,
   BeginOrEndMarkerRow,
@@ -73,6 +74,10 @@ export default function nestSurvey({
   while (i < rows.length) {
     const row = rows[i];
     const [type, ...typeParameters] = normalizeType(row.type).split(" ");
+    const appearance =
+      row.appearance && row.appearance.trim().length > 0
+        ? parseAttributeFlags(row.appearance)
+        : undefined;
     const lastOpenedGroup = stack[stack.length - 1];
 
     if (lastOpenedGroup.type === "begin_group" && type === "end_group") {
@@ -92,6 +97,7 @@ export default function nestSurvey({
         row: row as BeginMarkerRow,
         type,
         typeParameters,
+        appearance,
         children: [],
         indentationLevel: stack.length - 1,
         rowIndex: i,
@@ -106,6 +112,7 @@ export default function nestSurvey({
         row,
         type,
         typeParameters,
+        appearance,
         indentationLevel: stack.length - 1,
         rowIndex: i,
         children: [],

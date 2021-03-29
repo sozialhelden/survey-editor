@@ -19,9 +19,13 @@ export function FormulaResultMeaning({
     <Text className={Classes.TEXT_MUTED}>
       {
         {
-          calculation: !formulaIsTrivial && (
-            <>This is the result of the formula.</>
-          ),
+          calculation:
+            !formulaIsTrivial &&
+            (results.error ? (
+              <>Because of this error, the field has no result yet.</>
+            ) : (
+              <>This is the result of the formula.</>
+            )),
           required: `This means you ${
             results?.result ? "can’t" : "can"
           } complete the survey without entering data in this field.`,

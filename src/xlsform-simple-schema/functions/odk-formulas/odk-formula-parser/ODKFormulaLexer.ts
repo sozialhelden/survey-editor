@@ -3,6 +3,7 @@ import { Token, TokenType } from "../pratt-parser-base/types";
 
 export const xPathPrefixRegExp = /^\/(\/?[\w*]+(?:\[[^]+?]\B)?)/;
 
+const WHITESPACES = [" ", "\t", "\n"];
 const tokenPatterns: [TokenType, RegExp][] = [
   [TokenType.STRING_LITERAL, /^'(\\\\|\\'|[^'])*'/],
   [TokenType.STRING_LITERAL, /^"(\\\\|\\"|[^"])*"/],
@@ -38,7 +39,7 @@ export default class ODKFormulaLexer implements Iterator<Token> {
     }
 
     // Consume and ignore whitespace
-    while (this.text[this.index] === " ") {
+    while (WHITESPACES.includes(this.text[this.index])) {
       this.index += 1;
     }
 

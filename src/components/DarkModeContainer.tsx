@@ -9,6 +9,18 @@ function getDarkModeSetting(): boolean {
 }
 
 export default function DarkModeContainer(props: HTMLDivProps) {
+  const isDarkMode = useDarkMode();
+  return (
+    <div
+      {...props}
+      className={isDarkMode ? `${props.className} bp3-dark` : props.className}
+    >
+      {props.children}
+    </div>
+  );
+}
+
+export function useDarkMode() {
   const [isDarkMode, setIsDarkMode] = React.useState(getDarkModeSetting());
 
   const handleChange = React.useCallback((e) => {
@@ -24,12 +36,5 @@ export default function DarkModeContainer(props: HTMLDivProps) {
       .addEventListener("change", handleChange);
   }, [handleChange]);
 
-  return (
-    <div
-      {...props}
-      className={isDarkMode ? `${props.className} bp3-dark` : props.className}
-    >
-      {props.children}
-    </div>
-  );
+  return isDarkMode;
 }

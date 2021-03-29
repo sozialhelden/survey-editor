@@ -52,9 +52,7 @@ export default function XLSFormSurvey(props: {
       {isSurveyEmpty ? (
         noSurveyFieldsState
       ) : (
-        <form>
-          <SurveyField key={"data"} schemaKey={"data"} />
-        </form>
+        <SurveyField key={"data"} schemaKey={"data"} />
       )}
     </PaddedContainer>
   );

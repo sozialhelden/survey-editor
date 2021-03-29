@@ -197,7 +197,7 @@ function evaluateCallExpression(
 function assertBoolean(
   value: unknown,
   valueBeforeCasting: unknown,
-  expression: Expression | undefined,
+  expression: OperatorExpression | undefined,
   context: ODKFormulaEvaluationContext,
   scope: ODKNode
 ): asserts value is boolean {
@@ -205,7 +205,15 @@ function assertBoolean(
     throw new EvaluationError(
       `Found operand \`${JSON.stringify(
         valueBeforeCasting
-      )}\` that is no boolean value. Boolean operators only work with values that are \`true\` or \`false\`.`,
+      )}\` that is no boolean value, but ${
+        ["a", "e", "i", "o", "u"].includes(
+          (typeof valueBeforeCasting).slice(0, 1)
+        )
+          ? "an"
+          : "a"
+      } ${typeof valueBeforeCasting}. Boolean operators like \`${
+        expression?.operatorToken.text
+      }\` only work with values that are \`true\` or \`false\`.`,
       "invalidOperandType",
       expression,
       context,

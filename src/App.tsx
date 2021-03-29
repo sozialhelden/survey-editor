@@ -1,14 +1,20 @@
-import { Alignment, FocusStyleManager, Navbar } from "@blueprintjs/core";
+import {
+  Alignment,
+  Colors,
+  FocusStyleManager,
+  Navbar,
+} from "@blueprintjs/core";
 import React from "react";
 import styled from "styled-components";
 import "./App.css";
 import ResultCodeTree from "./code/ResultCodeTree";
 import { AppEmptyState } from "./components/AppEmptyState";
-import DarkModeContainer from "./components/DarkModeContainer";
+import DarkModeContainer, { useDarkMode } from "./components/DarkModeContainer";
 import { FileMenuButton } from "./components/FileMenuButton";
 import LanguageSelector from "./components/LanguageSelector";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import useViewOptionsButton from "./components/useViewOptionsButton";
+import { alpha } from "./lib/colors";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import useChangeHooks from "./lib/useChangeHooks";
 import EditableSurveyTitle from "./survey/fields/EditableSurveyTitle";
@@ -67,10 +73,14 @@ function App() {
     </OverflowScrollContainer>
   );
 
+  const { viewMenuButton, viewOptions } = useViewOptionsButton();
+  const isDarkMode = useDarkMode();
+
   const changeHooks = useChangeHooks({
     language,
     xlsForm,
     setXLSForm,
+    debug: viewOptions.debug,
   });
 
   const { evaluationContext: context } = changeHooks;
@@ -83,8 +93,6 @@ function App() {
     }
     return undefined;
   }, [xlsForm, language, context]);
-
-  const { viewMenuButton, viewOptions } = useViewOptionsButton();
 
   return (
     <DarkModeContainer
@@ -143,7 +151,15 @@ function App() {
             )}
             {xlsForm && language && (
               <OverflowScrollContainer
-                style={{ boxShadow: "0 0px 30px #0b161c", zIndex: 1 }}
+                style={{
+                  boxShadow: isDarkMode
+                    ? `0 0px 2px ${alpha(
+                        Colors.DARK_GRAY5,
+                        0.8
+                      )}, 0 0px 20px ${alpha(Colors.DARK_GRAY1, 0.3)}`
+                    : `0 0px 10px ${alpha(Colors.DARK_GRAY5, 0.3)}`,
+                  zIndex: 1,
+                }}
               >
                 <StyledXLSFormSurvey
                   xlsForm={xlsForm}

@@ -1,5 +1,6 @@
 import { Callout, Colors, Icon } from "@blueprintjs/core";
 import * as React from "react";
+import { useDarkMode } from "../../components/DarkModeContainer";
 import HighlightedExpression from "../../components/HighlightedExpression/HighlightedODKExpression";
 import StyledMarkdown from "../../components/StyledMarkdown";
 import { alpha } from "../../lib/colors";
@@ -29,17 +30,18 @@ import { FormulaResultMeaning } from "./FormulaResultMeaning";
 export function ExpressionPanel({
   node,
   columnName,
-  nodeEvaluationResults,
+  nodeEvaluationResult,
   style,
 }: {
   node: ODKNode;
   columnName: EvaluatableColumnName;
-  nodeEvaluationResults: Map<string, ODKFormulaEvaluationResult> | undefined;
+  nodeEvaluationResult: ODKFormulaEvaluationResult | undefined;
   style?: React.CSSProperties;
 }) {
+  const isDarkMode = useDarkMode();
   const context = React.useContext(ODKSurveyContext);
   const cellValue = node.row[columnName];
-  const results = nodeEvaluationResults?.get(columnName);
+  const results = nodeEvaluationResult;
   const cellIsEmpty = cellValue === undefined;
   const isLiteral = results?.expression?.kind === "literal";
   const isName = results?.expression?.kind === "name";
@@ -70,6 +72,7 @@ export function ExpressionPanel({
       </>
     );
   }
+
   const panel = (
     <StyledPanel
       lang="en"
@@ -81,7 +84,9 @@ export function ExpressionPanel({
           Colors.BLUE3,
           0.05
         )} 5px, ${alpha(Colors.BLUE3, 0.01)} 10px, transparent 30px)`,
-        borderTop: `solid 1px ${Colors.LIGHT_GRAY3}`,
+        borderTop: `solid 1px ${
+          isDarkMode ? Colors.DARK_GRAY2 : Colors.LIGHT_GRAY3
+        }`,
         ...style,
       }}
     >

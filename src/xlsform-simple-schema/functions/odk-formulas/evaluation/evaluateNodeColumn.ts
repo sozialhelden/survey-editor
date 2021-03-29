@@ -1,4 +1,3 @@
-import { EvaluationError } from "../../../types/Errors";
 import { EvaluatableColumnName, ODKNode } from "../../../types/ODKNode";
 import createLiteralExpressionFromValue from "./createLiteralExpressionFromValue";
 import evaluateODKFormula from "./evaluateODKFormula";
@@ -19,9 +18,12 @@ export default function evaluateNodeColumn(
   node: ODKNode,
   context: ODKFormulaEvaluationContext,
   columnName: EvaluatableColumnName,
-  fallback: unknown
+  fallback: unknown,
+  overrideFormula?: string
 ): ODKFormulaEvaluationResult {
-  const originalFormula = node.row?.[columnName];
+  const originalFormula = overrideFormula
+    ? overrideFormula
+    : node.row?.[columnName];
   if (originalFormula !== undefined && typeof originalFormula !== "string") {
     debugger;
     throw new Error("Sorry, multilingual formulas are not supported yet.");
@@ -41,20 +43,20 @@ export default function evaluateNodeColumn(
       error: undefined,
     };
   }
-  const row = node.row;
+  // const row = node.row;
   let evaluationResult: ODKFormulaEvaluationResult | undefined = undefined;
-  try {
-    evaluationResult = evaluateODKFormula(formula, context, node);
-  } catch (error) {
-    debugger;
-    throw new EvaluationError(
-      `Error in \`${columnName}\` column of the ‘${row?.name}’ question (row #${node.rowIndex}). It contains the formula \`${row?.[columnName]}\`. Please ensure the formula is valid. The error was: ${error}`,
-      "calculationError",
-      evaluationResult?.expression,
-      context,
-      node,
-      error
-    );
-  }
+  evaluationResult = evaluateODKFormula(formula, context, node);
+  // try {
+  // } catch (error) {
+  //   debugger;
+  //   throw new EvaluationError(
+  //     `Error in \`${columnName}\` column of the ‘${row?.name}’ question (row #${node.rowIndex}). It contains the formula \`${row?.[columnName]}\`. Please ensure the formula is valid. The error was: ${error}`,
+  //     "calculationError",
+  //     evaluationResult?.expression,
+  //     context,
+  //     node,
+  //     error
+  //   );
+  // }
   return evaluationResult;
 }

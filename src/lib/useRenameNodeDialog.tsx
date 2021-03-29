@@ -118,7 +118,8 @@ export default function useRenameNodeDialog(node?: ODKNode) {
               defaultValue={node?.row.name}
               large={true}
               onChange={changeName}
-              pattern="[\w\d_-]+"
+              pattern="@?[\w\d_-]+"
+              autoFocus={true}
             />
           </FormGroup>
         </div>

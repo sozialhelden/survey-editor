@@ -28,6 +28,7 @@ export default function useChangeHooks({
   xlsForm,
   setXLSForm,
   language,
+  debug,
 }: {
   /** The XLSForm model to edit */
   xlsForm?: XLSForm;
@@ -35,6 +36,8 @@ export default function useChangeHooks({
   setXLSForm: (value: React.SetStateAction<XLSForm | undefined>) => void;
   /** Currently set XLSForm language */
   language?: string;
+  /** `true` if in development mode, `false` if not. */
+  debug: boolean;
 }) {
   const [context, setContext] = useState<ODKFormulaEvaluationContext>();
 
@@ -67,20 +70,22 @@ export default function useChangeHooks({
   /** Use this function to change a survey answer value. */
   const onChangeAnswer = React.useCallback(
     (value: unknown, fieldProps: FieldProps) => {
-      AppToaster.show(
-        {
-          message: (
-            <>
-              {fieldProps.schemaKey} →{" "}
-              <HighlightedExpression
-                node={fieldProps.node}
-                expression={createLiteralExpressionFromValue(value)}
-              />
-            </>
-          ),
-        },
-        "changeField"
-      );
+      if (debug) {
+        AppToaster.show(
+          {
+            message: (
+              <>
+                {fieldProps.schemaKey} →{" "}
+                <HighlightedExpression
+                  node={fieldProps.node}
+                  expression={createLiteralExpressionFromValue(value)}
+                />
+              </>
+            ),
+          },
+          "changeField"
+        );
+      }
       if (xlsForm && context) {
         setContext((context) => {
           if (!context) {
@@ -99,7 +104,7 @@ export default function useChangeHooks({
         });
       }
     },
-    [context, xlsForm]
+    [context, debug, xlsForm]
   );
 
   /** Use this function to change XLSForm cell content. */

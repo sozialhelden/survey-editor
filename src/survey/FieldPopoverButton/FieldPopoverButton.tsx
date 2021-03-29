@@ -18,6 +18,7 @@ import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
 import { without } from "lodash";
 import * as React from "react";
 import styled from "styled-components";
+import { useDarkMode } from "../../components/DarkModeContainer";
 import { alpha } from "../../lib/colors";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
@@ -76,7 +77,6 @@ export const StyledCalloutWithCode = styled(Callout)`
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     color: inherit;
-    /* border: 1px solid rgba(0, 0, 0, 0.2); */
     margin: -1px;
     padding: 2px 4px;
     background-color: rgba(255, 255, 255, 0.3);
@@ -137,6 +137,9 @@ function RenderTarget({
     setIsDraggedOver,
   });
 
+  const isDarkMode = useDarkMode();
+  const violetColor = isDarkMode ? Colors.VIOLET5 : Colors.VIOLET3;
+
   return (
     <ControlGroup
       style={{
@@ -161,14 +164,12 @@ function RenderTarget({
           hasTypeIcon ? (
             <Icon
               icon={fieldTypesToIcons[node.type]}
-              color={
-                hasError || hasMissingParameters ? undefined : Colors.VIOLET5
-              }
+              color={hasError || hasMissingParameters ? undefined : violetColor}
             />
           ) : undefined
         }
         style={{
-          color: hasError || hasMissingParameters ? undefined : Colors.VIOLET5,
+          color: hasError || hasMissingParameters ? undefined : violetColor,
           fontSize: "inherit",
           padding: 0,
         }}
@@ -183,7 +184,12 @@ function RenderTarget({
           {!isVisible && (
             <>
               &nbsp;
-              <Icon icon="eye-off" style={{ opacity: 0.5, color: "inherit" }} />
+              <Icon
+                icon="eye-off"
+                style={{ opacity: 0.5, color: "inherit" }}
+                title="Invisible"
+                htmlTitle="Invisible"
+              />
             </>
           )}
         </ControlGroup>
@@ -226,11 +232,11 @@ export default function FieldPopoverButton(props: {
     const value = row[n];
     return typeof value === "string" && value.length > 0;
   });
+  const isDarkMode = useDarkMode();
 
   const [width, setWidth] = React.useState(100);
   const handleResize = React.useCallback(
     (entries: IResizeEntry[]) => {
-      // console.log(entries.map(e => `${e.contentRect.width} x ${e.contentRect.height}`));
       setTimeout(() => {
         const newWidth = entries[0]?.contentRect.width;
         if (Math.abs(newWidth - width) > 10) {
@@ -273,7 +279,9 @@ export default function FieldPopoverButton(props: {
           ${alpha(Colors.BLUE3, 0.0)} 0px,
           ${alpha(Colors.BLUE3, 0.05)} 22px,
           ${alpha(Colors.BLUE3, 0.06)} 32px)`,
-        borderBottom: `solid 1px ${Colors.LIGHT_GRAY3}`,
+        borderBottom: `solid 1px ${
+          isDarkMode ? Colors.DARK_GRAY2 : Colors.LIGHT_GRAY3
+        }`,
         gap: "8px",
       }}
     >
@@ -307,7 +315,13 @@ export default function FieldPopoverButton(props: {
 
       {nameOfOnlyShownTab ? (
         <ExpressionPanel
-          {...{ node, columnName: nameOfOnlyShownTab, nodeEvaluationResults }}
+          {...{
+            node,
+            columnName: nameOfOnlyShownTab,
+            nodeEvaluationResult: nodeEvaluationResults?.get(
+              nameOfOnlyShownTab
+            ),
+          }}
           style={{ margin: "0 -20px -20px -20px" }}
         />
       ) : (
@@ -396,10 +410,10 @@ function getTab({
   node: ODKNode;
   columnName: EvaluatableColumnName;
 }) {
-  const results = nodeEvaluationResults?.get(columnName);
+  const nodeEvaluationResult = nodeEvaluationResults?.get(columnName);
   const panel = (
     <ExpressionPanel
-      {...{ node, columnName, nodeEvaluationResults }}
+      {...{ node, columnName, nodeEvaluationResult }}
       style={{ margin: "-20px" }}
     />
   );
@@ -412,7 +426,7 @@ function getTab({
       title={
         <>
           {columnName}
-          {results?.state === "error" && (
+          {nodeEvaluationResult?.state === "error" && (
             <>
               &nbsp;
               <Icon icon="warning-sign" intent="warning" />

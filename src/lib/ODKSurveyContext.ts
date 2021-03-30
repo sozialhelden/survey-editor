@@ -46,7 +46,7 @@ export const ODKSurveyContext = React.createContext<ODKSurveyContextType>({
   languageName: "English",
 
   setEvaluationContext: () => {},
-  setXLSForm: () => {},
+  setXLSFormWithPatches: () => {},
   onChangeAnswer: () => {},
   onChangeCell: () => {},
   onMoveNode: () => {},

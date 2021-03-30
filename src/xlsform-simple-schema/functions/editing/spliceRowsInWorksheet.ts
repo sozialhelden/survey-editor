@@ -1,3 +1,5 @@
+import { produceWithPatches } from "immer";
+import { Patch } from "../../../lib/undo/useUndoHistory";
 import {
   ChoicesWorksheet,
   loadXLSFormFromRows,
@@ -29,7 +31,7 @@ export default function spliceRowsInWorksheet(
   xlsForm: XLSForm,
   worksheetName: WorksheetName,
   operations: RowSpliceOperation[]
-) {
+): [value: XLSForm, patches: Patch[], inversePatches: Patch[]] {
   const surveyWorksheet = xlsForm.worksheets.survey;
   if (!surveyWorksheet) {
     throw new Error("No survey worksheet defined.");
@@ -37,7 +39,7 @@ export default function spliceRowsInWorksheet(
 
   const worksheet = xlsForm.worksheets[worksheetName];
   if (!worksheet) {
-    return xlsForm;
+    return [xlsForm, [], []];
   }
 
   // Create a copy of the rows array to give the array a new identity, causing a re-render op
@@ -48,16 +50,18 @@ export default function spliceRowsInWorksheet(
   const newWorksheet = { ...worksheet, rows: newRows };
 
   // Reload the whole XLSForm from the new row array
-  return loadXLSFormFromRows(
-    worksheetName === "survey"
-      ? (newWorksheet as SurveyWorksheet)
-      : surveyWorksheet,
-    xlsForm?.worksheets.settings?.rows[0]?.default_language || "English (en)",
-    worksheetName === "settings"
-      ? (newWorksheet as SettingsWorksheet)
-      : xlsForm?.worksheets.settings,
-    worksheetName === "choices"
-      ? (newWorksheet as ChoicesWorksheet)
-      : xlsForm?.worksheets.choices
+  return produceWithPatches(xlsForm, (draft) =>
+    loadXLSFormFromRows(
+      worksheetName === "survey"
+        ? (newWorksheet as SurveyWorksheet)
+        : surveyWorksheet,
+      xlsForm?.worksheets.settings?.rows[0]?.default_language || "English (en)",
+      worksheetName === "settings"
+        ? (newWorksheet as SettingsWorksheet)
+        : xlsForm?.worksheets.settings,
+      worksheetName === "choices"
+        ? (newWorksheet as ChoicesWorksheet)
+        : xlsForm?.worksheets.choices
+    )
   );
 }

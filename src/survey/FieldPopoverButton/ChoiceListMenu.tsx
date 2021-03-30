@@ -43,13 +43,20 @@ export function ChoiceListMenu({
         ...node.row,
         type: newTypeValue,
       };
-      context.onSpliceRows("survey", [
-        {
-          rowIndex: node.rowIndex,
-          numberOfRowsToRemove: 1,
-          rowsToAdd: [newRow],
-        },
-      ]);
+      const description = checked
+        ? `Add \`${choiceListName}\` choice list to \`${node.row.name}\``
+        : `Remove \`${choiceListName}\` choice list from \`${node.row.name}\``;
+      context.onSpliceRows(
+        "survey",
+        [
+          {
+            rowIndex: node.rowIndex,
+            numberOfRowsToRemove: 1,
+            rowsToAdd: [newRow],
+          },
+        ],
+        description
+      );
     },
     [context, node]
   );

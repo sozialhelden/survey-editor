@@ -1,11 +1,17 @@
 import { FileInput } from "@blueprintjs/core";
 import * as ExcelJS from "exceljs";
 import * as React from "react";
+import { Patch } from "../lib/undo/useUndoHistory";
 import { XLSForm } from "../xlsform-simple-schema";
 import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
 
 export default function ExcelFileInput(props: {
-  setXLSForm: (xlsForm: XLSForm | undefined) => void;
+  setXLSFormWithPatches: (
+    description: string,
+    value: XLSForm | undefined,
+    patches: Patch[],
+    inversePatches: Patch[]
+  ) => void;
   setLanguage: (language: string) => void;
 }) {
   const { onFileChange } = useWorkbookFromFile(props);
@@ -13,23 +19,28 @@ export default function ExcelFileInput(props: {
 }
 
 export function useWorkbookFromFile({
-  setXLSForm,
+  setXLSFormWithPatches,
   setLanguage,
 }: {
-  setXLSForm: (xlsForm: XLSForm) => void;
+  setXLSFormWithPatches: (
+    description: string,
+    value: XLSForm | undefined,
+    patches: Patch[],
+    inversePatches: Patch[]
+  ) => void;
   setLanguage: (language: string) => void;
 }) {
   const onLoadWorkbook = React.useCallback(
     async (workbook: ExcelJS.Workbook) => {
       const xlsForm = await loadFormFromExcelWorkbook(workbook);
-      setXLSForm(xlsForm);
+      setXLSFormWithPatches("Load Excel workbook", xlsForm, [], []);
       setLanguage(
         xlsForm.worksheets.settings?.rows[0].default_language ||
           [...xlsForm.languages?.values()][0] ||
           "English (en)"
       );
     },
-    [setLanguage, setXLSForm]
+    [setLanguage, setXLSFormWithPatches]
   );
 
   const onFileChange = React.useCallback(

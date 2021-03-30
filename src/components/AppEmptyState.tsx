@@ -1,19 +1,27 @@
 import { Button, ControlGroup, NonIdealState } from "@blueprintjs/core";
 import * as ExcelJS from "exceljs";
 import React, { useCallback } from "react";
+import { Patch } from "../lib/undo/useUndoHistory";
 import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import ExcelFileInput from "./ExcelFileInput";
 
 /** Shows a load button and a 'create empty survey' button after the app just loaded. */
 export function AppEmptyState({
-  setXLSForm,
+  setXLSFormWithPatches,
   setLanguage,
 }: {
-  setXLSForm: (xlsForm: XLSForm | undefined) => void;
+  setXLSFormWithPatches: (
+    description: string,
+    value: XLSForm | undefined,
+    patches: Patch[],
+    inversePatches: Patch[]
+  ) => void;
   setLanguage: (language: string) => void;
 }) {
-  const fileInput = <ExcelFileInput {...{ setXLSForm, setLanguage }} />;
+  const fileInput = (
+    <ExcelFileInput {...{ setXLSFormWithPatches, setLanguage }} />
+  );
 
   const loadEmptyXLSForm = useCallback(async () => {
     const emptyWorkbook = new ExcelJS.Workbook();
@@ -23,8 +31,13 @@ export function AppEmptyState({
     settingsWorksheet.addRow(["default_language"]);
     settingsWorksheet.addRow(["English (en)"]);
 
-    setXLSForm(await loadFormFromExcelWorkbook(emptyWorkbook));
-  }, [setXLSForm]);
+    setXLSFormWithPatches(
+      "Load empty XLSForm document",
+      await loadFormFromExcelWorkbook(emptyWorkbook),
+      [],
+      []
+    );
+  }, [setXLSFormWithPatches]);
 
   const nonIdealStateActions = (
     <ControlGroup vertical={true}>

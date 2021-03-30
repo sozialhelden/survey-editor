@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produceWithPatches } from "immer";
 import { set } from "lodash";
 import { ODKNode } from "../../types/ODKNode";
 import { WorksheetName, XLSForm } from "../../types/XLSForm";
@@ -49,7 +49,7 @@ export default function patchXLSFormCell({
 
   // https://immerjs.github.io/immer/docs/introduction
 
-  return produce(xlsForm, (draft) => {
+  return produceWithPatches(xlsForm, (draft) => {
     set(
       draft,
       ["worksheets", worksheetName, "rows", rowIndex, ...valuePathInRow],

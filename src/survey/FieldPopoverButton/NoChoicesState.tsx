@@ -12,7 +12,10 @@ export function NoChoicesState() {
     if (!context.xlsForm) {
       return;
     }
-    context.setXLSForm(addExampleChoices(context.xlsForm));
+    context.setXLSFormWithPatches(
+      "Add example choices",
+      ...addExampleChoices(context.xlsForm)
+    );
   }, [context]);
 
   const addExampleChoicesButton = (

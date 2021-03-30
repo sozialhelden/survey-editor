@@ -1,6 +1,7 @@
 import { Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
+import { Patch } from "../lib/undo/useUndoHistory";
 import { saveXLSForm } from "../xlsform-simple-schema/functions/editing/saveXLSForm";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import { useWorkbookFromFile } from "./ExcelFileInput";
@@ -8,19 +9,27 @@ import { useWorkbookFromFile } from "./ExcelFileInput";
 /** Button showing a 'File' menu */
 export function FileMenuButton({
   xlsForm,
-  setXLSForm,
+  setXLSFormWithPatches,
   setLanguage,
 }: {
   xlsForm: XLSForm | undefined;
-  setXLSForm: (xlsForm?: XLSForm) => void;
+  setXLSFormWithPatches: (
+    description: string,
+    value: XLSForm | undefined,
+    patches: Patch[],
+    inversePatches: Patch[]
+  ) => void;
   setLanguage: (language: string) => void;
 }) {
   const inputFieldRef = React.createRef<HTMLInputElement>();
-  const { onFileChange } = useWorkbookFromFile({ setXLSForm, setLanguage });
+  const { onFileChange } = useWorkbookFromFile({
+    setXLSFormWithPatches,
+    setLanguage,
+  });
 
   const closeFile = React.useCallback(() => {
-    setXLSForm(undefined);
-  }, [setXLSForm]);
+    setXLSFormWithPatches("Close current workbook", undefined, [], []);
+  }, [setXLSFormWithPatches]);
 
   const saveFileAs = React.useCallback(async () => {
     if (xlsForm) {
@@ -46,12 +55,7 @@ export function FileMenuButton({
   );
 
   const button = (
-    <Button
-      className="bp3-minimal"
-      icon="folder-close"
-      rightIcon="caret-down"
-      text="File"
-    />
+    <Button className="bp3-minimal" rightIcon="caret-down" text="File" />
   );
 
   return (

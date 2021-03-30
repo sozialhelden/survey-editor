@@ -2,6 +2,8 @@ import {
   Alignment,
   Colors,
   FocusStyleManager,
+  HotkeysProvider,
+  HotkeysTarget2,
   Navbar,
 } from "@blueprintjs/core";
 import React from "react";
@@ -10,12 +12,15 @@ import "./App.css";
 import ResultCodeTree from "./code/ResultCodeTree";
 import { AppEmptyState } from "./components/AppEmptyState";
 import DarkModeContainer, { useDarkMode } from "./components/DarkModeContainer";
+import { EditMenuButton } from "./components/EditMenuButton";
 import { FileMenuButton } from "./components/FileMenuButton";
 import LanguageSelector from "./components/LanguageSelector";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import useViewOptionsButton from "./components/useViewOptionsButton";
 import { alpha } from "./lib/colors";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
+import { UndoContext } from "./lib/undo/UndoContext";
+import useUndoHistory from "./lib/undo/useUndoHistory";
 import useChangeHooks from "./lib/useChangeHooks";
 import EditableSurveyTitle from "./survey/fields/EditableSurveyTitle";
 import { ODKNodeDragAndDropContext } from "./survey/useNodeDragAndDrop";
@@ -61,8 +66,9 @@ const AppBody = styled.div`
 `;
 
 function App() {
-  const [xlsForm, setXLSForm] = React.useState<XLSForm>();
   const [language, setLanguage] = React.useState<string>("English (en)");
+  const undoContext = useUndoHistory<XLSForm>();
+  const xlsForm = undoContext.document;
 
   const resultCodeElement = xlsForm && (
     <OverflowScrollContainer
@@ -76,10 +82,12 @@ function App() {
   const { viewMenuButton, viewOptions } = useViewOptionsButton();
   const isDarkMode = useDarkMode();
 
+  const setXLSFormWithPatches = undoContext.setDocumentWithPatches;
+
   const changeHooks = useChangeHooks({
     language,
     xlsForm,
-    setXLSForm,
+    setXLSFormWithPatches,
     debug: viewOptions.debug,
   });
 
@@ -94,85 +102,125 @@ function App() {
     return undefined;
   }, [xlsForm, language, context]);
 
-  return (
-    <DarkModeContainer
-      style={{ height: "100%", display: "flex", flexDirection: "column" }}
-    >
-      <ODKNodeDragAndDropContext.Provider
-        value={{ onDropNode: changeHooks.onMoveNode }}
-      >
-        <ODKSurveyContext.Provider
-          value={{
-            schema,
-            language,
-            languageCode,
-            languageName,
-            debug: viewOptions.debug,
-            xlsForm,
-            ...changeHooks,
-          }}
-        >
-          {xlsForm && (
-            <Navbar>
-              <Navbar.Group>
-                <FileMenuButton {...{ setXLSForm, setLanguage, xlsForm }} />
-              </Navbar.Group>
-              <Navbar.Group>
-                <Navbar.Divider />
-                <EditableSurveyTitle />
-              </Navbar.Group>
-              <Navbar.Group align={Alignment.RIGHT}>
-                {viewMenuButton}
-                <Navbar.Divider />
-                {xlsForm && language && (
-                  <LanguageSelector
-                    languages={Array.from(xlsForm.languages.values())}
-                    language={language}
-                    onChange={setLanguage}
-                  />
-                )}
-              </Navbar.Group>
-            </Navbar>
-          )}
+  const hotkeys = React.useMemo(
+    () => [
+      {
+        combo: "cmd+z",
+        global: true,
+        label: "Undo",
+        onKeyDown: undoContext.undo,
+        allowInInput: false,
+        preventDefault: true,
+      },
+      {
+        global: true,
+        combo: "cmd+shift+z",
+        label: "Redo",
+        onKeyDown: undoContext.redo,
+        allowInInput: false,
+        preventDefault: true,
+      },
+    ],
+    [undoContext.redo, undoContext.undo]
+  );
 
-          <AppBody>
-            {!xlsForm && (
-              <OverflowScrollContainer>
-                <AppEmptyState {...{ setXLSForm, setLanguage }} />
-              </OverflowScrollContainer>
-            )}
-            {xlsForm && language && viewOptions.table && (
-              <XLSFormWorkbook
-                xlsForm={xlsForm}
-                language={language}
-                debug={viewOptions.debug}
-                style={{ flex: 1, display: "flex" }}
-              />
-            )}
-            {xlsForm && language && (
-              <OverflowScrollContainer
-                style={{
-                  boxShadow: isDarkMode
-                    ? `0 0px 2px ${alpha(
-                        Colors.DARK_GRAY5,
-                        0.8
-                      )}, 0 0px 20px ${alpha(Colors.DARK_GRAY1, 0.3)}`
-                    : `0 0px 10px ${alpha(Colors.DARK_GRAY5, 0.3)}`,
-                  zIndex: 1,
-                }}
+  return (
+    <HotkeysProvider>
+      <HotkeysTarget2 hotkeys={hotkeys}>
+        {({ handleKeyDown, handleKeyUp }) => (
+          <DarkModeContainer
+            style={{ height: "100%", display: "flex", flexDirection: "column" }}
+            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
+          >
+            <UndoContext.Provider value={undoContext}>
+              <ODKNodeDragAndDropContext.Provider
+                value={{ onDropNode: changeHooks.onMoveNode }}
               >
-                <StyledXLSFormSurvey
-                  xlsForm={xlsForm}
-                  language={language}
-                  debug={viewOptions.debug}
-                />
-              </OverflowScrollContainer>
-            )}
-            {xlsForm && language && viewOptions.json && resultCodeElement}
-          </AppBody>
-        </ODKSurveyContext.Provider>
-      </ODKNodeDragAndDropContext.Provider>
-    </DarkModeContainer>
+                <ODKSurveyContext.Provider
+                  value={{
+                    schema,
+                    language,
+                    languageCode,
+                    languageName,
+                    debug: viewOptions.debug,
+                    xlsForm,
+                    ...changeHooks,
+                  }}
+                >
+                  {xlsForm && (
+                    <Navbar>
+                      <Navbar.Group>
+                        <FileMenuButton
+                          {...{ setXLSFormWithPatches, setLanguage, xlsForm }}
+                        />
+                        <EditMenuButton />
+                      </Navbar.Group>
+                      <Navbar.Group>
+                        <Navbar.Divider />
+                        <EditableSurveyTitle />
+                      </Navbar.Group>
+                      <Navbar.Group align={Alignment.RIGHT}>
+                        {viewMenuButton}
+                        <Navbar.Divider />
+                        {xlsForm && language && (
+                          <LanguageSelector
+                            languages={Array.from(xlsForm.languages.values())}
+                            language={language}
+                            onChange={setLanguage}
+                          />
+                        )}
+                      </Navbar.Group>
+                    </Navbar>
+                  )}
+
+                  <AppBody>
+                    {!xlsForm && (
+                      <OverflowScrollContainer>
+                        <AppEmptyState
+                          {...{ setXLSFormWithPatches, setLanguage }}
+                        />
+                      </OverflowScrollContainer>
+                    )}
+                    {xlsForm && language && viewOptions.table && (
+                      <XLSFormWorkbook
+                        xlsForm={xlsForm}
+                        language={language}
+                        debug={viewOptions.debug}
+                        style={{ flex: 1, display: "flex" }}
+                      />
+                    )}
+                    {xlsForm && language && (
+                      <OverflowScrollContainer
+                        style={{
+                          boxShadow: isDarkMode
+                            ? `0 0px 2px ${alpha(
+                                Colors.DARK_GRAY5,
+                                0.8
+                              )}, 0 0px 20px ${alpha(Colors.DARK_GRAY1, 0.3)}`
+                            : `0 0px 10px ${alpha(Colors.DARK_GRAY5, 0.3)}`,
+                          zIndex: 1,
+                        }}
+                      >
+                        <StyledXLSFormSurvey
+                          xlsForm={xlsForm}
+                          language={language}
+                          debug={viewOptions.debug}
+                        />
+                      </OverflowScrollContainer>
+                    )}
+                    {xlsForm &&
+                      language &&
+                      viewOptions.json &&
+                      resultCodeElement}
+                  </AppBody>
+                </ODKSurveyContext.Provider>
+              </ODKNodeDragAndDropContext.Provider>
+            </UndoContext.Provider>
+          </DarkModeContainer>
+        )}
+      </HotkeysTarget2>
+    </HotkeysProvider>
   );
 }
 

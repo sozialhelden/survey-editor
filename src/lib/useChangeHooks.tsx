@@ -23,18 +23,24 @@ import ODKFormulaEvaluationContext, {
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeIndexPath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
+import { Patch } from "./undo/useUndoHistory";
 
 /** Custom React hooks to change / edit the current survey model. */
 export default function useChangeHooks({
   xlsForm,
-  setXLSForm,
+  setXLSFormWithPatches,
   language,
   debug,
 }: {
   /** The XLSForm model to edit */
   xlsForm?: XLSForm;
   /** A React setState method to set a new XLSForm model */
-  setXLSForm: (value: React.SetStateAction<XLSForm | undefined>) => void;
+  setXLSFormWithPatches: (
+    description: string,
+    value: XLSForm | undefined,
+    patches: Patch[],
+    inversePatches: Patch[]
+  ) => void;
   /** Currently set XLSForm language */
   language?: string;
   /** `true` if in development mode, `false` if not. */
@@ -125,8 +131,9 @@ export default function useChangeHooks({
       if (!languageToUse) {
         return;
       }
-      setXLSForm(
-        patchXLSFormCell({
+      setXLSFormWithPatches(
+        `Change \`${columnName}\` cell in \`${worksheetName}\` worksheet (Row #${rowIndex})`,
+        ...patchXLSFormCell({
           worksheetName,
           xlsForm,
           node,
@@ -138,23 +145,28 @@ export default function useChangeHooks({
         })
       );
     },
-    [xlsForm, context, language, setXLSForm]
+    [xlsForm, context, language, setXLSFormWithPatches]
   );
 
   const onSpliceRows = React.useCallback(
-    (worksheetName: WorksheetName, operations: RowSpliceOperation[]) => {
+    (
+      worksheetName: WorksheetName,
+      operations: RowSpliceOperation[],
+      description: string
+    ) => {
       if (!xlsForm || !context) {
         return;
       }
 
-      setXLSForm((xlsForm: XLSForm | undefined) => {
-        if (!xlsForm) {
-          return;
-        }
-        return spliceRowsInWorksheet(xlsForm, worksheetName, operations);
-      });
+      // const removeCount = sumBy(operations, (op) => op.numberOfRowsToRemove);
+      // const addCount = sumBy(operations, (op) => op.rowsToAdd.length);
+      // const description: string = `Change rows (${addCount} added / ${removeCount} removed)`;
+      setXLSFormWithPatches(
+        description,
+        ...spliceRowsInWorksheet(xlsForm, worksheetName, operations)
+      );
     },
-    [context, setXLSForm, xlsForm]
+    [context, setXLSFormWithPatches, xlsForm]
   );
 
   const onRemoveRowAndChildren = React.useCallback(
@@ -169,9 +181,12 @@ export default function useChangeHooks({
         );
       }
 
-      setXLSForm(removeNodeAndChildren(xlsForm, node));
+      setXLSFormWithPatches(
+        `Remove \`${node.row.name}\` node and its children`,
+        ...removeNodeAndChildren(xlsForm, node)
+      );
     },
-    [context, setXLSForm, xlsForm]
+    [context, setXLSFormWithPatches, xlsForm]
   );
 
   const onRenameNode = React.useCallback(
@@ -180,9 +195,12 @@ export default function useChangeHooks({
         return;
       }
 
-      setXLSForm(renameNode(xlsForm, node, newName));
+      setXLSFormWithPatches(
+        `Rename \`${node.row.name}\` to \`${newName}\``,
+        ...renameNode(xlsForm, node, newName)
+      );
     },
-    [setXLSForm, xlsForm]
+    [setXLSFormWithPatches, xlsForm]
   );
 
   const onNestNode = React.useCallback(
@@ -190,9 +208,12 @@ export default function useChangeHooks({
       if (!xlsForm) {
         return;
       }
-      setXLSForm(nestNode(xlsForm, node));
+      setXLSFormWithPatches(
+        `Nest \`${node.row.name}\``,
+        ...nestNode(xlsForm, node)
+      );
     },
-    [setXLSForm, xlsForm]
+    [setXLSFormWithPatches, xlsForm]
   );
 
   const onUngroupNode = React.useCallback(
@@ -200,9 +221,12 @@ export default function useChangeHooks({
       if (!xlsForm) {
         return;
       }
-      setXLSForm(ungroupNode({ node, xlsForm }));
+      setXLSFormWithPatches(
+        `Ungroup \`${node.row.name}\``,
+        ...ungroupNode({ node, xlsForm })
+      );
     },
-    [setXLSForm, xlsForm]
+    [setXLSFormWithPatches, xlsForm]
   );
 
   const onAddNode = React.useCallback(
@@ -221,11 +245,14 @@ export default function useChangeHooks({
         return;
       }
 
-      setXLSForm(
-        addNodeToXLSForm({ xlsForm, group, node, position, fieldType })
+      setXLSFormWithPatches(
+        `Add ${fieldType} ${group ? "group" : "node"} ${position} \`${
+          node?.row.name
+        }\``,
+        ...addNodeToXLSForm({ xlsForm, group, node, position, fieldType })
       );
     },
-    [setXLSForm, xlsForm]
+    [setXLSFormWithPatches, xlsForm]
   );
 
   const onMoveNode = React.useCallback(
@@ -254,23 +281,27 @@ export default function useChangeHooks({
           "cant-drop-node-on-itself"
         );
 
-      setXLSForm(
-        moveNode({
-          xlsForm,
-          evaluationContext: context,
-          sourceNode,
-          destinationNode,
-          onError,
-        })
-      );
+      const moveResult = moveNode({
+        xlsForm,
+        evaluationContext: context,
+        sourceNode,
+        destinationNode,
+        onError,
+      });
+      if (moveResult) {
+        setXLSFormWithPatches(
+          `Move \`${sourceNode.row.name}\` before \`${destinationNode.row.name}\``,
+          ...moveResult
+        );
+      }
     },
-    [context, language, setXLSForm, xlsForm]
+    [context, language, setXLSFormWithPatches, xlsForm]
   );
 
   return {
     evaluationContext: context,
     setEvaluationContext: setContext,
-    setXLSForm,
+    setXLSFormWithPatches,
     onChangeAnswer,
     onChangeCell,
     onMoveNode,

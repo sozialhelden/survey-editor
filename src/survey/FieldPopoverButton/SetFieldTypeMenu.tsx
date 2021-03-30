@@ -23,16 +23,23 @@ export function SetFieldTypeMenu() {
         type?.match(/^select/) &&
         context.xlsForm?.worksheets.choices?.rows.length === 0
       ) {
-        context.setXLSForm(addExampleChoices(context.xlsForm));
+        context.setXLSFormWithPatches(
+          "Add example choices",
+          ...addExampleChoices(context.xlsForm)
+        );
       }
 
-      context.onSpliceRows("survey", [
-        {
-          rowIndex: node.rowIndex,
-          numberOfRowsToRemove: 1,
-          rowsToAdd: [newRow],
-        },
-      ]);
+      context.onSpliceRows(
+        "survey",
+        [
+          {
+            rowIndex: node.rowIndex,
+            numberOfRowsToRemove: 1,
+            rowsToAdd: [newRow],
+          },
+        ],
+        `Set ${node.row.name}’s field type to ${type}`
+      );
     },
     [context, node]
   );

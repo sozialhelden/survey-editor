@@ -426,8 +426,18 @@ function evaluateNameExpression(
       return value;
     }
 
+    let tip: string = "";
+    const node = findNodeByNameInCurrentAndAncestorScopes(
+      expression.name,
+      context,
+      scope
+    );
+    if (node) {
+      tip = `— did you mean to type \`\${${expression.name}}\` instead of \`${expression.name}\`?`;
+    }
+
     throw new EvaluationError(
-      `Unknown name \`${expression.text}\` — did you mean to use \`\${${expression.name}}\` instead of \`${expression.name}\`?`,
+      `\`${expression.text}\` is not a known name or reference. ${tip}`,
       "unknownNameWithoutDollarSign",
       expression,
       context,

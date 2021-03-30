@@ -1,11 +1,15 @@
-import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
-import evaluateExpression from "./evaluateExpression";
+import {
+  ODKFormulaError,
+  SemanticError,
+  SyntaxError,
+} from "../../../types/Errors";
 import { ODKNode } from "../../../types/ODKNode";
-import { ODKFormulaError, SemanticError } from "../../../types/Errors";
-import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
-import { Expression } from "../pratt-parser-base";
 import ODKFormulaLexer from "../odk-formula-parser/ODKFormulaLexer";
 import ODKFormulaParser from "../odk-formula-parser/ODKFormulaParser";
+import { Expression } from "../pratt-parser-base";
+import evaluateExpression from "./evaluateExpression";
+import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
+import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
 function assertExpressionAfterEvaluation(
   expression: unknown
@@ -46,8 +50,8 @@ export default function evaluateODKFormula(
     expression = parser.parseExpression();
 
     if (!expression) {
-      throw new Error(
-        `Parsing given formula \`${formula}\` returned an empty expression. This should not happen, it means the underlying code should have thrown an exception earlier.`
+      throw new SyntaxError(
+        `Parsing given formula \`${formula}\` returned an empty expression.`
       );
     }
     result = evaluateExpression(expression, context, scope);

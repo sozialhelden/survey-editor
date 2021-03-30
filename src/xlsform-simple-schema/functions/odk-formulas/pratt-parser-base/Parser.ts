@@ -1,7 +1,7 @@
-import { ParseError } from "../../../types/Errors";
+import { ParseError, SyntaxError } from "../../../types/Errors";
 import InfixParselet from "./parselets/InfixParselet";
 import PrefixParselet from "./parselets/PrefixParselet";
-import { Expression, Token, TokenType } from "./types";
+import { Expression, punctuator, Token, TokenType } from "./types";
 
 export type TokenCallback = (expression: Token) => void;
 export type ExpressionCallback = (expression: Expression) => void;
@@ -88,14 +88,26 @@ export default class Parser {
   public consume(expected: TokenType): Token {
     const token = this.lookAhead(0);
     if (token.type !== expected) {
-      throw new Error(
-        "Expected token " + expected + " and found " + token.type
+      if (token.type === TokenType.EOF) {
+        throw new SyntaxError(
+          "Missing `" +
+            punctuator(expected) +
+            "` before the end of the formula. Is the formula complete?"
+        );
+      }
+
+      throw new SyntaxError(
+        "Expected token `" +
+          TokenType[expected] +
+          "` but found `" +
+          TokenType[token.type] +
+          "`"
       );
     }
 
     const consumedToken = this.consumeAnything();
     if (!consumedToken) {
-      throw new Error("Could not consume token " + expected);
+      throw new SyntaxError("Could not consume token " + expected);
     }
     return token;
   }

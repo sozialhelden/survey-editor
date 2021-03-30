@@ -54,20 +54,6 @@ export default function CalculateField(props: Props) {
     [node, surveyContext]
   );
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setEditedFormula(event.target.value);
-    },
-    []
-  );
-
-  const onBlur = React.useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      changeFormula(editedFormula);
-    },
-    [changeFormula, editedFormula]
-  );
-
   return (
     <ControlGroup vertical={true}>
       <ControlGroup

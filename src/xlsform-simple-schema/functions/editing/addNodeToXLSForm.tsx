@@ -1,3 +1,4 @@
+import { fieldTypeNames } from "../../field-types/fieldTypeNames";
 import { isGroupNode, ODKNode } from "../../types/ODKNode";
 import { QuestionRow } from "../../types/RowTypes";
 import { XLSForm } from "../../types/XLSForm";
@@ -14,13 +15,15 @@ export function addNodeToXLSForm({
   group,
   node,
   position,
+  fieldType,
 }: {
   xlsForm: XLSForm;
   group: boolean;
   node?: ODKNode;
   position: "after" | "before" | "inside";
+  fieldType: keyof typeof fieldTypeNames;
 }) {
-  const row: QuestionRow = createEmptyFieldRow(xlsForm);
+  const row: QuestionRow = createEmptyFieldRow(xlsForm, fieldType);
   const { beginMarkerRow, endMarkerRow } = createEmptyGroupRows(xlsForm);
   const rowsToInsert = group ? [beginMarkerRow, row, endMarkerRow] : [row];
 

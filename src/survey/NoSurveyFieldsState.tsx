@@ -6,11 +6,11 @@ export default function NoSurveyFieldsState() {
   const context = useContext(ODKSurveyContext);
 
   const addNode = useCallback(() => {
-    context.onAddNode({ position: "after", group: false });
+    context.onAddNode({ position: "after", group: false, fieldType: "text" });
   }, [context]);
 
   const addGroup = useCallback(() => {
-    context.onAddNode({ position: "after", group: true });
+    context.onAddNode({ position: "after", group: true, fieldType: "text" });
   }, [context]);
 
   const actions = (

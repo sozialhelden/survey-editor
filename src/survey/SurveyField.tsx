@@ -46,7 +46,7 @@ const TopCornerButton = styled(CornerButton)`
   &:hover {
     background: linear-gradient(
       135deg,
-      ${alpha(Colors.BLUE3, 0.1)},
+      ${alpha(Colors.BLUE3, 0.3)},
       ${alpha(Colors.BLUE3, 0.0)} 50%
     );
   }
@@ -57,7 +57,7 @@ const BottomCornerButton = styled(CornerButton)`
   &:hover {
     background: linear-gradient(
       45deg,
-      ${alpha(Colors.BLUE3, 0.1)},
+      ${alpha(Colors.BLUE3, 0.3)},
       ${alpha(Colors.BLUE3, 0.0)} 50%
     );
   }

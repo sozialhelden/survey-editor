@@ -1,51 +1,35 @@
 import { Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import * as React from "react";
-import { ODKNodeContext } from "../../lib/ODKNodeContext";
-import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { fieldCategoriesToIcons } from "../../xlsform-simple-schema/field-types/fieldCategoriesToIcons";
 import { fieldCategoryNames } from "../../xlsform-simple-schema/field-types/fieldCategoryNames";
 import { fieldTypeNames } from "../../xlsform-simple-schema/field-types/fieldTypeNames";
 import { fieldTypesToCategories } from "../../xlsform-simple-schema/field-types/fieldTypesToCategories";
 import { fieldTypesToIcons } from "../../xlsform-simple-schema/field-types/fieldTypesToIcons";
-import addExampleChoices from "../../xlsform-simple-schema/functions/editing/addExampleChoices";
-import { QuestionRow } from "../../xlsform-simple-schema/types/RowTypes";
 
-export function FieldTypeMenu() {
-  const context = React.useContext(ODKSurveyContext);
-  const { node } = React.useContext(ODKNodeContext);
-
+export function FieldTypeMenu({
+  onSelectType,
+  header,
+}: {
+  header: React.ReactNode;
+  onSelectType: (fieldType: keyof typeof fieldTypeNames) => void;
+}) {
   const onClick = React.useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       const type = event.currentTarget.dataset.type;
-      const typeParameters = type?.match(/^select/) ? node.typeParameters : [];
-      const newTypeValue = [type, ...typeParameters].join(" ");
-      const newRow: QuestionRow = {
-        ...node.row,
-        type: newTypeValue,
-      };
-
-      if (
-        type?.match(/^select/) &&
-        context.xlsForm?.worksheets.choices?.rows.length === 0
-      ) {
-        context.setXLSForm(addExampleChoices(context.xlsForm));
+      if (!type) {
+        throw new Error(
+          "Encountered a menu item without a set field type. This is a bug – please report this to the developers."
+        );
       }
-
-      context.onSpliceRows("survey", [
-        {
-          rowIndex: node.rowIndex,
-          numberOfRowsToRemove: 1,
-          rowsToAdd: [newRow],
-        },
-      ]);
+      onSelectType(type);
     },
-    [context, node]
+    [onSelectType]
   );
 
   return (
     <Menu>
       <li className="bp3-menu-header">
-        <h6 className="bp3-heading">Set a field type.</h6>
+        <h6 className="bp3-heading">{header}</h6>
       </li>
 
       {Object.keys(fieldCategoriesToIcons)

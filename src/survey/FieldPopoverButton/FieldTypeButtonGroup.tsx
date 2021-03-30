@@ -17,8 +17,8 @@ import {
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
 import { ChoiceListMenu } from "./ChoiceListMenu";
-import { FieldTypeMenu } from "./FieldTypeMenu";
 import { NoChoicesState } from "./NoChoicesState";
+import { SetFieldTypeMenu } from "./SetFieldTypeMenu";
 
 /**
  * Shows a survey field’s type and type parameters (if existing). The type and parameters are
@@ -58,7 +58,7 @@ export function FieldTypeButtonGroup({
   return (
     <ButtonGroup>
       {showType && (
-        <Popover2 content={<FieldTypeMenu />} lazy={true}>
+        <Popover2 content={<SetFieldTypeMenu />} lazy={true}>
           <Button
             icon={icon || "blank"}
             fill={false}

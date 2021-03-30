@@ -4,6 +4,7 @@ import HighlightedExpression from "../components/HighlightedExpression/Highlight
 import { FieldProps } from "../survey/FieldProps";
 import { AppToaster } from "../toaster";
 import { WorksheetName, XLSForm } from "../xlsform-simple-schema";
+import { fieldTypeNames } from "../xlsform-simple-schema/field-types/fieldTypeNames";
 import { addNodeToXLSForm } from "../xlsform-simple-schema/functions/editing/addNodeToXLSForm";
 import { moveNode } from "../xlsform-simple-schema/functions/editing/moveNode";
 import { nestNode } from "../xlsform-simple-schema/functions/editing/nestNode";
@@ -209,16 +210,20 @@ export default function useChangeHooks({
       position,
       node,
       group,
+      fieldType,
     }: {
       position: "before" | "after" | "inside";
       node?: ODKNode;
       group: boolean;
+      fieldType: keyof typeof fieldTypeNames;
     }) => {
       if (!xlsForm) {
         return;
       }
 
-      setXLSForm(addNodeToXLSForm({ xlsForm, group, node, position }));
+      setXLSForm(
+        addNodeToXLSForm({ xlsForm, group, node, position, fieldType })
+      );
     },
     [setXLSForm, xlsForm]
   );

@@ -147,7 +147,11 @@ export default function AnyValueField(props: FieldProps) {
   }
 
   if (node.type === "note") {
-    return <Callout intent="primary">{labelElement}</Callout>;
+    return (
+      <Callout intent="primary" style={{ marginBottom: "16px" }}>
+        {labelElement}
+      </Callout>
+    );
   }
 
   return (

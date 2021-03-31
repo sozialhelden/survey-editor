@@ -43,7 +43,7 @@ export function SetFieldTypeMenu() {
         ])
       );
       context.setXLSFormWithPatches(
-        `Set ${node.row.name}’s field type to ${type}`,
+        `Set \`${node.row.name}\` type to \`${type}\``,
         ...mergeCommands(commands)
       );
     },

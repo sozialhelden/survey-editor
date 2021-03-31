@@ -22,6 +22,7 @@ import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import { UndoContext } from "./lib/undo/UndoContext";
 import useUndoHistory from "./lib/undo/useUndoHistory";
 import useChangeHooks from "./lib/useChangeHooks";
+import { useGlobalHotkeys } from "./lib/useGlobalHotkeys";
 import EditableSurveyTitle from "./survey/fields/EditableSurveyTitle";
 import { ODKNodeDragAndDropContext } from "./survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./survey/XLSFormSurvey";
@@ -102,27 +103,7 @@ function App() {
     return undefined;
   }, [xlsForm, language, context]);
 
-  const hotkeys = React.useMemo(
-    () => [
-      {
-        combo: "cmd+z",
-        global: true,
-        label: "Undo",
-        onKeyDown: undoContext.undo,
-        allowInInput: false,
-        preventDefault: true,
-      },
-      {
-        global: true,
-        combo: "cmd+shift+z",
-        label: "Redo",
-        onKeyDown: undoContext.redo,
-        allowInInput: false,
-        preventDefault: true,
-      },
-    ],
-    [undoContext.redo, undoContext.undo]
-  );
+  const hotkeys = useGlobalHotkeys(undoContext);
 
   return (
     <HotkeysProvider>

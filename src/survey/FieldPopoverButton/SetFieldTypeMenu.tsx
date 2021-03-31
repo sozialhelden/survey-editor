@@ -1,8 +1,10 @@
 import * as React from "react";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { mergeCommands } from "../../lib/undo/mergeCommands";
 import { fieldTypeNames } from "../../xlsform-simple-schema/field-types/fieldTypeNames";
 import addExampleChoices from "../../xlsform-simple-schema/functions/editing/addExampleChoices";
+import spliceRowsInWorksheet from "../../xlsform-simple-schema/functions/editing/spliceRowsInWorksheet";
 import { QuestionRow } from "../../xlsform-simple-schema/types/RowTypes";
 import { FieldTypeMenu } from "./FieldTypeMenu";
 
@@ -19,26 +21,30 @@ export function SetFieldTypeMenu() {
         type: newTypeValue,
       };
 
-      if (
-        type?.match(/^select/) &&
-        context.xlsForm?.worksheets.choices?.rows.length === 0
-      ) {
-        context.setXLSFormWithPatches(
-          "Add example choices",
-          ...addExampleChoices(context.xlsForm)
-        );
+      if (!context.xlsForm) {
+        return;
       }
 
-      context.onSpliceRows(
-        "survey",
-        [
+      const commands = [];
+      if (
+        type?.match(/^select/) &&
+        !context.xlsForm?.worksheets.choices?.rows.length
+      ) {
+        commands.push(addExampleChoices(context.xlsForm));
+      }
+
+      commands.push(
+        spliceRowsInWorksheet(commands[0]?.[0] || context.xlsForm, "survey", [
           {
             rowIndex: node.rowIndex,
             numberOfRowsToRemove: 1,
             rowsToAdd: [newRow],
           },
-        ],
-        `Set ${node.row.name}’s field type to ${type}`
+        ])
+      );
+      context.setXLSFormWithPatches(
+        `Set ${node.row.name}’s field type to ${type}`,
+        ...mergeCommands(commands)
       );
     },
     [context, node]

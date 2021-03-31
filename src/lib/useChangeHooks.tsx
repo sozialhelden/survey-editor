@@ -22,6 +22,7 @@ import ODKFormulaEvaluationContext, {
   knownLiteralsWithoutDollarSign,
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getNodeIndexPath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { describeNode } from "../xlsform-simple-schema/types/describeNode";
 import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
 import { Patch } from "./undo/useUndoHistory";
 
@@ -182,7 +183,7 @@ export default function useChangeHooks({
       }
 
       setXLSFormWithPatches(
-        `Remove \`${node.row.name}\` node and its children`,
+        `Remove \`${describeNode(node)}\` node and its children`,
         ...removeNodeAndChildren(xlsForm, node)
       );
     },
@@ -196,7 +197,7 @@ export default function useChangeHooks({
       }
 
       setXLSFormWithPatches(
-        `Rename \`${node.row.name}\` to \`${newName}\``,
+        `Rename \`${describeNode(node)}\` to \`${newName}\``,
         ...renameNode(xlsForm, node, newName)
       );
     },
@@ -209,7 +210,7 @@ export default function useChangeHooks({
         return;
       }
       setXLSFormWithPatches(
-        `Nest \`${node.row.name}\``,
+        `Nest \`${describeNode(node)}\``,
         ...nestNode(xlsForm, node)
       );
     },
@@ -222,7 +223,7 @@ export default function useChangeHooks({
         return;
       }
       setXLSFormWithPatches(
-        `Ungroup \`${node.row.name}\``,
+        `Ungroup \`${describeNode(node)}\``,
         ...ungroupNode({ node, xlsForm })
       );
     },
@@ -245,10 +246,12 @@ export default function useChangeHooks({
         return;
       }
 
+      const typeDescription = group ? "group" : `\`${fieldType}\` field`;
+      const description = node
+        ? `Add new ${typeDescription} ${position} \`${describeNode(node)}\``
+        : `Add new ${typeDescription}`;
       setXLSFormWithPatches(
-        `Add ${fieldType} ${group ? "group" : "node"} ${position} \`${
-          node?.row.name
-        }\``,
+        description,
         ...addNodeToXLSForm({ xlsForm, group, node, position, fieldType })
       );
     },
@@ -290,7 +293,9 @@ export default function useChangeHooks({
       });
       if (moveResult) {
         setXLSFormWithPatches(
-          `Move \`${sourceNode.row.name}\` before \`${destinationNode.row.name}\``,
+          `Move \`${describeNode(sourceNode)}\` before \`${describeNode(
+            destinationNode
+          )}\``,
           ...moveResult
         );
       }

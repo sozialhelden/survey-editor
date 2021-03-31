@@ -20,14 +20,16 @@ export function EditMenuButton() {
     <Menu>
       <MenuItem
         text={<Markdown inline={true}>{`Undo`}</Markdown>}
-        labelElement={<KeyCombo combo={"mod+z"}></KeyCombo>}
+        labelElement={<KeyCombo combo={"mod+z"} minimal={true}></KeyCombo>}
         onClick={undoContext.undo}
       />
       <MenuItem
         text={
           nextCommand ? <Markdown inline={true}>{`Redo`}</Markdown> : "Redo"
         }
-        labelElement={<KeyCombo combo={"mod+shift+z"}></KeyCombo>}
+        labelElement={
+          <KeyCombo combo={"mod+shift+z"} minimal={true}></KeyCombo>
+        }
         onClick={undoContext.redo}
         disabled={!nextCommand}
       />

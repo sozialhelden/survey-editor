@@ -1,4 +1,10 @@
-import { Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
+import {
+  Button,
+  KeyCombo,
+  Menu,
+  MenuDivider,
+  MenuItem,
+} from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { UndoContext } from "../lib/undo/UndoContext";
@@ -8,32 +14,20 @@ import Markdown from "./Markdown";
 export function EditMenuButton() {
   const undoContext = React.useContext(UndoContext);
   const { undoHistory } = undoContext;
-
-  const lastCommand = undoHistory.commands[undoHistory.index];
-  const lastCommandDescription = lastCommand?.description;
   const nextCommand = undoHistory.commands[undoHistory.index + 1];
-  const nextCommandDescription = nextCommand?.description;
 
   const menu = (
     <Menu>
       <MenuItem
-        text={
-          <Markdown
-            inline={true}
-          >{`Undo ‘${lastCommandDescription}’`}</Markdown>
-        }
+        text={<Markdown inline={true}>{`Undo`}</Markdown>}
+        labelElement={<KeyCombo combo={"mod+z"}></KeyCombo>}
         onClick={undoContext.undo}
       />
       <MenuItem
         text={
-          nextCommand ? (
-            <Markdown
-              inline={true}
-            >{`Redo ‘${nextCommandDescription}’`}</Markdown>
-          ) : (
-            "Redo"
-          )
+          nextCommand ? <Markdown inline={true}>{`Redo`}</Markdown> : "Redo"
         }
+        labelElement={<KeyCombo combo={"mod+shift+z"}></KeyCombo>}
         onClick={undoContext.redo}
         disabled={!nextCommand}
       />

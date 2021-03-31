@@ -250,6 +250,7 @@ export default function useChangeHooks({
       const description = node
         ? `Add new ${typeDescription} ${position} \`${describeNode(node)}\``
         : `Add new ${typeDescription}`;
+
       setXLSFormWithPatches(
         description,
         ...addNodeToXLSForm({ xlsForm, group, node, position, fieldType })

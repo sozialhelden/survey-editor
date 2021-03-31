@@ -1,8 +1,10 @@
+import { mergeCommands } from "../../../lib/undo/mergeCommands";
 import { fieldTypeNames } from "../../field-types/fieldTypeNames";
 import { isGroupNode, ODKNode } from "../../types/ODKNode";
 import { QuestionRow } from "../../types/RowTypes";
 import { XLSForm } from "../../types/XLSForm";
 import getLastRowIndexOfNode from "../getLastRowIndexOfNode";
+import addExampleChoices from "./addExampleChoices";
 import { createEmptyFieldRow } from "./createUntitledFieldRow";
 import { createEmptyGroupRows } from "./createUntitledGroupRows";
 import spliceRowsInWorksheet from "./spliceRowsInWorksheet";
@@ -42,11 +44,24 @@ export function addNodeToXLSForm({
       inside: 0,
     }[position];
   }
-  return spliceRowsInWorksheet(xlsForm, "survey", [
-    {
-      rowIndex,
-      numberOfRowsToRemove: 0,
-      rowsToAdd: rowsToInsert,
-    },
-  ]);
+
+  const commands = [];
+  if (
+    fieldType?.match(/^select/) &&
+    !xlsForm?.worksheets.choices?.rows.length
+  ) {
+    commands.push(addExampleChoices(xlsForm));
+  }
+
+  commands.push(
+    spliceRowsInWorksheet(commands[0]?.[0] || xlsForm, "survey", [
+      {
+        rowIndex: rowIndex,
+        numberOfRowsToRemove: 0,
+        rowsToAdd: rowsToInsert,
+      },
+    ])
+  );
+
+  return mergeCommands(commands);
 }

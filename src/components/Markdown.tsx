@@ -6,7 +6,10 @@ import unindent from "./unindent";
 
 interface IProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode;
+  /** Use this to supply any markdown compiler function that can convert a Markdown string to a HTML string */
   marked: (markdown: string) => string;
+  /** Removes <p></p> tags around the markdown code */
+  inline?: boolean;
 }
 
 function MarkdownDiv(props: IProps) {
@@ -15,11 +18,15 @@ function MarkdownDiv(props: IProps) {
       <Callout intent="danger">Markdown content must be a string.</Callout>
     );
   }
+  let html = props.marked?.(unindent(props.children));
+  if (props.inline) {
+    html = html.replaceAll(/<\/?p>/g, "");
+  }
   return (
     <div
-      {...omit(props, "children", "marked")}
+      {...omit(props, "children", "marked", "inline")}
       dangerouslySetInnerHTML={{
-        __html: props.marked?.(unindent(props.children)),
+        __html: html,
       }}
     />
   );
@@ -51,8 +58,9 @@ function MarkdownDiv(props: IProps) {
  *   `}</Markdown>
  */
 function Markdown(props: {
-  /** */
   children: React.ReactNode;
+  /** Removes <p></p> tags around the markdown code */
+  inline?: boolean;
 }) {
   return <MarkdownDiv {...props} marked={marked} />;
 }

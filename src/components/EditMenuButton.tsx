@@ -8,6 +8,7 @@ import Markdown from "./Markdown";
 export function EditMenuButton() {
   const undoContext = React.useContext(UndoContext);
   const { undoHistory } = undoContext;
+
   const lastCommand = undoHistory.commands[undoHistory.index];
   const lastCommandDescription = lastCommand?.description;
   const nextCommand = undoHistory.commands[undoHistory.index + 1];
@@ -16,13 +17,19 @@ export function EditMenuButton() {
   const menu = (
     <Menu>
       <MenuItem
-        text={<Markdown>{`Undo ‘${lastCommandDescription}’`}</Markdown>}
+        text={
+          <Markdown
+            inline={true}
+          >{`Undo ‘${lastCommandDescription}’`}</Markdown>
+        }
         onClick={undoContext.undo}
       />
       <MenuItem
         text={
           nextCommand ? (
-            <Markdown>{`Redo ‘${nextCommandDescription}’`}</Markdown>
+            <Markdown
+              inline={true}
+            >{`Redo ‘${nextCommandDescription}’`}</Markdown>
           ) : (
             "Redo"
           )
@@ -36,7 +43,7 @@ export function EditMenuButton() {
           <MenuItem
             key={i}
             active={i === undoHistory.index}
-            text={command.description}
+            text={<Markdown inline={true}>{command.description}</Markdown>}
             onClick={() => undoContext.gotoIndex(i)}
           />
         ))}

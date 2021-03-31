@@ -17,6 +17,7 @@ const renderItem: ItemRenderer<string> = (language: string, options) => {
       text={name}
       label={code}
       // active={true}
+      key={code}
       onClick={options.handleClick}
       shouldDismissPopover={false}
     />

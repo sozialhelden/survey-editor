@@ -1,5 +1,11 @@
-import { Callout } from "@blueprintjs/core";
-import { Column, EditableCell, Table } from "@blueprintjs/table";
+import { Callout, Classes } from "@blueprintjs/core";
+import {
+  Column,
+  ColumnHeaderCell,
+  EditableCell,
+  IColumnHeaderRenderer,
+  Table,
+} from "@blueprintjs/table";
 import { uniq } from "lodash";
 import * as React from "react";
 import styled from "styled-components";
@@ -34,8 +40,7 @@ export default function XLSFormWorksheet(props: Props) {
   const columnNames = React.useMemo(
     () =>
       uniq(worksheet?.columnNamesNormalized.map((n) => n.replace(/::.*$/, ""))),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [xlsForm, worksheet, worksheet?.columnNamesNormalized, worksheet?.rows]
+    [worksheet]
   );
 
   const onConfirmCellEdit = React.useCallback(
@@ -73,6 +78,32 @@ export default function XLSFormWorksheet(props: Props) {
       xlsForm.flatNodes,
     ]
   );
+
+  const columnNameRenderer = React.useMemo(
+    () => (name: string, index?: number) => {
+      if (localizableColumnNames.includes(name)) {
+        return (
+          <>
+            {name}
+            <span className={Classes.TEXT_MUTED}>::{language}</span>
+          </>
+        );
+      }
+      return <>{name}</>;
+    },
+    [language]
+  );
+
+  const columnHeaderCellRenderer: IColumnHeaderRenderer = React.useMemo(() => {
+    return (columnIndex: number) => {
+      return (
+        <ColumnHeaderCell
+          nameRenderer={columnNameRenderer}
+          name={columnNames[columnIndex]}
+        />
+      );
+    };
+  }, [columnNameRenderer, columnNames]);
 
   const cellRenderer = React.useMemo(() => {
     return (rowIndex: number, columnIndex: number) => {
@@ -153,6 +184,7 @@ export default function XLSFormWorksheet(props: Props) {
           key={columnName}
           name={columnName}
           cellRenderer={cellRenderer}
+          columnHeaderCellRenderer={columnHeaderCellRenderer}
         />
       ))}
     </FlexTable>

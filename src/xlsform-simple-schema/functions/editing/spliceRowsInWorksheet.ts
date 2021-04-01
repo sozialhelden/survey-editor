@@ -1,4 +1,5 @@
 import { produceWithPatches } from "immer";
+import { uniq } from "lodash";
 import { Patch } from "../../../lib/undo/useUndoHistory";
 import {
   ChoicesWorksheet,
@@ -8,6 +9,7 @@ import {
   WorksheetName,
   XLSForm,
 } from "../../types/XLSForm";
+import { normalizeColumnNames } from "../loadSurveyFromXLSX";
 
 /**
  * Defines a splice operation on the XLSForm’s rows. A 'Splice' operation is generic and allows to
@@ -47,7 +49,13 @@ export default function spliceRowsInWorksheet(
   operations.forEach(({ rowIndex, numberOfRowsToRemove, rowsToAdd }) =>
     newRows.splice(rowIndex, numberOfRowsToRemove, ...rowsToAdd)
   );
-  const newWorksheet = { ...worksheet, rows: newRows };
+  const columnNames = uniq(newRows.flatMap((row) => Object.keys(row)));
+  const newWorksheet = {
+    ...worksheet,
+    rows: newRows,
+    columnNames,
+    columnNamesNormalized: normalizeColumnNames(columnNames),
+  };
 
   // Reload the whole XLSForm from the new row array
   return produceWithPatches(xlsForm, (draft) =>

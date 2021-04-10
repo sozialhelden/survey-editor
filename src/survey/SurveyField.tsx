@@ -4,7 +4,6 @@ import {
   Code,
   Colors,
   H4,
-  Menu,
   MenuDivider,
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
@@ -196,7 +195,6 @@ export function SurveyField(props: {
   }
 
   if (debug && node !== context.survey) {
-    const nodeActionMenu = <Menu>{nodeActionMenuItems}</Menu>;
     return (
       <>
         {nodeActionDialogs}

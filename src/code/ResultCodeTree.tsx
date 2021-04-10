@@ -146,7 +146,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
           }
         )
       : null;
-  }, [collapsedKeys, evaluationContext, xlsForm]);
+  }, [collapsedKeys, evaluationContext, violetColor, xlsForm]);
 
   return result ? (
     <Tree

@@ -23,7 +23,7 @@ type Props = FieldProps & {
 export default function RadioGroupField(props: Props) {
   const { value, onInputChange, node, relevant, readonly } = props;
   const context = React.useContext(ODKSurveyContext);
-  const { language, xlsForm, evaluationContext: evaluationContext } = context;
+  const { language, xlsForm, evaluationContext } = context;
 
   if (
     value !== undefined &&

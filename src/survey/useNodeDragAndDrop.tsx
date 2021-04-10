@@ -69,7 +69,7 @@ export function useNodeDragAndDrop({
       if (!evaluationContext) {
         return;
       }
-      const path = getNodeAbsolutePathString(node, evaluationContext);
+      // const path = getNodeAbsolutePathString(node, evaluationContext);
       const data = JSON.parse(event.dataTransfer.getData("application/json"));
       const { sourcePath, sourceNode } = data;
       assertIsODKNode(sourceNode);
@@ -89,10 +89,10 @@ export function useNodeDragAndDrop({
     if (!evaluationContext) {
       return;
     }
-    const path = getNodeAbsolutePathString(node, evaluationContext);
+    // const path = getNodeAbsolutePathString(node, evaluationContext);
     // console.log("Left dragging at path", path);
     setIsDraggedOver(false);
-  }, [evaluationContext, node, setIsDraggedOver]);
+  }, [evaluationContext, setIsDraggedOver]);
 
   const dragProps = {
     draggable: true,

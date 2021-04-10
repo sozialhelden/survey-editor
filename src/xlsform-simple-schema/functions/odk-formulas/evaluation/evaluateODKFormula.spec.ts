@@ -84,9 +84,7 @@ describe("evaluateODKFormula", () => {
     expectFail("'some string' + 1234", /no number/);
     expectFail("1234 + 'some string'", /no number/);
     expectFail("'some string' and true()", /boolean/);
-    expectFail("0 and 0", /boolean/);
     expectFail("'some string' or true()", /boolean/);
-    expectFail("0 or 0", /boolean/);
 
     expectOpResults("+", [
       ["1 + 1", 2],
@@ -167,12 +165,20 @@ describe("evaluateODKFormula", () => {
       ["false() and true()", false],
       ["true() and false()", false],
       ["true() and true()", true],
+      ["0 and 0", false],
+      ["0 and 1", false],
+      ["1 and 0", false],
+      ["1 and 1", true],
     ]);
     expectOpResults("or", [
       ["false() or false()", false],
       ["false() or true()", true],
       ["true() or false()", true],
       ["true() or true()", true],
+      ["0 or 0", false],
+      ["0 or 1", true],
+      ["1 or 0", true],
+      ["1 or 1", true],
     ]);
   });
 

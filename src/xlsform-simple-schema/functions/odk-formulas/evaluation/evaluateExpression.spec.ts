@@ -83,4 +83,8 @@ describe("evaluateExpression()", () => {
       "Ye olde hospital, but as a string literal in a calculation"
     );
   });
+
+  test.todo(
+    "Evaluates a . expression to the current field answer literal when used in the calculation cell"
+  );
 });

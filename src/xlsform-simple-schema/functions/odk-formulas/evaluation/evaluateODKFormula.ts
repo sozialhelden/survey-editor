@@ -11,7 +11,7 @@ import evaluateExpression from "./evaluateExpression";
 import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 import ODKFormulaEvaluationResult from "./ODKFormulaEvaluationResult";
 
-function assertExpressionAfterEvaluation(
+export function assertExpressionAfterEvaluation(
   expression: unknown
 ): asserts expression is Expression {
   if (!expression) {
@@ -48,7 +48,6 @@ export default function evaluateODKFormula(
   const parser = new ODKFormulaParser({ tokens: lexer });
   try {
     expression = parser.parseExpression();
-
     if (!expression) {
       throw new SyntaxError(
         `Parsing given formula \`${formula}\` returned an empty expression.`

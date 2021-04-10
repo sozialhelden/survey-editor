@@ -11,6 +11,7 @@ import {
 } from "../pratt-parser-base";
 import LiteralExpression from "../pratt-parser-base/expressions/LiteralExpression";
 import SelectorExpression from "../pratt-parser-base/expressions/SelectorExpression";
+import createLiteralExpressionFromValue from "./createLiteralExpressionFromValue";
 import evaluateNodeColumn from "./evaluateNodeColumn";
 import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 import functions from "./ODKFormulaFunctions";
@@ -154,7 +155,7 @@ function evaluateCallExpression(
 
   if (!fn) {
     const name = stringFromStringOrExpression(nameExpressionOrString);
-    error(`Could not find a function named \`${name}\`().`, "functionNotFound");
+    error(`Could not find a function named \`${name}()\`.`, "functionNotFound");
   }
 
   const evaluatedArgs = expression.args.map((arg, i) => {
@@ -194,6 +195,14 @@ function evaluateCallExpression(
   }
 }
 
+function addIndefiniteArticle(noun: string) {
+  const article = ["a", "e", "i", "o", "u"].includes(noun.slice(0, 1))
+    ? "an"
+    : "a";
+
+  return `${article} ${noun}`;
+}
+
 function assertBoolean(
   value: unknown,
   valueBeforeCasting: unknown,
@@ -205,13 +214,9 @@ function assertBoolean(
     throw new EvaluationError(
       `Found operand \`${JSON.stringify(
         valueBeforeCasting
-      )}\` that is no boolean value, but ${
-        ["a", "e", "i", "o", "u"].includes(
-          (typeof valueBeforeCasting).slice(0, 1)
-        )
-          ? "an"
-          : "a"
-      } ${typeof valueBeforeCasting}. Boolean operators like \`${
+      )}\` that is no boolean value, but ${addIndefiniteArticle(
+        typeof valueBeforeCasting
+      )}. Boolean operators like \`${
         expression?.operatorToken.text
       }\` only work with values that are \`true\` or \`false\`.`,
       "invalidOperandType",
@@ -281,14 +286,18 @@ function evaluateOperatorExpression(
     left = leftBeforeCasting;
   }
   if (typeof leftBeforeCasting === "string") {
-    left = parseFloat(leftBeforeCasting);
+    if (leftBeforeCasting.match(/^-?\d+\.?\d*/)) {
+      left = parseFloat(leftBeforeCasting);
+    }
   }
 
   if (typeof rightBeforeCasting === "number") {
     right = rightBeforeCasting;
   }
   if (typeof rightBeforeCasting === "string") {
-    right = parseFloat(rightBeforeCasting);
+    if (rightBeforeCasting.match(/^-?\d+\.?\d*/)) {
+      right = parseFloat(rightBeforeCasting);
+    }
   }
 
   if (typeof left !== "number") {
@@ -465,23 +474,26 @@ export function evaluateSelectorExpression(
 ): unknown {
   const selector = expression.selector;
   const node = findNodeByPathRelativeToScope(selector, context, scope);
+
+  const evalCalculation = (n: ODKNode) =>
+    n === scope
+      ? {
+          state: "success",
+          result: context.nodesToAnswers.get(n),
+          expression: createLiteralExpressionFromValue(
+            context.nodesToAnswers.get(n)
+          ),
+          error: undefined,
+        }
+      : evaluateNodeColumn(
+          n,
+          context,
+          "calculation",
+          context.nodesToAnswers.get(n)
+        );
+
   if (node instanceof Array) {
-    return node.map((childNode) =>
-      evaluateNodeColumn(
-        childNode,
-        context,
-        "calculation",
-        context.nodesToAnswers.get(childNode)
-      )
-    );
+    return node.map((childNode) => evalCalculation(childNode));
   }
-  return (
-    node &&
-    evaluateNodeColumn(
-      node,
-      context,
-      "calculation",
-      context.nodesToAnswers.get(node)
-    )
-  );
+  return node && evalCalculation(node);
 }

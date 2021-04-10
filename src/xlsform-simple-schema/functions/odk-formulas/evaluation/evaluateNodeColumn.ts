@@ -43,20 +43,7 @@ export default function evaluateNodeColumn(
       error: undefined,
     };
   }
-  // const row = node.row;
   let evaluationResult: ODKFormulaEvaluationResult | undefined = undefined;
   evaluationResult = evaluateODKFormula(formula, context, node);
-  // try {
-  // } catch (error) {
-  //   debugger;
-  //   throw new EvaluationError(
-  //     `Error in \`${columnName}\` column of the ‘${row?.name}’ question (row #${node.rowIndex}). It contains the formula \`${row?.[columnName]}\`. Please ensure the formula is valid. The error was: ${error}`,
-  //     "calculationError",
-  //     evaluationResult?.expression,
-  //     context,
-  //     node,
-  //     error
-  //   );
-  // }
   return evaluationResult;
 }

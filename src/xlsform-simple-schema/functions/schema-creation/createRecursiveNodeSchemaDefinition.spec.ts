@@ -23,8 +23,6 @@ describe("createGroupNodeSchemaDefinition()", () => {
       key: xlsForm.rootSurveyGroup.row.name,
     });
     const schema = new SimpleSchema(definition);
-    console.log(definition);
-    console.log(schema.mergedSchema());
     expect(schema).toBeInstanceOf(SimpleSchema);
   });
 });

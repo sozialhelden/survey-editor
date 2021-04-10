@@ -58,9 +58,9 @@ export default function useChangeHooks({
 
     setContext((context: ODKFormulaEvaluationContext | undefined) => {
       if (context && context.survey === xlsForm.rootSurveyGroup) {
-        console.log(
-          "Context exists already and survey model is identical, keeping context."
-        );
+        // console.log(
+        //   "Context exists already and survey model is identical, keeping context."
+        // );
         return context;
       }
 
@@ -70,7 +70,7 @@ export default function useChangeHooks({
       newContext.stackDepth = 0;
       newContext.knownLiteralsWithoutDollarSign = knownLiteralsWithoutDollarSign;
       getEvaluatedXLSFormResult(xlsForm, newContext);
-      console.log("Setting up new evaluation context", newContext);
+      // console.log("Setting up new evaluation context", newContext);
       return newContext;
     });
   }, [xlsForm, xlsForm?.rootSurveyGroup]);

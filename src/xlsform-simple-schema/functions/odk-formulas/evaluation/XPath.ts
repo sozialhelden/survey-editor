@@ -1,4 +1,5 @@
 import { isEqual } from "lodash";
+import { SemanticError } from "../../../types/Errors";
 import { ODKNode } from "../../../types/ODKNode";
 import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 
@@ -93,7 +94,7 @@ export function findNodeByPathRelativeToScope(
     result = context.survey;
   } else if (pathComponent === "..") {
     if (scope === context.survey) {
-      throw new Error(
+      throw new SemanticError(
         "Reached root - Can’t traverse further up the hierarchy."
       );
     }
@@ -131,7 +132,7 @@ function getReverseNodeAbsolutePath(
   }
 
   if (!node?.row?.name) {
-    throw new Error(
+    throw new SemanticError(
       `Encountered a row without a name (row #${node.rowIndex}). This should not happen. Please ensure the survey data is valid.`
     );
   }

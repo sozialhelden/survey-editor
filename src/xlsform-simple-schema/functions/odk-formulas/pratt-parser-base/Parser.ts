@@ -48,7 +48,7 @@ export default class Parser {
     if (!prefix)
       throw new ParseError(
         "undefinedPrefix",
-        `Expected start of a new expression, but \`${token.text}\` is not an allowed prefix.`,
+        `Expected start of a new expression, but \`${token.text}\` (${token.type}) is not an allowed prefix.`,
         [token]
       );
 
@@ -66,7 +66,7 @@ export default class Parser {
       if (!infix)
         throw new ParseError(
           "undefinedInfix",
-          `\`${token.text}\` is not an allowed infix.`,
+          `\`${token.text}\` (${token.type}) is not an allowed infix.`,
           [token]
         );
       left = infix.parse(this, left, token);

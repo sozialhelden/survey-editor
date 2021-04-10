@@ -1,5 +1,6 @@
 import { Callout } from "@blueprintjs/core";
 import * as React from "react";
+import Markdown from "./Markdown";
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -21,7 +22,11 @@ class ErrorBoundary extends React.Component<
   render() {
     if (this.state.error) {
       // You can render any custom fallback UI
-      return <Callout intent="danger">{String(this.state.error)}</Callout>;
+      return (
+        <Callout intent="danger">
+          <Markdown>{String(this.state.error)}</Markdown>
+        </Callout>
+      );
     }
 
     return this.props.children;

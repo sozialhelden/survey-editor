@@ -7,7 +7,7 @@ import {
   Menu,
   MenuDivider,
 } from "@blueprintjs/core";
-import { ContextMenu2, Popover2 } from "@blueprintjs/popover2";
+import { Popover2 } from "@blueprintjs/popover2";
 import * as React from "react";
 import styled from "styled-components";
 import { alpha } from "../lib/colors";
@@ -200,71 +200,71 @@ export function SurveyField(props: {
     return (
       <>
         {nodeActionDialogs}
-        <ContextMenu2 content={nodeActionMenu}>
-          <Hoverable>
-            <Stripe />
+        {/* <ContextMenu2 content={nodeActionMenu}> */}
+        <Hoverable>
+          <Stripe />
 
-            <Popover2
-              content={
-                <ul className={Classes.LIST_UNSTYLED}>
-                  <AddFieldOrGroupMenuItem
-                    icon="arrow-up"
-                    node={node}
-                    position="before"
-                    group={false}
-                  />
-                  <AddFieldOrGroupMenuItem
-                    icon="arrow-up"
-                    node={node}
-                    position="before"
-                    group={true}
-                  />
-                  <MenuDivider />
-                  {nodeActionMenuItems}
-                </ul>
-              }
-              lazy={true}
-              interactionKind="click"
-              placement="left"
-              renderTarget={({ isOpen, ref, ...targetProps }) => (
-                <TopCornerButton {...targetProps} ref={ref} />
-              )}
-              hoverOpenDelay={0}
-              hoverCloseDelay={0}
-            />
+          <Popover2
+            content={
+              <ul className={Classes.LIST_UNSTYLED}>
+                <AddFieldOrGroupMenuItem
+                  icon="arrow-up"
+                  node={node}
+                  position="before"
+                  group={false}
+                />
+                <AddFieldOrGroupMenuItem
+                  icon="arrow-up"
+                  node={node}
+                  position="before"
+                  group={true}
+                />
+                <MenuDivider />
+                {nodeActionMenuItems}
+              </ul>
+            }
+            lazy={true}
+            interactionKind="click"
+            placement="left"
+            renderTarget={({ isOpen, ref, ...targetProps }) => (
+              <TopCornerButton {...targetProps} ref={ref} />
+            )}
+            hoverOpenDelay={0}
+            hoverCloseDelay={0}
+          />
 
-            <Popover2
-              content={
-                <ul className={Classes.LIST_UNSTYLED}>
-                  {nodeActionMenuItems}
-                  <MenuDivider />
-                  <AddFieldOrGroupMenuItem
-                    icon="arrow-down"
-                    node={node}
-                    position="after"
-                    group={false}
-                  />
-                  <AddFieldOrGroupMenuItem
-                    icon="arrow-down"
-                    node={node}
-                    position="after"
-                    group={true}
-                  />
-                </ul>
-              }
-              lazy={true}
-              interactionKind="click"
-              placement="left"
-              renderTarget={({ isOpen, ref, ...targetProps }) => (
-                <BottomCornerButton {...targetProps} ref={ref} />
-              )}
-              hoverOpenDelay={0}
-              hoverCloseDelay={0}
-            />
+          <Popover2
+            content={
+              <ul className={Classes.LIST_UNSTYLED}>
+                {nodeActionMenuItems}
+                <MenuDivider />
+                <AddFieldOrGroupMenuItem
+                  icon="arrow-down"
+                  node={node}
+                  position="after"
+                  group={false}
+                />
+                <AddFieldOrGroupMenuItem
+                  icon="arrow-down"
+                  node={node}
+                  position="after"
+                  group={true}
+                />
+              </ul>
+            }
+            lazy={true}
+            interactionKind="click"
+            placement="left"
+            renderTarget={({ isOpen, ref, ...targetProps }) => (
+              <BottomCornerButton {...targetProps} ref={ref} />
+            )}
+            hoverOpenDelay={0}
+            hoverCloseDelay={0}
+          />
 
-            {field}
-          </Hoverable>
-        </ContextMenu2>
+          {field}
+        </Hoverable>
+        {/* </ContextMenu2> */}
       </>
     );
   }

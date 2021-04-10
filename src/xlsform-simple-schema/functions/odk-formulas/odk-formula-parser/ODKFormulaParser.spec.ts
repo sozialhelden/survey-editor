@@ -5,11 +5,16 @@
  */
 
 import ODKFormulaLexer from "../odk-formula-parser/ODKFormulaLexer";
+import { Token } from "../pratt-parser-base";
 import ODKFormulaParser from "./ODKFormulaParser";
 
 function parse(input: string) {
+  const tokens: Token[] = [];
   const lexer = new ODKFormulaLexer(input);
-  const parser = new ODKFormulaParser({ tokens: lexer });
+  const parser = new ODKFormulaParser({
+    tokens: lexer,
+    onToken: (t) => tokens.push(t),
+  });
 
   const result = parser.parseExpression();
   let actualString = "";
@@ -17,7 +22,7 @@ function parse(input: string) {
     actualString += string;
   };
   result.print(builder);
-  return { result, actualString };
+  return { result, actualString, tokens };
 }
 
 function expectResult(input: string, expectedString: string) {
@@ -31,7 +36,7 @@ function expectResult(input: string, expectedString: string) {
 function expectLexerError(input: string, failAtIndex: number) {
   it(`fails lexing ${input} at index ${failAtIndex}`, () => {
     expect(() => {
-      parse(input);
+      console.log(parse(input));
     }).toThrowError(new RegExp(`(starting at character ${failAtIndex})`));
   });
 }
@@ -39,7 +44,7 @@ function expectLexerError(input: string, failAtIndex: number) {
 function expectParserError(input: string, regexp: RegExp) {
   it(`fails parsing ${input} with error ${regexp}`, () => {
     expect(() => {
-      parse(input);
+      console.log(parse(input));
     }).toThrowError(regexp);
   });
 }

@@ -3,8 +3,8 @@ import { ODKNode } from "../../../types/ODKNode";
 import nestSurvey from "../../nestSurvey";
 import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 import {
-  findNodeByNameInsideScope,
   findNodeByNameInCurrentAndAncestorScopes,
+  findNodeByNameInsideScope,
   findNodeByPathRelativeToScope,
   getNodeAbsolutePath,
 } from "./XPath";
@@ -18,6 +18,8 @@ function createTestSurvey() {
     survey,
     stackDepth: 0,
     knownLiteralsWithoutDollarSign: {},
+    nodesToAnswers: new Map(),
+    evaluationResults: new Map(),
   };
   return { survey, context };
 }
@@ -44,6 +46,8 @@ describe("XPath", () => {
         survey,
         stackDepth: 0,
         knownLiteralsWithoutDollarSign: {},
+        nodesToAnswers: new Map(),
+        evaluationResults: new Map(),
       };
       expect(
         findNodeByNameInsideScope("nonExistingField", context, survey)
@@ -86,7 +90,7 @@ describe("XPath", () => {
   });
 
   describe("findNodeByPathRelativeToScope()", () => {
-    it("it traverses the hierarchy", () => {
+    it("traverses the hierarchy", () => {
       const { context, survey } = createTestSurvey();
       const startScope = findNodeByNameInsideScope(
         "have_hiv_medication",

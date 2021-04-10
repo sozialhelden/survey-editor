@@ -76,7 +76,7 @@ export function AutoField(props: AutoFieldProps) {
 
 export default function AnyValueField(props: FieldProps) {
   const { node } = props;
-  const isBoolean = props.node.type === "acknowlege";
+  const isBoolean = props.node.type === "acknowledge";
   const context = React.useContext(ODKSurveyContext);
   const { language, debug, evaluationContext, onChangeAnswer } = context;
 
@@ -108,20 +108,11 @@ export default function AnyValueField(props: FieldProps) {
     <FieldPopoverButton {...{ ...props }} editable={true} />
   );
 
-  const hint = <EditableFieldHint {...{ node, debug }} />;
   const labelElement = (
-    <EditableFieldLabel
-      {...{ ...props, debug, isEditable: !isBoolean && !isInternalField }}
-    >
-      {!isBoolean && debug && detailsButton}
+    <EditableFieldLabel {...{ ...props, debug, isEditable: !isInternalField }}>
+      {debug && detailsButton}
     </EditableFieldLabel>
   );
-  // const evaluationResult = evaluateNodeColumn(
-  //   node,
-  //   evaluationContext,
-  //   "calculation",
-  //   evaluationContext.nodesToAnswers.get(node)
-  // );
 
   const nodeEvaluationResults = context.evaluationContext?.evaluationResults.get(
     node
@@ -136,15 +127,6 @@ export default function AnyValueField(props: FieldProps) {
   };
 
   let input = <AutoField {...autoFieldProps} />;
-  if (isBoolean) {
-    return (
-      <FormGroup labelFor={node.row.name} style={{ display: "flex" }}>
-        {debug && detailsButton}
-        {input}
-        {hint}
-      </FormGroup>
-    );
-  }
 
   if (node.type === "note") {
     return (
@@ -156,7 +138,10 @@ export default function AnyValueField(props: FieldProps) {
 
   return (
     <ODKNodeContext.Provider value={{ node, nodeEvaluationResults }}>
-      <FormGroup label={labelElement} labelFor={node.row.name}>
+      <FormGroup
+        label={!debug && isBoolean ? undefined : labelElement}
+        labelFor={node.row.name}
+      >
         <ErrorBoundary>
           {input}
           <EditableFieldHint {...{ node, debug }} />

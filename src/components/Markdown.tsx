@@ -12,7 +12,7 @@ interface IProps extends React.HTMLProps<HTMLDivElement> {
   inline?: boolean;
 }
 
-function MarkdownDiv(props: IProps) {
+function MarkdownDivOrSpan(props: IProps) {
   if (typeof props.children !== "string") {
     return (
       <Callout intent="danger">Markdown content must be a string.</Callout>
@@ -22,8 +22,9 @@ function MarkdownDiv(props: IProps) {
   if (props.inline) {
     html = html.replaceAll(/<\/?p>/g, "");
   }
+  const DivOrSpan = props.inline ? "span" : "div";
   return (
-    <div
+    <DivOrSpan
       {...omit(props, "children", "marked", "inline")}
       dangerouslySetInnerHTML={{
         __html: html,
@@ -38,7 +39,7 @@ function MarkdownDiv(props: IProps) {
 //     marked: () => import("marked"),
 //   },
 //   render(loaded, props: IProps) {
-//     return <MarkdownDiv {...props} marked={loaded.marked?.default} />;
+//     return <MarkdownDivOrSpan {...props} marked={loaded.marked?.default} />;
 //   },
 //   loading: () => null,
 // });
@@ -61,8 +62,9 @@ function Markdown(props: {
   children: React.ReactNode;
   /** Removes <p></p> tags around the markdown code */
   inline?: boolean;
+  style?: React.CSSProperties;
 }) {
-  return <MarkdownDiv {...props} marked={marked} />;
+  return <MarkdownDivOrSpan {...props} marked={marked} />;
 }
 
 export default Markdown;

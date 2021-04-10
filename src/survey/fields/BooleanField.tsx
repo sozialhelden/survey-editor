@@ -1,5 +1,6 @@
 import { Callout, Checkbox, Code } from "@blueprintjs/core";
 import * as React from "react";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { FieldProps } from "../FieldProps";
 
 type Props = FieldProps & {
@@ -11,6 +12,7 @@ type Props = FieldProps & {
 
 export default function BooleanField(props: Props) {
   const { value, labelElement, relevant, readonly } = props;
+  const { debug } = React.useContext(ODKSurveyContext);
 
   //   const context = React.useContext(ODKSurveyContext);
   if (value !== undefined && typeof value !== "boolean") {
@@ -26,7 +28,7 @@ export default function BooleanField(props: Props) {
     <Checkbox
       large={true}
       disabled={relevant === false || readonly}
-      labelElement={labelElement}
+      labelElement={debug ? undefined : labelElement}
       onChange={props.onInputChange}
       defaultChecked={
         typeof props.defaultValue === "boolean" ? props.defaultValue : undefined

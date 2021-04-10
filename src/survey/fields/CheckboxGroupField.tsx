@@ -19,6 +19,7 @@ export default function CheckboxGroupField(props: Props) {
   const valueIsInvalid =
     value !== undefined &&
     typeof value !== "string" &&
+    typeof value !== "boolean" &&
     (!(value instanceof Array) ||
       value.find((element) => typeof element !== "string"));
 

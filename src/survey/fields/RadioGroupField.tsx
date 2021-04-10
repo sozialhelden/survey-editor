@@ -25,7 +25,11 @@ export default function RadioGroupField(props: Props) {
   const context = React.useContext(ODKSurveyContext);
   const { language, xlsForm, evaluationContext: evaluationContext } = context;
 
-  if (value !== undefined && typeof value !== "string") {
+  if (
+    value !== undefined &&
+    typeof value !== "string" &&
+    typeof value !== "boolean"
+  ) {
     return (
       <Callout intent="warning">
         <h4>
@@ -75,7 +79,9 @@ export default function RadioGroupField(props: Props) {
     <RadioGroup
       onChange={onInputChange}
       selectedValue={
-        value !== undefined && allowedValuesSet.has(value) ? value : undefined
+        value !== undefined && allowedValuesSet.has(String(value))
+          ? String(value)
+          : undefined
       }
       inline={true}
       disabled={relevant === false || readonly}

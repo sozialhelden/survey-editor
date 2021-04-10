@@ -92,7 +92,13 @@ export function EditableFieldLabel(
         style={{ flex: 1 }}
         lang={context.languageCode}
       >
-        {debug ? labelInput : <StyledMarkdown>{evaluatedLabel}</StyledMarkdown>}
+        {debug ? (
+          labelInput
+        ) : (
+          <StyledMarkdown style={{ display: "inline-block" }}>
+            {evaluatedLabel}
+          </StyledMarkdown>
+        )}
       </span>
     );
   }

@@ -12,8 +12,6 @@ const StyledMarkdown = styled(Markdown)`
 
   code,
   pre {
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
     color: inherit;
     margin: -1px;
     padding: 2px 3px;

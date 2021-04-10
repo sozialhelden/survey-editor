@@ -16,6 +16,7 @@ const tokenPatterns: [TokenType, RegExp][] = [
   [TokenType.NAME, /^\$?{[^}]+}/],
   [TokenType.NAME, /^[a-zA-Z_\w_][a-zA-Z_\w_-]*/],
   [TokenType.SELECTOR, xPathPrefixRegExp], // Match XPaths
+  [TokenType.SELECTOR, /^\./], // Match simple '.' selector
   [TokenType.LEFT_PAREN, /^\(/],
   [TokenType.RIGHT_PAREN, /^\)/],
   [TokenType.COMMA, /^,/],
@@ -23,7 +24,7 @@ const tokenPatterns: [TokenType, RegExp][] = [
   [TokenType.MINUS, /^-/],
   [TokenType.ASTERISK, /^\*/],
   [TokenType.COMPARISON, /^(>=|>|<=|<|=|!=)/],
-  [TokenType.INVALID, /^(\w+|[\s\S])/], // must be last
+  [TokenType.INVALID, /^([\w\s]+|[^\s\S]|.+)/], // must be last
 ];
 
 /** Divides a strings into tokens defined by ODK formula token patterns. */
@@ -56,6 +57,12 @@ export default class ODKFormulaLexer implements Iterator<Token> {
         text: this.text.substr(this.index, text.length),
         index: this.index,
       };
+      if (token.type === TokenType.INVALID) {
+        throw new LexerError(
+          token,
+          `Invalid token starting at character ${this.index}`
+        );
+      }
       this.index += text.length;
       return { value: token };
     }

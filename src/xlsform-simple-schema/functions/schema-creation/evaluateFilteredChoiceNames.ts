@@ -5,6 +5,7 @@ import evaluateExpression from "../odk-formulas/evaluation/evaluateExpression";
 import ODKFormulaEvaluationContext, {
   knownLiteralsWithoutDollarSign,
 } from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import functions from "../odk-formulas/evaluation/ODKFormulaFunctions";
 import ODKFormulaLexer from "../odk-formulas/odk-formula-parser/ODKFormulaLexer";
 import ODKFormulaParser from "../odk-formulas/odk-formula-parser/ODKFormulaParser";
 import { Expression } from "../odk-formulas/pratt-parser-base";
@@ -49,7 +50,8 @@ export function evaluateFilteredChoiceNames(
             ...context,
             evaluateNonDollarNameFn: (options) =>
               choiceRow[options.expression.name] ||
-              knownLiteralsWithoutDollarSign[options.expression.name],
+              knownLiteralsWithoutDollarSign[options.expression.name] ||
+              functions[options.expression.name],
           },
           node
         );

@@ -4,9 +4,6 @@ import styled from "styled-components";
 /** CSS container for highlighted formula code. */
 
 const StyledCode = styled.code`
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
-
   .expression.has-error {
     text-decoration: underline wavy ${Colors.RED2};
     text-decoration-skip: none;

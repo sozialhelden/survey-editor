@@ -1,22 +1,8 @@
-import { Colors } from "@blueprintjs/core";
+import { Button, Colors } from "@blueprintjs/core";
 import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import Inspector, { chromeLight } from "react-inspector";
-import styled from "styled-components";
-import { alpha } from "../../lib/colors";
-
-const StyledCode = styled.button`
-  display: inline-block;
-  padding: 0.2em 0.4em;
-  cursor: pointer;
-  background: linear-gradient(
-    ${alpha(Colors.BLUE4, 0.1)},
-    ${alpha(Colors.BLUE4, 0.1)}
-  );
-  border: 0.1em ${alpha(Colors.BLUE1, 0.4)} solid;
-  color: ${Colors.BLUE1};
-  border-radius: 1em;
-`;
+import { useDarkMode } from "../DarkModeContainer";
 
 /**
  * Shows a JavaScript object literal like Chrome inspector would show it.
@@ -28,7 +14,17 @@ export default function ObjectLiteralButtonWithPopover({
 }) {
   const isDate = object instanceof Date;
   const linkedDataType = get(object, "@type");
-  const type = linkedDataType || (isDate && "Date");
+  const type =
+    linkedDataType === undefined
+      ? isDate
+        ? "Date"
+        : undefined
+      : linkedDataType;
+  const isEmptyObject = type === undefined && isEmpty(object);
+
+  const isDarkMode = useDarkMode();
+  const violetColor = isDarkMode ? Colors.VIOLET5 : Colors.VIOLET3;
+
   const inspector = (
     <div style={{ margin: "-20px", padding: "20px", overflow: "auto" }}>
       <Inspector
@@ -43,7 +39,7 @@ export default function ObjectLiteralButtonWithPopover({
           TREENODE_LINE_HEIGHT: "1.5",
           BASE_FONT_SIZE: "14px",
           BASE_LINE_HEIGHT: "1.5",
-          OBJECT_NAME_COLOR: Colors.VIOLET3,
+          OBJECT_NAME_COLOR: violetColor,
           OBJECT_VALUE_NULL_COLOR: Colors.RED4,
           OBJECT_VALUE_UNDEFINED_COLOR: Colors.RED4,
           OBJECT_VALUE_REGEXP_COLOR: Colors.RED4,
@@ -56,9 +52,10 @@ export default function ObjectLiteralButtonWithPopover({
       />
     </div>
   );
-  if (type === undefined && !isDate) {
-    return inspector;
+  if (isEmptyObject) {
+    return null;
   }
+
   return (
     <Popover2
       lazy={true}
@@ -75,7 +72,17 @@ export default function ObjectLiteralButtonWithPopover({
       fill={false}
       targetTagName="span"
     >
-      <StyledCode>{String(type)}</StyledCode>
+      <span>
+        <Button
+          minimal={true}
+          style={{
+            fontWeight: "bold",
+            color: violetColor,
+          }}
+        >
+          {String(type === undefined ? "{}" : type)}
+        </Button>
+      </span>
     </Popover2>
   );
 }

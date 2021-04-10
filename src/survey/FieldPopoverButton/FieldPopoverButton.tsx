@@ -74,8 +74,6 @@ export const StyledPanel = styled.div`
 export const StyledCalloutWithCode = styled(Callout)`
   > code,
   pre {
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
     color: inherit;
     margin: -1px;
     padding: 2px 4px;
@@ -95,8 +93,6 @@ export const StyledCalloutWithCode = styled(Callout)`
 
   code {
     font-weight: 600;
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
   }
 `;
 

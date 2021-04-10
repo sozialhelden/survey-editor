@@ -2,6 +2,7 @@ import { Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
+import useSettingsDialog from "../lib/useSettingsDialog";
 import { saveXLSForm } from "../xlsform-simple-schema/functions/editing/saveXLSForm";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import { useWorkbookFromFile } from "./ExcelFileInput";
@@ -22,6 +23,7 @@ export function FileMenuButton({
   setLanguage: (language: string) => void;
 }) {
   const inputFieldRef = React.createRef<HTMLInputElement>();
+  const { showSettingsDialog, settingsDialog } = useSettingsDialog();
   const { onFileChange } = useWorkbookFromFile({
     setXLSFormWithPatches,
     setLanguage,
@@ -39,8 +41,10 @@ export function FileMenuButton({
 
   const menu = (
     <Menu>
+      <MenuItem text="New File" icon="plus" onClick={showSettingsDialog} />
+      <MenuDivider />
       <label htmlFor="open-file-input">
-        <MenuItem icon="import" text="Import file…" />
+        <MenuItem icon="import" text="Import File…" />
       </label>
       <MenuItem text="Export" icon="export">
         <MenuItem
@@ -50,7 +54,9 @@ export function FileMenuButton({
         />
       </MenuItem>
       <MenuDivider />
-      <MenuItem text="Close" onClick={closeFile} />
+      <MenuItem text="Settings" icon="cog" onClick={showSettingsDialog} />
+      <MenuDivider />
+      <MenuItem text="Close File" onClick={closeFile} />
     </Menu>
   );
 
@@ -67,12 +73,8 @@ export function FileMenuButton({
         ref={inputFieldRef}
         style={{ display: "none" }}
       />
-      <Popover2
-        content={menu}
-        lazy={true}
-        placement={"bottom-end"}
-        minimal={true}
-      >
+      {settingsDialog}
+      <Popover2 content={menu} placement={"bottom-end"} minimal={true}>
         {button}
       </Popover2>
     </>

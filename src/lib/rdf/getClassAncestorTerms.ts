@@ -3,7 +3,16 @@ import { isNamedNode, Store } from "rdflib";
 import { Term } from "rdflib/lib/tf-types";
 import { RDFS } from "./namespaces";
 
-export function getClassAncestorTerms(classNode: Term, graph: Store): Term[] {
+/**
+ * Finds all ancestors of a given RDF `NamedNode`.
+ * @returns a list with `X subClassOf Y` terms, one term per ancestor class.
+ */
+export function getClassAncestorTerms(
+  /** The RDF `NamedNode` of the class of interest */
+  classNode: Term,
+  /** The RDF graph in which the inheritance information is saved */
+  graph: Store
+): Term[] {
   // We use `Term` as type above. This is to allow users of this function to use it with untyped
   // match results where they assert that the results are actually `NamedNode`s, which should be the
   // case for all defined classes.

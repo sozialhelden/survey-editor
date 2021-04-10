@@ -11,7 +11,9 @@ import styled from "styled-components";
 import "./App.css";
 import ResultCodeTree from "./code/ResultCodeTree";
 import { AppEmptyState } from "./components/AppEmptyState";
-import DarkModeContainer, { useDarkMode } from "./components/DarkModeContainer";
+import DarkModeContainer, {
+  useDarkMode,
+} from "./components/core/DarkModeContainer";
 import { EditMenuButton } from "./components/EditMenuButton";
 import { FileMenuButton } from "./components/FileMenuButton";
 import LanguageSelector from "./components/LanguageSelector";

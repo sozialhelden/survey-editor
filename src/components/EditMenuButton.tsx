@@ -8,7 +8,7 @@ import {
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { UndoContext } from "../lib/undo/UndoContext";
-import Markdown from "./Markdown";
+import Markdown from "./core/Markdown";
 
 /** Button showing a 'Edit' menu */
 export function EditMenuButton() {

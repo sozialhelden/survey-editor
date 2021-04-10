@@ -1,8 +1,8 @@
 import { Callout, Colors, Icon } from "@blueprintjs/core";
 import * as React from "react";
-import { useDarkMode } from "../../components/DarkModeContainer";
+import { useDarkMode } from "../../components/core/DarkModeContainer";
+import StyledMarkdown from "../../components/core/StyledMarkdown";
 import HighlightedExpression from "../../components/HighlightedExpression/HighlightedODKExpression";
-import StyledMarkdown from "../../components/StyledMarkdown";
 import { alpha } from "../../lib/colors";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import createLiteralExpressionFromValue from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/createLiteralExpressionFromValue";

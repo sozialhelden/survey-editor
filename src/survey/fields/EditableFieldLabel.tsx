@@ -1,6 +1,6 @@
 import { Classes, ControlGroup, EditableText } from "@blueprintjs/core";
 import * as React from "react";
-import StyledMarkdown from "../../components/StyledMarkdown";
+import StyledMarkdown from "../../components/core/StyledMarkdown";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { getNodeAbsolutePath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import { FieldProps } from "../FieldProps";

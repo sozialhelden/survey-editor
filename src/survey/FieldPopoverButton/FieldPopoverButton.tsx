@@ -18,7 +18,7 @@ import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
 import { without } from "lodash";
 import * as React from "react";
 import styled from "styled-components";
-import { useDarkMode } from "../../components/DarkModeContainer";
+import { useDarkMode } from "../../components/core/DarkModeContainer";
 import { alpha } from "../../lib/colors";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";

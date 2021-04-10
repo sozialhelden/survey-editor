@@ -1,6 +1,6 @@
 import { Callout, FormGroup } from "@blueprintjs/core";
 import * as React from "react";
-import ErrorBoundary from "../../components/ErrorBoundary";
+import ErrorBoundary from "../../components/core/ErrorBoundary";
 import { ODKNodeContext } from "../../lib/ODKNodeContext";
 import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
 import { internalFieldTypes } from "../../xlsform-simple-schema/field-types/internalFieldTypes";

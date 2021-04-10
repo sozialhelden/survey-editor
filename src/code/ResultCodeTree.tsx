@@ -1,7 +1,7 @@
 import { Colors, ControlGroup, Icon, ITreeNode, Tree } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import * as React from "react";
-import { useDarkMode } from "../components/DarkModeContainer";
+import { useDarkMode } from "../components/core/DarkModeContainer";
 import HighlightedExpression from "../components/HighlightedExpression/HighlightedODKExpression";
 import { ODKSurveyContext } from "../lib/ODKSurveyContext";
 import FieldPopoverButton from "../survey/FieldPopoverButton/FieldPopoverButton";

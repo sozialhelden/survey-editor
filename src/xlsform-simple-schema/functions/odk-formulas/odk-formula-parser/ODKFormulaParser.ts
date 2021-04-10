@@ -29,8 +29,9 @@ export default class ODKFormulaParser extends PrattParser {
 
   constructor(options: ParserOptions) {
     super({
-      onExpression: (e) => this.expressions.push(e),
-      onToken: (t) => this.tokens.push(t),
+      onExpression: (e) =>
+        options.onExpression?.(e) && this.expressions.push(e),
+      onToken: (t) => options.onToken?.(t) && this.tokens.push(t),
       ...options,
     });
 

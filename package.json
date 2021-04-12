@@ -89,6 +89,7 @@
     "@types/jest": "^26.0.22",
     "@types/marked": "^1.2.2",
     "@types/react-inspector": "^4.0.1",
+    "prettier": "^2.2.1",
     "ts-jest": "^26.5.4"
   }
 }

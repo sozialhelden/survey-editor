@@ -1,11 +1,11 @@
 import { Alignment, Navbar } from "@blueprintjs/core";
 import React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
-import EditableSurveyTitle from "../survey/fields/EditableSurveyTitle";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import { EditMenuButton } from "./EditMenuButton";
 import { FileMenuButton } from "./FileMenuButton";
 import LanguageSelector from "./LanguageSelector";
+import EditableSurveyTitle from "./survey/fields/EditableSurveyTitle";
 
 export function AppNavBar({
   setXLSFormWithPatches,

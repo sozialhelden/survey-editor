@@ -8,7 +8,7 @@ import {
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { NodeReferencesMenu } from "../survey/FieldPopoverButton/NodeReferencesMenu";
+import { NodeReferencesMenu } from "../components/survey/FieldPopoverButton/NodeReferencesMenu";
 import { AppToaster } from "../toaster";
 import findOrReplaceFieldReferences, {
   NodeDependency,

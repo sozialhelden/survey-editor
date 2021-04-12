@@ -1,4 +1,3 @@
-import { fromPairs, pick } from "lodash";
 import { Store } from "rdflib";
 import { NamedNode } from "rdflib/lib/tf-types";
 import { RDFS, SCHEMA } from "./namespaces";
@@ -19,7 +18,7 @@ const namesToPredicateNodes: Map<ClassMetadataKey, NamedNode> = new Map([
 ]);
 
 /**
- * @returns a list of RDF terms, one term per RDFS class metadata information.
+ * @returns a list of terms, one term per class metadata information.
  *
  * Supports these predicates:
  *
@@ -30,21 +29,16 @@ const namesToPredicateNodes: Map<ClassMetadataKey, NamedNode> = new Map([
  * - schema:source
  */
 export function getClassMetadata(classNode: NamedNode, graph: Store) {
-  return fromPairs(
+  return new Map(
     [...namesToPredicateNodes.entries()].map(([k, v]) => [
       k,
-      graph.match(classNode, v).map((s) => pick(s, "object", "graph")),
+      graph.match(classNode, v),
     ])
   );
 }
 
-// export function getRDFProperties(node: NamedNode, graph: Store) {
-//   graph.match(node, RDFS(predicate)).map((s) => pick(s, "object", "graph")),
-// }
-
 /**
- * @returns a raw object containing RDFS class metadata information.
- *   Values are strings.
+ * @returns a raw object containing class metadata information. Values are strings.
  *
  * Supports these predicates:
  *
@@ -57,7 +51,7 @@ export function getClassMetadata(classNode: NamedNode, graph: Store) {
 
 export function getClassMetadataCompact(classNode: NamedNode, graph: Store) {
   const result = getClassMetadata(classNode, graph);
-  return fromPairs(
-    Object.keys(result).map((k) => [k, result[k][0]?.object.value])
+  return new Map(
+    [...result.entries()].map(([k, v]) => [k, v.map((v) => v.object.value)])
   );
 }

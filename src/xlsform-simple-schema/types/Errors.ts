@@ -7,6 +7,7 @@ import { ODKNode } from "./ODKNode";
  * Abstract base class for any errors in ODK formulas.
  */
 export abstract class ODKFormulaError extends Error {
+  isODKFormulaError: true = true;
   token?: Token;
   toMarkdown(): string {
     return this.message;

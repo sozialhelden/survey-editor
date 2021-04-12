@@ -47,7 +47,7 @@ export function getStringInterpolationFunctionOrString(
           );
           return String(result);
         } catch (e) {
-          if (e instanceof ODKFormulaError) {
+          if (e instanceof ODKFormulaError || e.isODKFormulaError) {
             return e.toMarkdown();
           }
           throw e;

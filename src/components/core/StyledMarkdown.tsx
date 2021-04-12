@@ -13,8 +13,6 @@ const StyledMarkdown = styled(Markdown)`
   code,
   pre {
     color: inherit;
-    margin: -1px;
-    padding: 2px 3px;
     background-color: rgba(255, 255, 255, 0.3);
     @media (prefers-color-scheme: dark) {
       background-color: rgba(0, 0, 0, 0.1);

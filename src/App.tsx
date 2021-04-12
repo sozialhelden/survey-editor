@@ -4,7 +4,8 @@ import {
   HotkeysProvider,
   HotkeysTarget2,
 } from "@blueprintjs/core";
-import React from "react";
+import * as RDFLib from "rdflib";
+import * as React from "react";
 import styled from "styled-components";
 import "./App.css";
 import ResultCodeTree from "./code/ResultCodeTree";
@@ -17,16 +18,18 @@ import DarkModeContainer, {
   useDarkMode,
 } from "./components/core/DarkModeContainer";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
+import { RDFGraphContext } from "./components/rdf/RDFGraphContext";
+import { ODKNodeDragAndDropContext } from "./components/survey/useNodeDragAndDrop";
+import XLSFormSurvey from "./components/survey/XLSFormSurvey";
+import XLSFormWorkbook from "./components/table/XLSFormWorkbook";
 import useViewOptionsButton from "./components/useViewOptionsButton";
 import { alpha } from "./lib/colors";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
+import loadSchemaOrgGraph from "./lib/rdf/loadSchemaOrgGraph";
 import { UndoContext } from "./lib/undo/UndoContext";
 import useUndoHistory from "./lib/undo/useUndoHistory";
 import useChangeHooks from "./lib/useChangeHooks";
 import { useGlobalHotkeys } from "./lib/useGlobalHotkeys";
-import { ODKNodeDragAndDropContext } from "./survey/useNodeDragAndDrop";
-import XLSFormSurvey from "./survey/XLSFormSurvey";
-import XLSFormWorkbook from "./table/XLSFormWorkbook";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 import { XLSForm } from "./xlsform-simple-schema/index";
 
@@ -74,6 +77,11 @@ function App() {
   const isDarkMode = useDarkMode();
   const hotkeys = useGlobalHotkeys(undoContext);
   const setXLSFormWithPatches = undoContext.setDocumentWithPatches;
+  const rdfStore = React.useMemo(() => {
+    const store = RDFLib.graph();
+    loadSchemaOrgGraph(store);
+    return store;
+  }, []);
 
   const changeHooks = useChangeHooks({
     language,
@@ -153,7 +161,14 @@ function App() {
     </OverflowScrollContainer>
   );
 
+  const graphPanel = viewOptions.graph && (
+    <OverflowScrollContainer
+      style={{ padding: "1rem", margin: "0" }}
+    ></OverflowScrollContainer>
+  );
+
   const contexts: ContextAndValue<any>[] = [
+    [RDFGraphContext, rdfStore],
     [UndoContext, undoContext],
     [ODKNodeDragAndDropContext, { onDropNode: changeHooks.onMoveNode }],
     [
@@ -179,6 +194,7 @@ function App() {
         {excelPanel}
         {surveyPanel}
         {treePanel}
+        {graphPanel}
       </AppBody>
     </>
   );

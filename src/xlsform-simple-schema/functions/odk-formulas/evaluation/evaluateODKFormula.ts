@@ -63,9 +63,10 @@ export default function evaluateODKFormula(
       error: undefined,
     };
   } catch (e) {
-    if (e instanceof ODKFormulaError) {
+    if (e instanceof ODKFormulaError || e.isODKFormulaError) {
       error = e;
     } else {
+      console.log(e, "is not an ODKFormulaError!");
       throw e;
     }
   }

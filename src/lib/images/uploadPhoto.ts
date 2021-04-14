@@ -41,14 +41,14 @@ export function createImageObjectFromRemoteImage(
   image: AccessibilityCloudImage
 ): ImageObject {
   return {
-    "@type": "ImageObject",
+    "@type": "https://schema.org/ImageObject",
     contentSize: String(image.contentSize),
     contentUrl: getImageSourceUrl(image, 1600),
     encodingFormat: "image/jpeg",
     height: `${image.dimensions.height}px`,
     width: `${image.dimensions.width}px`,
     thumbnail: {
-      "@type": "ImageObject",
+      "@type": "https://schema.org/ImageObject",
       contentUrl: getImageSourceUrl(image, 256),
       encodingFormat: "image/jpeg",
       height: `256px`,
@@ -60,7 +60,7 @@ export function createImageObjectFromRemoteImage(
 /** @returns a Schema.org JSON-LD object for a given local File object. */
 export function createImageObjectFromFile(file: File): ImageObject {
   return {
-    "@type": "ImageObject",
+    "@type": "https://schema.org/ImageObject",
     contentSize: String(file.size),
     contentUrl: URL.createObjectURL(file),
     encodingFormat: "image/jpeg",

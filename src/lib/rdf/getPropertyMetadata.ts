@@ -49,11 +49,6 @@ export function getPropertyMetadata(classNode: NamedNode, graph: Store) {
 export function getPropertyMetadataCompact(classNode: NamedNode, graph: Store) {
   const result = getPropertyMetadata(classNode, graph);
   return new Map(
-    [...result.entries()].map(([k, v]) => [
-      k,
-      k === "domainIncludes" || k === "rangeIncludes"
-        ? v.map((v) => v.object.value)
-        : v[0]?.object.value,
-    ])
+    [...result.entries()].map(([k, v]) => [k, v.map((v) => v.object.value)])
   );
 }

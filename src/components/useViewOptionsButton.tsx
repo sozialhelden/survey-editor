@@ -52,7 +52,7 @@ export default function useViewOptionsButton() {
 
       <Button
         icon="graph"
-        text="Graph"
+        text="Vocabulary"
         active={viewOptions.graph}
         onClick={toggleGraph}
       />

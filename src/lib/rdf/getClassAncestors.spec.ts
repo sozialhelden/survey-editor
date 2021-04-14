@@ -1,14 +1,14 @@
 import * as RDFLib from "rdflib";
-import { getClassAncestorTerms } from "./getClassAncestorTerms";
+import { getClassAncestors } from "./getClassAncestors";
 import loadSchemaOrgGraph from "./loadSchemaOrgGraph";
 import { SCHEMA } from "./namespaces";
 
 const store = RDFLib.graph();
 loadSchemaOrgGraph(store);
 
-describe("getClassAncestorTerms()", () => {
+describe("getClassAncestors()", () => {
   it("gets ancestors of https://schema.org/Hotel", async () => {
-    const result = getClassAncestorTerms(
+    const result = getClassAncestors(
       RDFLib.sym("https://schema.org/Hotel"),
       store
     );

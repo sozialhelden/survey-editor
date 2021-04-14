@@ -5,7 +5,7 @@ import SimpleSchema, { SchemaDefinition } from "simpl-schema";
  * @see https://schema.org/GeoCoordinates
  */
 export interface SchemaOrgPointGeometry {
-  "@type": "GeoCoordinates";
+  "@type": "https://schema.org/GeoCoordinates";
   latitude: number;
   longitude: number;
 }
@@ -27,7 +27,7 @@ export function assertSchemaOrgPointGeometry(
  */
 
 export interface SchemaOrgLineStringGeometry {
-  "@type": "GeoShape";
+  "@type": "https://schema.org/GeoShape";
   line: string;
 }
 
@@ -37,7 +37,7 @@ export interface SchemaOrgLineStringGeometry {
  * @see https://schema.org/GeoShape
  */
 export interface SchemaOrgPolygonGeometry {
-  "@type": "GeoShape";
+  "@type": "https://schema.org/GeoShape";
   polygon: string;
 }
 
@@ -50,8 +50,8 @@ export const getSchemaOrgPointGeometrySchema = (
   },
   [`${key}.@type`]: {
     type: String,
-    allowedValues: ["GeoCoordinates"],
-    defaultValue: "GeoCoordinates",
+    allowedValues: ["https://schema.org/GeoCoordinates"],
+    defaultValue: "https://schema.org/GeoCoordinates",
   },
   [`${key}.latitude`]: {
     type: Number,
@@ -70,8 +70,8 @@ export const getSchemaOrgLineStringGeometrySchema = (
   },
   [`${key}.@type`]: {
     type: String,
-    allowedValues: ["GeoShape"],
-    defaultValue: "GeoShape",
+    allowedValues: ["https://schema.org/GeoShape"],
+    defaultValue: "https://schema.org/GeoShape",
   },
   [`${key}.line`]: {
     type: String,
@@ -87,8 +87,8 @@ export const getSchemaOrgPolygonGeometrySchema = (
   },
   [`${key}.@type`]: {
     type: String,
-    allowedValues: ["GeoShape"],
-    defaultValue: "GeoShape",
+    allowedValues: ["https://schema.org/GeoShape"],
+    defaultValue: "https://schema.org/GeoShape",
   },
   [`${key}.polygon`]: {
     type: String,

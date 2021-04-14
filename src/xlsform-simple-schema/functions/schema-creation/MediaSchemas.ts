@@ -36,7 +36,7 @@ export interface IMediaObject {
 }
 
 type MediaObject = IMediaObject & {
-  "@type": "MediaObject";
+  "@type": "https://schema.org/MediaObject";
 };
 
 /**
@@ -55,8 +55,8 @@ export const getMediaObjectSchema = (
   },
   [`${key}.@type`]: {
     type: String,
-    allowedValues: ["MediaObject"],
-    defaultValue: "MediaObject",
+    allowedValues: ["https://schema.org/MediaObject"],
+    defaultValue: "https://schema.org/MediaObject",
   },
   [`${key}.bitrate`]: {
     type: String,
@@ -125,7 +125,7 @@ export const getMediaObjectSchema = (
  * @see https://schema.org/AudioObject
  */
 export type AudioObject = IMediaObject & {
-  "@type": "AudioObject";
+  "@type": "https://schema.org/AudioObject";
   transcript?: string;
   caption?: string | MediaObject;
 };
@@ -145,8 +145,8 @@ export const getAudioObjectSchema = (
   },
   [`${key}.@type`]: {
     type: String,
-    allowedValues: ["AudioObject"],
-    defaultValue: "AudioObject",
+    allowedValues: ["https://schema.org/AudioObject"],
+    defaultValue: "https://schema.org/AudioObject",
   },
   ...getMediaObjectSchema(key),
   [`${key}.transcript`]: {
@@ -167,7 +167,7 @@ export const getAudioObjectSchema = (
  * @see https://schema.org/ImageObject
  */
 export type ImageObject = IMediaObject & {
-  "@type": "ImageObject";
+  "@type": "https://schema.org/ImageObject";
   exifData?: Record<string, unknown>;
   representativeOfPage?: boolean;
   caption?: string | MediaObject;
@@ -190,8 +190,8 @@ export const getImageObjectSchema = (
   },
   [`${key}.@type`]: {
     type: String,
-    allowedValues: ["ImageObject"],
-    defaultValue: "ImageObject",
+    allowedValues: ["https://schema.org/ImageObject"],
+    defaultValue: "https://schema.org/ImageObject",
   },
   ...getMediaObjectSchema(key),
   [`${key}.exifData`]: {
@@ -225,7 +225,7 @@ export const getImageObjectSchema = (
  * @see https://schema.org/VideoObject
  */
 export type VideoObject = IMediaObject & {
-  "@type": "VideoObject";
+  "@type": "https://schema.org/VideoObject";
   exifData?: Record<string, unknown>;
   representativeOfPage?: boolean;
   caption?: string | MediaObject;
@@ -250,7 +250,7 @@ export const getVideoObjectSchema = (
   },
   [`${key}.@type`]: {
     type: String,
-    allowedValues: ["VideoObject"],
+    allowedValues: ["https://schema.org/VideoObject"],
   },
   ...getMediaObjectSchema(key),
   [`${key}.caption`]: {

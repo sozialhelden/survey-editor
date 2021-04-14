@@ -75,7 +75,7 @@ function getPointForCoordinates(
   //   coordinates: [Number(coordinates[0].toFixed(6)), Number(coordinates[1].toFixed(6))],
   // };
   return {
-    "@type": "GeoCoordinates",
+    "@type": "https://schema.org/GeoCoordinates",
     longitude: Number(coordinates[0].toFixed(6)),
     latitude: Number(coordinates[1].toFixed(6)),
   };

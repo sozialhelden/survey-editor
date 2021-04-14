@@ -3,8 +3,8 @@
  * pretty-printed result.
  */
 
-import { BantamParser } from "./BantamParser";
 import BantamLexer from "./BantamLexer";
+import { BantamParser } from "./BantamParser";
 
 function expectResult(input: string, expectedString: string) {
   it(`parses ${input} to ${expectedString}`, () => {
@@ -60,7 +60,7 @@ describe("BantamParser", () => {
   expectResult("a + b ? c * d : e / f", "((a + b) ? (c * d) : (e / f))");
 
   // Grouping.
-  expectResult("a + (b + c) + d", "((a + (b + c)) + d)");
-  expectResult("a ^ (b + c)", "(a ^ (b + c))");
-  expectResult("(!a)!", "((!a)!)");
+  expectResult("a + (b + c) + d", "((a + ((b + c))) + d)");
+  expectResult("a ^ (b + c)", "(a ^ ((b + c)))");
+  expectResult("(!a)!", "(((!a))!)");
 });

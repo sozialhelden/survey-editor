@@ -134,6 +134,7 @@ export function normalizeColumnNames(
         .replace(/^media::(image|audio|video)\B/, "$1")
         .replace(/^photo\B/, "image")
         .replace(/^list_name$/, "list name")
+        .replace(/\$/g, "_dollar_sign_")
     );
   }
   return Object.freeze(result);

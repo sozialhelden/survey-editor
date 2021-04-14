@@ -6,6 +6,7 @@ import ODKNodeValue from "../../../types/ODKNodeValue";
 import {
   CallExpression,
   Expression,
+  GroupExpression,
   NameExpression,
   OperatorExpression,
 } from "../pratt-parser-base";
@@ -59,7 +60,9 @@ export default function evaluateExpression(
   // This looks as if it could be caseless, for example by having Expression subclasses that have
   // their own evaluator. This would complicate the design though, and make the expression
   // implementation dependent on an expressions use - a two-way dependency to rather avoid.
-  if (expression instanceof LiteralExpression) {
+  if (expression instanceof GroupExpression) {
+    result = evaluateExpression(expression.expression, deeperContext, scope);
+  } else if (expression instanceof LiteralExpression) {
     result = evaluateLiteralExpression(expression);
   } else if (expression instanceof NameExpression) {
     result = evaluateNameExpression(expression, deeperContext, scope);

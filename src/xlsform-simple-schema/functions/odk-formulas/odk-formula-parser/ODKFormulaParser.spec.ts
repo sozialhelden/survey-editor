@@ -81,5 +81,9 @@ describe("ODKFormulaParser", () => {
   expectLexerError("a ? b : c ? d : e", 2);
 
   // Grouping.
-  expectResult("a + (b + c) + d", "((a + (b + c)) + d)");
+  expectResult("a + (b + c) + d", "((a + ((b + c))) + d)");
+  expectResult(
+    'if(${x} = "1" and ${y} = "2","green",if(${x} = "1" and ${z} = "2","yellow",if(${a} = "1" and ${z} = "2","yellow",if(${a} = "1" and ${z} = "1" and ${b} = "2","yellow",if(${a} = "1" and ${z} = "1" and ${b} = "1","red",if(${x} = "1" and ${a} = "1" and ${b} = "2","yellow",if(${x} = "1" and ${a} = "1" and ${b} = "1", "red", "red")))))))',
+    "if(((x = '1') and (y = '2')), 'green', if(((x = '1') and (z = '2')), 'yellow', if(((a = '1') and (z = '2')), 'yellow', if((((a = '1') and (z = '1')) and (b = '2')), 'yellow', if((((a = '1') and (z = '1')) and (b = '1')), 'red', if((((x = '1') and (a = '1')) and (b = '2')), 'yellow', if((((x = '1') and (a = '1')) and (b = '1')), 'red', 'red')))))))"
+  );
 });

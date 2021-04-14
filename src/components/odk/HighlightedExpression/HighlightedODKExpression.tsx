@@ -1,3 +1,4 @@
+import { Callout } from "@blueprintjs/core";
 import * as React from "react";
 import { CSSProperties } from "styled-components";
 import { Expression } from "../../../xlsform-simple-schema/functions/odk-formulas/pratt-parser-base";
@@ -24,9 +25,16 @@ export default function HighlightedExpression(props: {
   className?: string;
   /** Additional CSS styles to apply. */
   style?: CSSProperties;
+  stackDepth?: number;
 }) {
   if (!props.expression) {
     return <InvalidExpression {...props} />;
+  }
+
+  if (props.stackDepth && props.stackDepth > 50) {
+    return (
+      <Callout intent="warning">Stack overflow while highlighting.</Callout>
+    );
   }
   const isErroneousExpression =
     props.error instanceof EvaluationError &&
@@ -47,6 +55,7 @@ export default function HighlightedExpression(props: {
               parentExpression={props.expression}
               error={props.error}
               node={props.node}
+              stackDepth={(props.stackDepth || 0) + 1}
             />
           );
         } else {
@@ -57,6 +66,7 @@ export default function HighlightedExpression(props: {
               expression={props.expression}
               parentExpression={props.parentExpression}
               node={props.node}
+              stackDepth={(props.stackDepth || 0) + 1}
             />
           );
         }

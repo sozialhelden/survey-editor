@@ -301,7 +301,7 @@ export default function FieldPopoverButton(props: {
 
   const detailsContent = (
     <ControlGroup vertical={true}>
-      {editable && editHeader}
+      {editHeader}
 
       <ResizeSensor onResize={handleResize} observeParents={true}>
         <ControlGroup style={{ width: "100%", margin: "-12px 8px 8px 0px" }}>

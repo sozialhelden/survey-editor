@@ -18,6 +18,7 @@ import DarkModeContainer, {
   useDarkMode,
 } from "./components/core/DarkModeContainer";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
+import ModelTree from "./components/rdf/ModelTree";
 import { RDFGraphContext } from "./components/rdf/RDFGraphContext";
 import { ODKNodeDragAndDropContext } from "./components/survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./components/survey/XLSFormSurvey";
@@ -161,10 +162,10 @@ function App() {
     </OverflowScrollContainer>
   );
 
-  const graphPanel = viewOptions.graph && (
-    <OverflowScrollContainer
-      style={{ padding: "1rem", margin: "0" }}
-    ></OverflowScrollContainer>
+  const modelPanel = viewOptions.graph && (
+    <OverflowScrollContainer style={{ padding: "1rem", margin: "0" }}>
+      <ModelTree />
+    </OverflowScrollContainer>
   );
 
   const contexts: ContextAndValue<any>[] = [
@@ -194,7 +195,7 @@ function App() {
         {excelPanel}
         {surveyPanel}
         {treePanel}
-        {graphPanel}
+        {modelPanel}
       </AppBody>
     </>
   );

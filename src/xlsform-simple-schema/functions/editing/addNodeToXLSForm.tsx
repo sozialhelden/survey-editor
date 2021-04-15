@@ -18,15 +18,25 @@ export function addNodeToXLSForm({
   node,
   position,
   fieldType,
+  name,
+  groupName,
 }: {
   xlsForm: XLSForm;
   group: boolean;
   node?: ODKNode;
   position: "after" | "before" | "inside";
   fieldType: keyof typeof fieldTypeNames;
+  name?: string;
+  groupName?: string;
 }) {
   const row: QuestionRow = createEmptyFieldRow(xlsForm, fieldType);
+  if (name) {
+    row.name = name;
+  }
   const { beginMarkerRow, endMarkerRow } = createEmptyGroupRows(xlsForm);
+  if (groupName) {
+    beginMarkerRow.name = groupName;
+  }
   const rowsToInsert = group ? [beginMarkerRow, row, endMarkerRow] : [row];
 
   let rowIndex = 0;

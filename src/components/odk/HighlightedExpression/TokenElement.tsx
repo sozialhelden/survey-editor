@@ -52,8 +52,11 @@ function VariableReferenceTokenElement({
 }) {
   // Expression is a variable reference.
   const referencedNode =
-    findNodeByNameInCurrentAndAncestorScopes(expression.name, context, node) ||
-    findNodeByNameInsideScope(expression.name, context, context.survey);
+    findNodeByNameInCurrentAndAncestorScopes(
+      expression.name,
+      context.survey,
+      node
+    ) || findNodeByNameInsideScope(expression.name, context.survey);
 
   if (!referencedNode || referencedNode instanceof Array) {
     // We should never get here.

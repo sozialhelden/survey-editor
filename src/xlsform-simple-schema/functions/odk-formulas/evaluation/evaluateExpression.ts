@@ -381,9 +381,9 @@ function evaluateNameExpression(
     const nodeOrNodes =
       findNodeByNameInCurrentAndAncestorScopes(
         expression.name,
-        context,
+        context.survey,
         scope
-      ) || findNodeByNameInsideScope(expression.name, context);
+      ) || findNodeByNameInsideScope(expression.name, context.survey);
 
     if (!nodeOrNodes) {
       throw new EvaluationError(
@@ -441,7 +441,7 @@ function evaluateNameExpression(
     let tip: string = "";
     const node = findNodeByNameInCurrentAndAncestorScopes(
       expression.name,
-      context,
+      context.survey,
       scope
     );
     if (node) {
@@ -476,7 +476,7 @@ export function evaluateSelectorExpression(
   scope: ODKNode
 ): unknown {
   const selector = expression.selector;
-  const node = findNodeByPathRelativeToScope(selector, context, scope);
+  const node = findNodeByPathRelativeToScope(selector, context.survey, scope);
 
   const evalCalculation = (n: ODKNode) =>
     n === scope

@@ -63,7 +63,7 @@ export default function RadioGroupField(props: Props) {
   const choiceLists = node.typeParameters.map(
     (choiceListName) => context.xlsForm?.choicesByName[choiceListName]
   );
-  const key = getNodeAbsolutePathString(node, evaluationContext, ".");
+  const key = getNodeAbsolutePathString(node, evaluationContext.survey, ".");
   let allowedValues = getAllowedChoiceValues({
     node,
     xlsForm,

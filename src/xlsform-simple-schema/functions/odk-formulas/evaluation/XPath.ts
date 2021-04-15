@@ -8,14 +8,14 @@ import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
  * the current scope in search.
  *
  * @param name the name of the node to select
- * @param context global survey context to search in
+ * @param rootNode root node of the survey to search in
  * @param scope current scope to limit the search. Skip this argument to search in the survey's root
  *   node.
  */
 export function findNodeByNameInsideScope(
   name: string,
-  context: ODKFormulaEvaluationContext,
-  scope: ODKNode = context.survey
+  rootNode: ODKNode,
+  scope: ODKNode = rootNode
 ): ODKNode | ODKNode[] | undefined {
   if (scope.row?.name === name) {
     return scope;
@@ -25,7 +25,7 @@ export function findNodeByNameInsideScope(
       if (childScope.row?.name === name) {
         return childScope;
       }
-      const foundChild = findNodeByNameInsideScope(name, context, childScope);
+      const foundChild = findNodeByNameInsideScope(name, rootNode, childScope);
       if (foundChild) {
         return foundChild;
       }
@@ -40,13 +40,13 @@ export function findNodeByNameInsideScope(
  * scope.
  *
  * @param name the name of the node to select
- * @param context global survey context to search in
+ * @param rootNode root node of the survey to search in
  * @param scope current scope to limit the search. Skip this argument to search in the survey's root
  *   node.
  */
 export function findNodeByNameInCurrentAndAncestorScopes(
   name: string,
-  context: ODKFormulaEvaluationContext,
+  rootNode: ODKNode,
   scope: ODKNode
 ): ODKNode | ODKNode[] | undefined {
   if (scope.row?.name === name) {
@@ -59,13 +59,13 @@ export function findNodeByNameInCurrentAndAncestorScopes(
       }
     }
   }
-  const stack = getAncestors(scope, context);
+  const stack = getAncestors(scope, rootNode);
   const parentScope = stack?.[stack.length - 1];
   if (!parentScope) {
     return undefined;
   }
   return (
-    findNodeByNameInCurrentAndAncestorScopes(name, context, parentScope) ||
+    findNodeByNameInCurrentAndAncestorScopes(name, rootNode, parentScope) ||
     undefined
   );
 }
@@ -75,14 +75,14 @@ export function findNodeByNameInCurrentAndAncestorScopes(
  * scope. Works a bit like a file structure.
  *
  * @param pathComponents Path of the node to select. Array of strings, e.g. `['..', '..', 'name']`.
- * @param context global survey context to search in
+ * @param rootNode root node of the survey to search in
  * @param scope current scope to limit the search. Skip this argument to search in the survey's root
  *   node.
  */
 export function findNodeByPathRelativeToScope(
   pathComponents: string[],
-  context: ODKFormulaEvaluationContext,
-  scope: ODKNode = context.survey
+  rootNode: ODKNode,
+  scope: ODKNode = rootNode
 ): ODKNode | ODKNode[] | undefined {
   const pathComponent = pathComponents[0];
   // console.log('Searching', pathComponent, 'in scope', scope.row?.name, 'stack', scope.stack);
@@ -91,14 +91,14 @@ export function findNodeByPathRelativeToScope(
   if (pathComponent === ".") {
     result = scope;
   } else if (pathComponent === "/") {
-    result = context.survey;
+    result = rootNode;
   } else if (pathComponent === "..") {
-    if (scope === context.survey) {
+    if (scope === rootNode) {
       throw new SemanticError(
         "Reached root - Can’t traverse further up the hierarchy."
       );
     }
-    const stack = getAncestors(scope, context);
+    const stack = getAncestors(scope, rootNode);
     result = stack?.[stack.length - 1];
   } else if (pathComponent === scope.row.name) {
     result = scope;
@@ -118,14 +118,14 @@ export function findNodeByPathRelativeToScope(
 
   return findNodeByPathRelativeToScope(
     pathComponents.slice(1),
-    context,
+    rootNode,
     result
   );
 }
 
 function getReverseNodeAbsolutePath(
   node: ODKNode | undefined,
-  context: ODKFormulaEvaluationContext
+  rootNode: ODKNode
 ): string[] {
   if (!node) {
     return ["/"];
@@ -137,19 +137,19 @@ function getReverseNodeAbsolutePath(
     );
   }
 
-  const stack = getAncestors(node, context);
+  const stack = getAncestors(node, rootNode);
   return [
     node.row?.name,
-    ...getReverseNodeAbsolutePath(stack?.[stack.length - 1], context),
+    ...getReverseNodeAbsolutePath(stack?.[stack.length - 1], rootNode),
   ];
 }
 
 /** @returns the key path of a given node in the survey tree as an array of node names.*/
 export function getNodeAbsolutePath(
   node: ODKNode,
-  context: ODKFormulaEvaluationContext
+  rootNode: ODKNode
 ): string[] {
-  return getReverseNodeAbsolutePath(node, context)?.reverse();
+  return getReverseNodeAbsolutePath(node, rootNode)?.reverse();
 }
 
 /**
@@ -158,10 +158,10 @@ export function getNodeAbsolutePath(
  */
 export function getNodeAbsolutePathString(
   node: ODKNode,
-  context: ODKFormulaEvaluationContext,
+  rootNode: ODKNode,
   delimiter: string = "."
 ): string {
-  return getNodeAbsolutePath(node, context).slice(1).join(delimiter);
+  return getNodeAbsolutePath(node, rootNode).slice(1).join(delimiter);
 }
 
 /**
@@ -238,9 +238,6 @@ export function getScopedAncestors(
  * root node.
  */
 
-export function getAncestors(
-  node: ODKNode,
-  context: ODKFormulaEvaluationContext
-) {
-  return getScopedAncestors(node, context.survey);
+export function getAncestors(node: ODKNode, rootNode: ODKNode) {
+  return getScopedAncestors(node, rootNode);
 }

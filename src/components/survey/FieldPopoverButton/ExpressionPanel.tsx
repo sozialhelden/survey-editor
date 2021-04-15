@@ -47,7 +47,7 @@ export function ExpressionPanel({
   const isName = results?.expression?.kind === "name";
   const answer = context.evaluationContext?.nodesToAnswers.get(node);
   const nodeName = context.evaluationContext
-    ? getNodeAbsolutePathString(node, context.evaluationContext)
+    ? getNodeAbsolutePathString(node, context.evaluationContext.survey)
     : node.row.name;
 
   const formulaIsTrivial =

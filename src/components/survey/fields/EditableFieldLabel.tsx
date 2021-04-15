@@ -31,7 +31,7 @@ export function EditableFieldLabel(
   const { onChangeCell } = React.useContext(ODKSurveyContext);
   const path =
     context.evaluationContext &&
-    getNodeAbsolutePath(node, context.evaluationContext).join("/");
+    getNodeAbsolutePath(node, context.evaluationContext.survey).join("/");
   const [editedLabelString, setEditedLabelString] = React.useState<string>();
 
   const onConfirmLabel = React.useCallback(

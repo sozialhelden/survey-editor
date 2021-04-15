@@ -1,7 +1,6 @@
 import { hospitalSurveyRawData } from "../../../test-data/hospitalSurvey";
 import { ODKNode } from "../../../types/ODKNode";
 import nestSurvey from "../../nestSurvey";
-import ODKFormulaEvaluationContext from "./ODKFormulaEvaluationContext";
 import {
   findNodeByNameInCurrentAndAncestorScopes,
   findNodeByNameInsideScope,
@@ -14,23 +13,16 @@ function createTestSurvey() {
     rows: hospitalSurveyRawData(),
     defaultLanguage: "en-US",
   });
-  const context: ODKFormulaEvaluationContext = {
-    survey,
-    stackDepth: 0,
-    knownLiteralsWithoutDollarSign: {},
-    nodesToAnswers: new Map(),
-    evaluationResults: new Map(),
-  };
-  return { survey, context };
+  return { survey };
 }
 
 describe("XPath", () => {
   describe("findNodeByNameInsideScope()", () => {
     it("finds a node in a nested survey", () => {
-      const { context } = createTestSurvey();
+      const { survey } = createTestSurvey();
       const node = findNodeByNameInsideScope(
         "have_hiv_medication",
-        context
+        survey
       ) as ODKNode;
       expect(node).not.toBeUndefined();
       expect(node).not.toBeInstanceOf(Array);
@@ -42,15 +34,8 @@ describe("XPath", () => {
         rows: hospitalSurveyRawData(),
         defaultLanguage: "en-US",
       });
-      const context: ODKFormulaEvaluationContext = {
-        survey,
-        stackDepth: 0,
-        knownLiteralsWithoutDollarSign: {},
-        nodesToAnswers: new Map(),
-        evaluationResults: new Map(),
-      };
       expect(
-        findNodeByNameInsideScope("nonExistingField", context, survey)
+        findNodeByNameInsideScope("nonExistingField", survey, survey)
       ).toBeUndefined();
     });
 
@@ -59,14 +44,14 @@ describe("XPath", () => {
 
   describe("findNodeByNameInCurrentAndAncestorScopes()", () => {
     it("finds a node in an example survey, starting from a grandchild", () => {
-      const { context } = createTestSurvey();
+      const { survey } = createTestSurvey();
       const startScope = findNodeByNameInsideScope(
         "have_hiv_medication",
-        context
+        survey
       ) as ODKNode;
       const node = findNodeByNameInCurrentAndAncestorScopes(
         "What is your name?",
-        context,
+        survey,
         startScope
       ) as ODKNode;
       expect(node).not.toBeUndefined();
@@ -75,14 +60,14 @@ describe("XPath", () => {
     });
 
     it("returns `undefined` if a node with given name does not exist", () => {
-      const { context } = createTestSurvey();
+      const { survey } = createTestSurvey();
       const startScope = findNodeByNameInsideScope(
         "have_hiv_medication",
-        context
+        survey
       ) as ODKNode;
       const node = findNodeByNameInCurrentAndAncestorScopes(
         "What is love?",
-        context,
+        survey,
         startScope
       ) as ODKNode;
       expect(node).toBeUndefined();
@@ -91,50 +76,50 @@ describe("XPath", () => {
 
   describe("findNodeByPathRelativeToScope()", () => {
     it("traverses the hierarchy", () => {
-      const { context, survey } = createTestSurvey();
+      const { survey } = createTestSurvey();
       const startScope = findNodeByNameInsideScope(
         "have_hiv_medication",
-        context
+        survey
       ) as ODKNode;
 
       const selfNode = findNodeByPathRelativeToScope(
         ["."],
-        context,
+        survey,
         startScope
       ) as ODKNode;
       expect(selfNode.row?.name).toBe("have_hiv_medication");
 
       const parentNode = findNodeByPathRelativeToScope(
         [".."],
-        context,
+        survey,
         startScope
       ) as ODKNode;
       expect(parentNode.row?.name).toBe("hiv_medication");
 
       const grandparentNode = findNodeByPathRelativeToScope(
         ["..", ".."],
-        context,
+        survey,
         startScope
       ) as ODKNode;
       expect(grandparentNode.row?.name).toBe("hospital");
 
       const greatgrandparentNode = findNodeByPathRelativeToScope(
         ["..", "..", ".."],
-        context,
+        survey,
         startScope
       ) as ODKNode;
       expect(greatgrandparentNode.row?.name).toBe("data");
 
       const hospitalNode = findNodeByPathRelativeToScope(
         ["..", "..", "..", "hospital"],
-        context,
+        survey,
         startScope
       ) as ODKNode;
       expect(hospitalNode.row?.name).toBe("hospital");
 
       const haveHIVMedicationNodeRelative = findNodeByPathRelativeToScope(
         [".", "data", "hospital", "hiv_medication", "have_hiv_medication"],
-        context,
+        survey,
         survey
       ) as ODKNode;
       expect(haveHIVMedicationNodeRelative.row?.name).toBe(
@@ -143,7 +128,7 @@ describe("XPath", () => {
 
       const haveHIVMedicationNodeAbsolute = findNodeByPathRelativeToScope(
         ["/", "data", "hospital", "hiv_medication", "have_hiv_medication"],
-        context,
+        survey,
         startScope
       ) as ODKNode;
 
@@ -153,15 +138,15 @@ describe("XPath", () => {
     });
 
     it("throws if trying to go beyond root", () => {
-      const { context } = createTestSurvey();
+      const { survey } = createTestSurvey();
       const startScope = findNodeByNameInsideScope(
         "have_hiv_medication",
-        context
+        survey
       ) as ODKNode;
       expect(() =>
         findNodeByPathRelativeToScope(
           ["..", "..", "..", ".."],
-          context,
+          survey,
           startScope
         )
       ).toThrowError(/further up/);
@@ -173,18 +158,18 @@ describe("XPath", () => {
 
   describe("getNodeAbsolutePath()", () => {
     it('returns "/data" for root', () => {
-      const { survey, context } = createTestSurvey();
-      expect(getNodeAbsolutePath(survey, context)).toEqual(["/", "data"]);
+      const { survey } = createTestSurvey();
+      expect(getNodeAbsolutePath(survey, survey)).toEqual(["/", "data"]);
     });
 
     it("returns a path for a nested node", () => {
-      const { context } = createTestSurvey();
+      const { survey } = createTestSurvey();
       const node = findNodeByNameInsideScope(
         "have_hiv_medication",
-        context
+        survey
       ) as ODKNode;
 
-      expect(getNodeAbsolutePath(node, context)).toEqual([
+      expect(getNodeAbsolutePath(node, survey)).toEqual([
         "/",
         "data",
         "hospital",

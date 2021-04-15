@@ -98,7 +98,7 @@ export function SurveyField(props: {
 
   const node =
     context?.survey &&
-    findNodeByPathRelativeToScope(schemaKeyPath, context, context.survey);
+    findNodeByPathRelativeToScope(schemaKeyPath, context.survey);
 
   const { nodeActionMenuItems, nodeActionDialogs } = useNodeActionMenuItems(
     node instanceof Array ? undefined : node

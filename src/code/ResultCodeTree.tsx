@@ -69,7 +69,7 @@ export function getNodeTree(
 ): ITreeNode<ODKNode> {
   if (node.children.length === 0) {
     return transform({
-      id: getNodeAbsolutePath(node, context).join("."),
+      id: getNodeAbsolutePath(node, context.survey).join("."),
       label: node.row.name,
       childNodes: [],
       nodeData: node,
@@ -77,7 +77,7 @@ export function getNodeTree(
   }
 
   return transform({
-    id: getNodeAbsolutePath(node, context).join("."),
+    id: getNodeAbsolutePath(node, context.survey).join("."),
     label: node.row.name,
     childNodes: node.children.map((childNode) =>
       getNodeTree(childNode, context, jsonResult, transform)
@@ -136,7 +136,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
               label,
               key: node.row.name,
               isExpanded: !collapsedKeys.has(
-                getNodeAbsolutePathString(node, evaluationContext)
+                getNodeAbsolutePathString(node, xlsForm.rootSurveyGroup)
               ),
               hasCaret: !(result.childNodes?.length === 0),
               secondaryLabel: node && (
@@ -155,7 +155,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
           return;
         }
         collapsedKeys.delete(
-          getNodeAbsolutePathString(node.nodeData, evaluationContext)
+          getNodeAbsolutePathString(node.nodeData, xlsForm.rootSurveyGroup)
         );
         setCollapsedKeys(new Set(collapsedKeys));
       }}
@@ -165,7 +165,7 @@ export default function ResultCodeTree(props: { xlsForm: XLSForm }) {
         setCollapsedKeys(
           new Set(
             collapsedKeys.add(
-              getNodeAbsolutePathString(node.nodeData, evaluationContext)
+              getNodeAbsolutePathString(node.nodeData, xlsForm.rootSurveyGroup)
             )
           )
         )

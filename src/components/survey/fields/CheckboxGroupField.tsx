@@ -79,7 +79,11 @@ export default function CheckboxGroupField(props: Props) {
       (choiceListName) => context.xlsForm?.choicesByName[choiceListName]
     )
   );
-  const key = getNodeAbsolutePathString(node, context.evaluationContext, ".");
+  const key = getNodeAbsolutePathString(
+    node,
+    context.evaluationContext.survey,
+    "."
+  );
   let allowedValues = getAllowedChoiceValues({
     node,
     xlsForm,

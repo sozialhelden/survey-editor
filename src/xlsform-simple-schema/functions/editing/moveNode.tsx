@@ -23,7 +23,7 @@ export function moveNode({
   onError: (message: string) => void;
 }) {
   if (
-    getAncestors(destinationNode, evaluationContext)?.find((ancestor) =>
+    getAncestors(destinationNode, evaluationContext.survey)?.find((ancestor) =>
       isEqual(ancestor, sourceNode)
     )
   ) {

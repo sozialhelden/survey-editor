@@ -28,7 +28,7 @@ export function NodeReferencesMenu(props: { references: NodeDependency[] }) {
         }
         const href = `#//${getNodeAbsolutePathString(
           reference.node,
-          context.evaluationContext,
+          context.evaluationContext.survey,
           "/"
         )}`;
 

@@ -260,7 +260,10 @@ export default function FieldPopoverButton(props: {
     return null;
   }
 
-  const path = getNodeAbsolutePath(node, context.evaluationContext).slice(1);
+  const path = getNodeAbsolutePath(
+    node,
+    context.evaluationContext.survey
+  ).slice(1);
 
   const referencesButton = ReferencesButton({ references, editable });
 

@@ -46,7 +46,7 @@ export function useNodeDragAndDrop({
         "application/json",
         JSON.stringify({
           sourceNode: node,
-          sourcePath: getNodeAbsolutePathString(node, evaluationContext),
+          sourcePath: getNodeAbsolutePathString(node, evaluationContext.survey),
         })
       );
     },

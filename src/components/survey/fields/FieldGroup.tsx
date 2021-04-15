@@ -34,7 +34,7 @@ export default function FieldGroup(props: FieldProps) {
   const labelString = schema.get(schemaKey, "label");
   const path =
     context.evaluationContext &&
-    getNodeAbsolutePath(node, context.evaluationContext).join("/");
+    getNodeAbsolutePath(node, context.evaluationContext.survey).join("/");
 
   const [editedLabelString, setEditedLabelString] = React.useState<string>();
 

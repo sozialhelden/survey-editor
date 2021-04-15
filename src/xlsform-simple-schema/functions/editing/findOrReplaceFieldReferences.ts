@@ -1,4 +1,4 @@
-import { cloneDeep, get, set } from "lodash";
+import { cloneDeep, get, set, uniqBy } from "lodash";
 import { evaluatableColumnNames, ODKNode } from "../../types/ODKNode";
 import { QuestionRow } from "../../types/RowTypes";
 import { XLSForm } from "../../types/XLSForm";
@@ -21,32 +21,32 @@ export default function findOrReplaceFieldReferences(
   replaceName?: string
 ) {
   const oldName = node.row.name;
-  const nodeDependency: NodeDependency[] = [];
+  const nodeDependenciesWithDuplicates: NodeDependency[] = [];
   const variableRegexp = new RegExp(`\\\${${oldName}}`);
+
+  const localizableKeys = localizableColumnNames.flatMap((lcn) =>
+    [...xlsForm.languages.values()].map((lang) => `${lcn}.${lang}`)
+  );
+
   xlsForm.flatNodes.forEach((n) => {
     let row: QuestionRow | undefined;
-    const localizableKeys = localizableColumnNames.flatMap((lcn) =>
-      [...xlsForm.languages.values()].map((lang) => `${lcn}.${lang}`)
-    );
     (evaluatableColumnNames as string[])
       .concat(...localizableKeys)
       .forEach((columnName) => {
         const value = get(n.row, columnName);
         if (typeof value !== "string" && value !== undefined) {
           throw new Error(
-            `Replacing variable names works only with string cells. Please ensure the ${columnName} cell of the ${node.row.name} row has a string value.`
+            `Replacing variable names works only with cells that contain strings. Please ensure the ${columnName} cell of the ${node.row.name} row has a string value.`
           );
         }
         if (value?.match(variableRegexp)) {
           if (replaceName) {
-            const newCellValue = value?.replaceAll(
-              `\${${oldName}}`,
-              `\${${replaceName}}`
-            );
+            const regExp = new RegExp(`\${${oldName}}`, "g");
+            const newCellValue = value?.replace(regExp, `\${${replaceName}}`);
             row = row || cloneDeep(n.row);
             set(row, columnName, newCellValue);
           }
-          nodeDependency.push({
+          nodeDependenciesWithDuplicates.push({
             node: n,
             index: n.rowIndex,
             row: row || n.row,
@@ -55,5 +55,11 @@ export default function findOrReplaceFieldReferences(
         }
       });
   });
-  return nodeDependency;
+
+  const nodeDependencies = uniqBy(
+    nodeDependenciesWithDuplicates,
+    (d) => `${d.index}/${d.columnName}`
+  );
+
+  return nodeDependencies;
 }

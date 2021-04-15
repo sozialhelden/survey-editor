@@ -1,5 +1,5 @@
 import SimpleSchema from "simpl-schema";
-import loadFormFromXLSXFile from "../loadSurveyFromXLSX";
+import loadFormFromXLSXFile from "../loadFormFromXLSXFile";
 import ODKFormulaEvaluationContext, {
   knownLiteralsWithoutDollarSign,
 } from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";

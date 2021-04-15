@@ -3,7 +3,7 @@ import * as ExcelJS from "exceljs";
 import * as React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
 import { XLSForm } from "../xlsform-simple-schema";
-import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
+import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadFormFromExcelWorkbook";
 
 export default function ExcelFileInput(props: {
   setXLSFormWithPatches: (

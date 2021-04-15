@@ -7,6 +7,10 @@ import { createLocalizedString } from "./createLocalizedString";
 
 let untitledGroupIndex = 0;
 
+export function resetUntitledGroupCounter() {
+  untitledGroupIndex = 0;
+}
+
 /** Creates an untitled new field group in the survey, with an auto-incremented number suffix. */
 export function createEmptyGroupRows(xlsForm: XLSForm) {
   untitledGroupIndex += 1;

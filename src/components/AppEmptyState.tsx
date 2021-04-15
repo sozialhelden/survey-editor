@@ -2,7 +2,7 @@ import { Button, ControlGroup, NonIdealState } from "@blueprintjs/core";
 import * as ExcelJS from "exceljs";
 import React, { useCallback } from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
-import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadSurveyFromXLSX";
+import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadFormFromExcelWorkbook";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import ExcelFileInput from "./ExcelFileInput";
 

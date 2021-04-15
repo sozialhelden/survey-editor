@@ -5,6 +5,10 @@ import { createLocalizedString } from "./createLocalizedString";
 
 let untitledFieldIndex = 0;
 
+export function resetUntitledFieldCounter() {
+  untitledFieldIndex = 0;
+}
+
 /** Creates an untitled new field in the survey, with an auto-incremented number suffix. */
 export function createEmptyFieldRow(
   xlsForm: XLSForm,

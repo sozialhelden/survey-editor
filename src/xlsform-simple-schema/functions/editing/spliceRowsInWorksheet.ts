@@ -1,4 +1,4 @@
-import { produceWithPatches } from "immer";
+import { enablePatches, produceWithPatches } from "immer";
 import { uniq } from "lodash";
 import { Patch } from "../../../lib/undo/useUndoHistory";
 import {
@@ -10,6 +10,8 @@ import {
   XLSForm,
 } from "../../types/XLSForm";
 import { normalizeColumnNames } from "../loadSurveyFromXLSX";
+
+enablePatches();
 
 /**
  * Defines a splice operation on the XLSForm’s rows. A 'Splice' operation is generic and allows to

@@ -13,12 +13,7 @@ import {
   QuestionRow,
   SettingsRow,
 } from "../types/RowTypes";
-import {
-  loadXLSFormFromRows,
-  WorksheetName,
-  WorksheetRowsWithMetadata,
-  XLSForm,
-} from "../types/XLSForm";
+import { WorksheetName, WorksheetRowsWithMetadata } from "../types/XLSForm";
 
 export const localizableColumnNames = [
   "label",
@@ -134,7 +129,7 @@ export function normalizeColumnNames(
         .replace(/^media::(image|audio|video)\B/, "$1")
         .replace(/^photo\B/, "image")
         .replace(/^list_name$/, "list name")
-        .replace(/\$/g, "_dollar_sign_")
+        .replace(/\$/g, "__DOLLAR_SIGN__")
     );
   }
   return Object.freeze(result);
@@ -267,7 +262,7 @@ function findLanguagesInColumnNames(
 /**
  * Loads an worksheet from an ExcelJS workbook and returns the sheet in our internal data model.
  */
-function loadWorksheet<RowT>(
+export function loadWorksheet<RowT>(
   /** The ExcelJS `Workbook` from which the sheet should be loaded. */
   workbook: Excel.Workbook,
   /** Name of the worksheet, for example, `"survey"` */
@@ -318,59 +313,4 @@ function loadWorksheet<RowT>(
   });
 
   return { rows, languages, columnNames, columnNamesNormalized };
-}
-
-/**
- * Loads a given ExcelJS workbook.
- *
- * @returns an `XLSForm` model.
- */
-export async function loadFormFromExcelWorkbook(
-  /** The ExcelJS workbook to load as XLSForm model. */
-  workbook: Excel.Workbook
-): Promise<XLSForm> {
-  const settings = loadWorksheet(workbook, "settings", loadSettingsRow);
-  const defaultLanguage = settings?.rows[0].default_language || "English (en)";
-  const choices = loadWorksheet(
-    workbook,
-    "choices",
-    loadChoicesRow,
-    defaultLanguage
-  );
-  const survey = loadWorksheet(
-    workbook,
-    "survey",
-    loadQuestionRow,
-    defaultLanguage
-  );
-
-  if (!survey) {
-    throw new Error(
-      "No `survey` sheet found in workbook. Please define a sheet named `survey` and try again."
-    );
-  }
-
-  const xlsForm: XLSForm = loadXLSFormFromRows(
-    survey,
-    defaultLanguage,
-    settings,
-    choices
-  );
-
-  return xlsForm;
-}
-
-/**
- * Loads a given ExcelJS workbook from a local file (works only in NodeJS environment, not in a
- * browser).
- *
- * @returns an `XLSForm` model.
- */
-export default async function loadFormFromXLSXFile(
-  /** Name of the Excel (.xlsx) file containing the XLSForm definition. */
-  filename: string
-): Promise<XLSForm> {
-  const workbook = new Excel.Workbook();
-  await workbook.xlsx.readFile(filename);
-  return loadFormFromExcelWorkbook(workbook);
 }

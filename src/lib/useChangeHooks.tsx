@@ -275,31 +275,29 @@ export default function useChangeHooks({
         return;
       }
 
-      const onError = (message: string) =>
+      const moveResult = moveNode({
+        xlsForm,
+        sourceNode,
+        destinationNode,
+      });
+
+      if (!moveResult) {
         AppToaster.show(
           {
             intent: "warning",
             icon: "error",
-            message,
+            message: "Can’t move a node into itself.",
           },
           "cant-drop-node-on-itself"
         );
-
-      const moveResult = moveNode({
-        xlsForm,
-        evaluationContext: context,
-        sourceNode,
-        destinationNode,
-        onError,
-      });
-      if (moveResult) {
-        setXLSFormWithPatches(
-          `Move \`${describeNode(sourceNode)}\` before \`${describeNode(
-            destinationNode
-          )}\``,
-          ...moveResult
-        );
+        return;
       }
+      setXLSFormWithPatches(
+        `Move \`${describeNode(sourceNode)}\` before \`${describeNode(
+          destinationNode
+        )}\``,
+        ...moveResult
+      );
     },
     [context, language, setXLSFormWithPatches, xlsForm]
   );

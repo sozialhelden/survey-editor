@@ -2,33 +2,32 @@ import { isEqual } from "lodash";
 import { ODKNode } from "../../types/ODKNode";
 import { XLSForm } from "../../types/XLSForm";
 import getLastRowIndexOfNode from "../getLastRowIndexOfNode";
-import ODKFormulaEvaluationContext from "../odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import { getAncestors } from "../odk-formulas/evaluation/XPath";
 import spliceRowsInWorksheet, {
   RowSpliceOperation,
 } from "./spliceRowsInWorksheet";
 
-/** Moves a node to a new position (next to, or inside of another field) */
+/**
+ * Moves a node to a new position (before another field).
+ *
+ * @returns A new `XLSForm` with patches/inverse patches, or `false` if you try to move a group node
+ *   into itself.
+ */
 export function moveNode({
   xlsForm,
-  evaluationContext,
   sourceNode,
   destinationNode,
-  onError,
 }: {
   xlsForm: XLSForm;
-  evaluationContext: ODKFormulaEvaluationContext;
   sourceNode: ODKNode;
   destinationNode: ODKNode;
-  onError: (message: string) => void;
 }) {
   if (
-    getAncestors(destinationNode, evaluationContext.survey)?.find((ancestor) =>
+    getAncestors(destinationNode, xlsForm.rootSurveyGroup)?.find((ancestor) =>
       isEqual(ancestor, sourceNode)
     )
   ) {
-    onError("Can’t move a node into itself.");
-    return;
+    return false;
   }
 
   const lastRowIndexOfSourceNode = getLastRowIndexOfNode(xlsForm, sourceNode);

@@ -91,6 +91,9 @@ function App() {
     debug: viewOptions.debug,
   });
 
+  (window as any).xlsForm = xlsForm;
+  (window as any).setXLSFormWithPatches = setXLSFormWithPatches;
+
   const { evaluationContext } = changeHooks;
   const [, languageName, languageCode] =
     language?.match(/^(.*) \((\w+)\)$/) || [];

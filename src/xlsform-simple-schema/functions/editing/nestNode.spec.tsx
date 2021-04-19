@@ -1,27 +1,25 @@
-import { ODKNode } from "../../types/ODKNode";
-import { XLSForm } from "../../types/XLSForm";
-import getLastRowIndexOfNode from "../getLastRowIndexOfNode";
-import { createEmptyGroupRows } from "./createUntitledGroupRows";
-import spliceRowsInWorksheet from "./spliceRowsInWorksheet";
+import { AssertionError } from "assert";
+import loadFormFromXLSXFile from "../loadFormFromXLSXFile";
+import { findNodeByPathRelativeToScope } from "../odk-formulas/evaluation/XPath";
 
-/** Nests a given node in a new, untitled group. */
+async function getTestData() {
+  const xlsForm = await loadFormFromXLSXFile(
+    "src/xlsform-simple-schema/test-data/wheelmap-survey.xlsx"
+  );
+  const node = findNodeByPathRelativeToScope(
+    ["data", "outside", "category", "category_top"],
+    xlsForm.rootSurveyGroup
+  );
+  if (!node || node instanceof Array) {
+    throw new AssertionError({
+      message: "Function should return a singular ODKNode",
+    });
+  }
 
-export function nestNode(xlsForm: XLSForm, node: ODKNode) {
-  const { beginMarkerRow, endMarkerRow } = createEmptyGroupRows(xlsForm);
-  const firstIndex = node.rowIndex;
-  const lastIndex = getLastRowIndexOfNode(xlsForm, node);
-  const newXLSForm = spliceRowsInWorksheet(xlsForm, "survey", [
-    // Note that splicing changes indexes, so splicing the last row first is important.
-    {
-      rowIndex: lastIndex + 1,
-      numberOfRowsToRemove: 0,
-      rowsToAdd: [endMarkerRow],
-    },
-    {
-      rowIndex: firstIndex,
-      numberOfRowsToRemove: 0,
-      rowsToAdd: [beginMarkerRow],
-    },
-  ]);
-  return newXLSForm;
+  return { xlsForm, node };
 }
+
+describe("nestNode()", () => {
+  test.todo("nests a field in a new group");
+  test.todo("nests a group in a new group");
+});

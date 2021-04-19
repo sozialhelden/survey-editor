@@ -63,8 +63,20 @@ function Markdown(props: {
   /** Removes <p></p> tags around the markdown code */
   inline?: boolean;
   style?: React.CSSProperties;
+  markedOptions?: marked.MarkedOptions;
 }) {
-  return <MarkdownDivOrSpan {...props} marked={marked} />;
+  const markedFn = React.useMemo(
+    () => (markdown: string) => {
+      return marked(markdown, props.markedOptions);
+    },
+    [props.markedOptions]
+  );
+  return (
+    <MarkdownDivOrSpan
+      {...omit(props, "markedOptions", "inline")}
+      marked={markedFn}
+    />
+  );
 }
 
 export default Markdown;

@@ -97,11 +97,13 @@ export default function nestSurvey({
         row: row as BeginMarkerRow,
         type,
         typeParameters,
-        appearance,
         children: [],
         indentationLevel: stack.length - 1,
         rowIndex: i,
       };
+      if (appearance !== undefined) {
+        newGroupNode.appearance = appearance;
+      }
       lastOpenedGroup.children.push(newGroupNode);
       stack.push(newGroupNode);
       onRow?.(row, newGroupNode);
@@ -112,11 +114,13 @@ export default function nestSurvey({
         row,
         type,
         typeParameters,
-        appearance,
         indentationLevel: stack.length - 1,
         rowIndex: i,
         children: [],
       };
+      if (appearance !== undefined) {
+        newChildNode.appearance = appearance;
+      }
       lastOpenedGroup.children.push(newChildNode);
       onRow?.(row, newChildNode);
     }

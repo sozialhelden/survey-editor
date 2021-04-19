@@ -3,15 +3,17 @@ import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
 import { get, isEmpty } from "lodash";
 import Inspector, { chromeLight } from "react-inspector";
 import { useDarkMode } from "../../core/DarkModeContainer";
-import { RDFClassMetadata } from "../../rdf/RDFClassMetadata";
+import { RDFClassMetadata } from "../../rdf/metadata/RDFClassMetadata";
 
 /**
  * Shows a JavaScript object literal like Chrome inspector would show it.
  */
 export default function ObjectLiteralButtonWithPopover({
   object,
+  contextPrefix,
 }: {
   object: unknown;
+  contextPrefix: string;
 }) {
   const isDate = object instanceof Date;
   const linkedDataType = get(object, "@type");
@@ -28,7 +30,9 @@ export default function ObjectLiteralButtonWithPopover({
 
   const inspector = (
     <div style={{ margin: "-20px", padding: "20px", overflow: "auto" }}>
-      {linkedDataType && <RDFClassMetadata name={linkedDataType} />}
+      {linkedDataType && (
+        <RDFClassMetadata name={linkedDataType} contextPrefix={contextPrefix} />
+      )}
       <Inspector
         data={object}
         name={type}

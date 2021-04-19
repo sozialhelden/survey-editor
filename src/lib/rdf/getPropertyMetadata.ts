@@ -6,13 +6,17 @@ type PropertyMetadataKey =
   | "label"
   | "comment"
   | "domainIncludes"
-  | "rangeIncludes";
+  | "rangeIncludes"
+  | "supersedes"
+  | "supersededBy";
 
 const namesToPredicateNodes: Map<PropertyMetadataKey, NamedNode> = new Map([
   ["label", RDFS("label")],
   ["comment", RDFS("comment")],
   ["domainIncludes", SCHEMA("domainIncludes")],
   ["rangeIncludes", SCHEMA("rangeIncludes")],
+  ["supersedes", SCHEMA("supersedes")],
+  ["supersededBy", SCHEMA("supersededBy")],
 ]);
 
 /**

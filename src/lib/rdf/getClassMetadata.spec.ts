@@ -42,6 +42,10 @@ describe("getClassMetadataCompact()", () => {
             "https://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#STI_Accommodation_Ontology",
           ],
         ],
+        Array [
+          "supersededBy",
+          Array [],
+        ],
       ]
     `);
   });
@@ -76,6 +80,10 @@ describe("getClassMetadataCompact()", () => {
         ],
         Array [
           "source",
+          Array [],
+        ],
+        Array [
+          "supersededBy",
           Array [],
         ],
       ]

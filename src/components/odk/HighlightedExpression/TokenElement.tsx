@@ -135,6 +135,7 @@ export function TokenElement({
     return (
       <ObjectLiteralButtonWithPopover
         object={expression.value as Record<string, unknown>}
+        contextPrefix={""}
       />
     );
   }

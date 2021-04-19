@@ -3,5 +3,5 @@ import { NamedNode } from "rdflib/lib/tf-types";
 import { RDF, RDFS } from "./namespaces";
 
 export default function isClassNode(node: NamedNode, graph: Store) {
-  return graph.whether(node, RDF("type"), RDFS("Class")) > 0;
+  return !!graph.anyStatementMatching(node, RDF("type"), RDFS("Class"));
 }

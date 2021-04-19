@@ -7,7 +7,8 @@ type ClassMetadataKey =
   | "subClassOf"
   | "comment"
   | "isPartOf"
-  | "source";
+  | "source"
+  | "supersededBy";
 
 const namesToPredicateNodes: Map<ClassMetadataKey, NamedNode> = new Map([
   ["label", RDFS("label")],
@@ -15,6 +16,7 @@ const namesToPredicateNodes: Map<ClassMetadataKey, NamedNode> = new Map([
   ["comment", RDFS("comment")],
   ["isPartOf", SCHEMA("isPartOf")],
   ["source", SCHEMA("source")],
+  ["supersededBy", SCHEMA("supersededBy")],
 ]);
 
 /**

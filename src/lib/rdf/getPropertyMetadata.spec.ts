@@ -27,6 +27,8 @@ describe("getPropertyMetadataCompact()", () => {
           "https://schema.org/Text",
           "https://schema.org/URL",
         ],
+        "supersedes" => Array [],
+        "supersededBy" => Array [],
       }
     `);
   });

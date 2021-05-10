@@ -242,7 +242,7 @@ schema:AboutPage a rdfs:Class ;
 
 schema:AcceptAction a rdfs:Class ;
     rdfs:label "AcceptAction" ;
-    rdfs:comment "The act of committing to/adopting an object.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[RejectAction]]: The antonym of AcceptAction." ;
+    rdfs:comment "The act of committing to/adopting an object.\\n\\nRelated actions:\\n\\n* [[RejectAction]]: The antonym of AcceptAction." ;
     rdfs:subClassOf schema:AllocateAction .
 
 schema:Accommodation a rdfs:Class ;
@@ -257,7 +257,7 @@ See also the <a href="/docs/hotels.html">dedicated document on the use of schema
 
 schema:AccountingService a rdfs:Class ;
     rdfs:label "AccountingService" ;
-    rdfs:comment """Accountancy business.\\\\n\\\\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\\\\(s).
+    rdfs:comment """Accountancy business.\\n\\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\\\\(s).
       """ ;
     rdfs:subClassOf schema:FinancialService .
 
@@ -268,7 +268,7 @@ schema:AchieveAction a rdfs:Class ;
 
 schema:Action a rdfs:Class ;
     rdfs:label "Action" ;
-    rdfs:comment "An action performed by a direct agent and indirect participants upon a direct object. Optionally happens at a location with the help of an inanimate instrument. The execution of the action may produce a result. Specific action sub-type documentation specifies the exact expectation of each argument/role.\\\\n\\\\nSee also [blog post](http://blog.schema.org/2014/04/announcing-schemaorg-actions.html) and [Actions overview document](https://schema.org/docs/actions.html)." ;
+    rdfs:comment "An action performed by a direct agent and indirect participants upon a direct object. Optionally happens at a location with the help of an inanimate instrument. The execution of the action may produce a result. Specific action sub-type documentation specifies the exact expectation of each argument/role.\\n\\nSee also [blog post](http://blog.schema.org/2014/04/announcing-schemaorg-actions.html) and [Actions overview document](https://schema.org/docs/actions.html)." ;
     rdfs:subClassOf schema:Thing ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_ActionCollabClass> .
 
@@ -313,7 +313,7 @@ schema:AdvertiserContentArticle a rdfs:Class ;
 
 schema:AggregateOffer a rdfs:Class ;
     rdfs:label "AggregateOffer" ;
-    rdfs:comment "When a single product is associated with multiple offers (for example, the same pair of shoes is offered by different merchants), then AggregateOffer can be used.\\\\n\\\\nNote: AggregateOffers are normally expected to associate multiple offers that all share the same defined [[businessFunction]] value, or default to http://purl.org/goodrelations/v1#Sell if businessFunction is not explicitly defined." ;
+    rdfs:comment "When a single product is associated with multiple offers (for example, the same pair of shoes is offered by different merchants), then AggregateOffer can be used.\\n\\nNote: AggregateOffers are normally expected to associate multiple offers that all share the same defined [[businessFunction]] value, or default to http://purl.org/goodrelations/v1#Sell if businessFunction is not explicitly defined." ;
     rdfs:subClassOf schema:Offer .
 
 schema:AggregateRating a rdfs:Class ;
@@ -410,7 +410,7 @@ schema:AppendAction a rdfs:Class ;
 
 schema:ApplyAction a rdfs:Class ;
     rdfs:label "ApplyAction" ;
-    rdfs:comment "The act of registering to an organization/service without the guarantee to receive it.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[RegisterAction]]: Unlike RegisterAction, ApplyAction has no guarantees that the application will be accepted." ;
+    rdfs:comment "The act of registering to an organization/service without the guarantee to receive it.\\n\\nRelated actions:\\n\\n* [[RegisterAction]]: Unlike RegisterAction, ApplyAction has no guarantees that the application will be accepted." ;
     rdfs:subClassOf schema:OrganizeAction .
 
 schema:ApprovedIndication a rdfs:Class ;
@@ -457,13 +457,13 @@ schema:Artery a rdfs:Class ;
 
 schema:Article a rdfs:Class ;
     rdfs:label "Article" ;
-    rdfs:comment "An article, such as a news article or piece of investigative report. Newspapers and magazines have articles of many different types and this is intended to cover them all.\\\\n\\\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
+    rdfs:comment "An article, such as a news article or piece of investigative report. Newspapers and magazines have articles of many different types and this is intended to cover them all.\\n\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
     rdfs:subClassOf schema:CreativeWork ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_rNews> .
 
 schema:AskAction a rdfs:Class ;
     rdfs:label "AskAction" ;
-    rdfs:comment "The act of posing a question / favor to someone.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[ReplyAction]]: Appears generally as a response to AskAction." ;
+    rdfs:comment "The act of posing a question / favor to someone.\\n\\nRelated actions:\\n\\n* [[ReplyAction]]: Appears generally as a response to AskAction." ;
     rdfs:subClassOf schema:CommunicateAction .
 
 schema:AskPublicNewsArticle a rdfs:Class ;
@@ -493,7 +493,7 @@ schema:Atlas a rdfs:Class ;
 
 schema:Attorney a rdfs:Class ;
     rdfs:label "Attorney" ;
-    rdfs:comment "Professional service: Attorney. \\\\n\\\\nThis type is deprecated - [[LegalService]] is more inclusive and less ambiguous." ;
+    rdfs:comment "Professional service: Attorney. \\n\\nThis type is deprecated - [[LegalService]] is more inclusive and less ambiguous." ;
     rdfs:subClassOf schema:LegalService .
 
 schema:Audience a rdfs:Class ;
@@ -627,7 +627,7 @@ schema:BedType a rdfs:Class ;
 
 schema:BefriendAction a rdfs:Class ;
     rdfs:label "BefriendAction" ;
-    rdfs:comment "The act of forming a personal connection with someone (object) mutually/bidirectionally/symmetrically.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[FollowAction]]: Unlike FollowAction, BefriendAction implies that the connection is reciprocal." ;
+    rdfs:comment "The act of forming a personal connection with someone (object) mutually/bidirectionally/symmetrically.\\n\\nRelated actions:\\n\\n* [[FollowAction]]: Unlike FollowAction, BefriendAction implies that the connection is reciprocal." ;
     rdfs:subClassOf schema:InteractAction .
 
 schema:BikeStore a rdfs:Class ;
@@ -729,7 +729,7 @@ schema:Boolean a rdfs:Class,
 
 schema:BorrowAction a rdfs:Class ;
     rdfs:label "BorrowAction" ;
-    rdfs:comment "The act of obtaining an object under an agreement to return it at a later date. Reciprocal of LendAction.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[LendAction]]: Reciprocal of BorrowAction." ;
+    rdfs:comment "The act of obtaining an object under an agreement to return it at a later date. Reciprocal of LendAction.\\n\\nRelated actions:\\n\\n* [[LendAction]]: Reciprocal of BorrowAction." ;
     rdfs:subClassOf schema:TransferAction .
 
 schema:BowlingAlley a rdfs:Class ;
@@ -751,7 +751,7 @@ schema:Brand a rdfs:Class ;
 
 schema:BreadcrumbList a rdfs:Class ;
     rdfs:label "BreadcrumbList" ;
-    rdfs:comment """A BreadcrumbList is an ItemList consisting of a chain of linked Web pages, typically described using at least their URL and their name, and typically ending with the current page.\\\\n\\\\nThe [[position]] property is used to reconstruct the order of the items in a BreadcrumbList The convention is that a breadcrumb list has an [[itemListOrder]] of [[ItemListOrderAscending]] (lower values listed first), and that the first items in this list correspond to the "top" or beginning of the breadcrumb trail, e.g. with a site or section homepage. The specific values of 'position' are not assigned meaning for a BreadcrumbList, but they should be integers, e.g. beginning with '1' for the first item in the list.
+    rdfs:comment """A BreadcrumbList is an ItemList consisting of a chain of linked Web pages, typically described using at least their URL and their name, and typically ending with the current page.\\n\\nThe [[position]] property is used to reconstruct the order of the items in a BreadcrumbList The convention is that a breadcrumb list has an [[itemListOrder]] of [[ItemListOrderAscending]] (lower values listed first), and that the first items in this list correspond to the "top" or beginning of the breadcrumb trail, e.g. with a site or section homepage. The specific values of 'position' are not assigned meaning for a BreadcrumbList, but they should be integers, e.g. beginning with '1' for the first item in the list.
       """ ;
     rdfs:subClassOf schema:ItemList .
 
@@ -808,7 +808,7 @@ schema:BusOrCoach a rdfs:Class ;
 
 schema:BusReservation a rdfs:Class ;
     rdfs:label "BusReservation" ;
-    rdfs:comment "A reservation for bus travel. \\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
+    rdfs:comment "A reservation for bus travel. \\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:BusStation a rdfs:Class ;
@@ -833,7 +833,7 @@ schema:BusinessAudience a rdfs:Class ;
 
 schema:BusinessEntityType a rdfs:Class ;
     rdfs:label "BusinessEntityType" ;
-    rdfs:comment """A business entity type is a conceptual entity representing the legal form, the size, the main line of business, the position in the value chain, or any combination thereof, of an organization or business person.\\\\n\\\\nCommonly used values:\\\\n\\\\n* http://purl.org/goodrelations/v1#Business\\\\n* http://purl.org/goodrelations/v1#Enduser\\\\n* http://purl.org/goodrelations/v1#PublicInstitution\\\\n* http://purl.org/goodrelations/v1#Reseller
+    rdfs:comment """A business entity type is a conceptual entity representing the legal form, the size, the main line of business, the position in the value chain, or any combination thereof, of an organization or business person.\\n\\nCommonly used values:\\n\\n* http://purl.org/goodrelations/v1#Business\\\\n* http://purl.org/goodrelations/v1#Enduser\\\\n* http://purl.org/goodrelations/v1#PublicInstitution\\\\n* http://purl.org/goodrelations/v1#Reseller
 	  """ ;
     rdfs:subClassOf schema:Enumeration ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
@@ -845,7 +845,7 @@ schema:BusinessEvent a rdfs:Class ;
 
 schema:BusinessFunction a rdfs:Class ;
     rdfs:label "BusinessFunction" ;
-    rdfs:comment """The business function specifies the type of activity or access (i.e., the bundle of rights) offered by the organization or business person through the offer. Typical are sell, rental or lease, maintenance or repair, manufacture / produce, recycle / dispose, engineering / construction, or installation. Proprietary specifications of access rights are also instances of this class.\\\\n\\\\nCommonly used values:\\\\n\\\\n* http://purl.org/goodrelations/v1#ConstructionInstallation\\\\n* http://purl.org/goodrelations/v1#Dispose\\\\n* http://purl.org/goodrelations/v1#LeaseOut\\\\n* http://purl.org/goodrelations/v1#Maintain\\\\n* http://purl.org/goodrelations/v1#ProvideService\\\\n* http://purl.org/goodrelations/v1#Repair\\\\n* http://purl.org/goodrelations/v1#Sell\\\\n* http://purl.org/goodrelations/v1#Buy
+    rdfs:comment """The business function specifies the type of activity or access (i.e., the bundle of rights) offered by the organization or business person through the offer. Typical are sell, rental or lease, maintenance or repair, manufacture / produce, recycle / dispose, engineering / construction, or installation. Proprietary specifications of access rights are also instances of this class.\\n\\nCommonly used values:\\n\\n* http://purl.org/goodrelations/v1#ConstructionInstallation\\\\n* http://purl.org/goodrelations/v1#Dispose\\\\n* http://purl.org/goodrelations/v1#LeaseOut\\\\n* http://purl.org/goodrelations/v1#Maintain\\\\n* http://purl.org/goodrelations/v1#ProvideService\\\\n* http://purl.org/goodrelations/v1#Repair\\\\n* http://purl.org/goodrelations/v1#Sell\\\\n* http://purl.org/goodrelations/v1#Buy
         """ ;
     rdfs:subClassOf schema:Enumeration ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
@@ -877,8 +877,8 @@ schema:CafeOrCoffeeShop a rdfs:Class ;
 
 schema:Campground a rdfs:Class ;
     rdfs:label "Campground" ;
-    rdfs:comment """A camping site, campsite, or [[Campground]] is a place used for overnight stay in the outdoors, typically containing individual [[CampingPitch]] locations. \\\\n\\\\n
-In British English a campsite is an area, usually divided into a number of pitches, where people can camp overnight using tents or camper vans or caravans; this British English use of the word is synonymous with the American English expression campground. In American English the term campsite generally means an area where an individual, family, group, or military unit can pitch a tent or park a camper; a campground may contain many campsites (Source: Wikipedia see [https://en.wikipedia.org/wiki/Campsite](https://en.wikipedia.org/wiki/Campsite)).\\\\n\\\\n
+    rdfs:comment """A camping site, campsite, or [[Campground]] is a place used for overnight stay in the outdoors, typically containing individual [[CampingPitch]] locations. \\n\\n
+In British English a campsite is an area, usually divided into a number of pitches, where people can camp overnight using tents or camper vans or caravans; this British English use of the word is synonymous with the American English expression campground. In American English the term campsite generally means an area where an individual, family, group, or military unit can pitch a tent or park a camper; a campground may contain many campsites (Source: Wikipedia see [https://en.wikipedia.org/wiki/Campsite](https://en.wikipedia.org/wiki/Campsite)).\\n\\n
 
 See also the dedicated [document on the use of schema.org for marking up hotels and other forms of accommodations](/docs/hotels.html).
 """ ;
@@ -888,9 +888,9 @@ See also the dedicated [document on the use of schema.org for marking up hotels 
 
 schema:CampingPitch a rdfs:Class ;
     rdfs:label "CampingPitch" ;
-    rdfs:comment """A [[CampingPitch]] is an individual place for overnight stay in the outdoors, typically being part of a larger camping site, or [[Campground]].\\\\n\\\\n
+    rdfs:comment """A [[CampingPitch]] is an individual place for overnight stay in the outdoors, typically being part of a larger camping site, or [[Campground]].\\n\\n
 In British English a campsite, or campground, is an area, usually divided into a number of pitches, where people can camp overnight using tents or camper vans or caravans; this British English use of the word is synonymous with the American English expression campground. In American English the term campsite generally means an area where an individual, family, group, or military unit can pitch a tent or park a camper; a campground may contain many campsites.
-(Source: Wikipedia see [https://en.wikipedia.org/wiki/Campsite](https://en.wikipedia.org/wiki/Campsite)).\\\\n\\\\n
+(Source: Wikipedia see [https://en.wikipedia.org/wiki/Campsite](https://en.wikipedia.org/wiki/Campsite)).\\n\\n
 See also the dedicated [document on the use of schema.org for marking up hotels and other forms of accommodations](/docs/hotels.html).
 """ ;
     rdfs:subClassOf schema:Accommodation ;
@@ -903,7 +903,7 @@ schema:Canal a rdfs:Class ;
 
 schema:CancelAction a rdfs:Class ;
     rdfs:label "CancelAction" ;
-    rdfs:comment "The act of asserting that a future event/action is no longer going to happen.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[ConfirmAction]]: The antonym of CancelAction." ;
+    rdfs:comment "The act of asserting that a future event/action is no longer going to happen.\\n\\nRelated actions:\\n\\n* [[ConfirmAction]]: The antonym of CancelAction." ;
     rdfs:subClassOf schema:PlanAction .
 
 schema:Car a rdfs:Class ;
@@ -961,12 +961,12 @@ schema:CheckAction a rdfs:Class ;
 
 schema:CheckInAction a rdfs:Class ;
     rdfs:label "CheckInAction" ;
-    rdfs:comment "The act of an agent communicating (service provider, social media, etc) their arrival by registering/confirming for a previously reserved service (e.g. flight check in) or at a place (e.g. hotel), possibly resulting in a result (boarding pass, etc).\\\\n\\\\nRelated actions:\\\\n\\\\n* [[CheckOutAction]]: The antonym of CheckInAction.\\\\n* [[ArriveAction]]: Unlike ArriveAction, CheckInAction implies that the agent is informing/confirming the start of a previously reserved service.\\\\n* [[ConfirmAction]]: Unlike ConfirmAction, CheckInAction implies that the agent is informing/confirming the *start* of a previously reserved service rather than its validity/existence." ;
+    rdfs:comment "The act of an agent communicating (service provider, social media, etc) their arrival by registering/confirming for a previously reserved service (e.g. flight check in) or at a place (e.g. hotel), possibly resulting in a result (boarding pass, etc).\\n\\nRelated actions:\\n\\n* [[CheckOutAction]]: The antonym of CheckInAction.\\\\n* [[ArriveAction]]: Unlike ArriveAction, CheckInAction implies that the agent is informing/confirming the start of a previously reserved service.\\\\n* [[ConfirmAction]]: Unlike ConfirmAction, CheckInAction implies that the agent is informing/confirming the *start* of a previously reserved service rather than its validity/existence." ;
     rdfs:subClassOf schema:CommunicateAction .
 
 schema:CheckOutAction a rdfs:Class ;
     rdfs:label "CheckOutAction" ;
-    rdfs:comment "The act of an agent communicating (service provider, social media, etc) their departure of a previously reserved service (e.g. flight check in) or place (e.g. hotel).\\\\n\\\\nRelated actions:\\\\n\\\\n* [[CheckInAction]]: The antonym of CheckOutAction.\\\\n* [[DepartAction]]: Unlike DepartAction, CheckOutAction implies that the agent is informing/confirming the end of a previously reserved service.\\\\n* [[CancelAction]]: Unlike CancelAction, CheckOutAction implies that the agent is informing/confirming the end of a previously reserved service." ;
+    rdfs:comment "The act of an agent communicating (service provider, social media, etc) their departure of a previously reserved service (e.g. flight check in) or place (e.g. hotel).\\n\\nRelated actions:\\n\\n* [[CheckInAction]]: The antonym of CheckOutAction.\\\\n* [[DepartAction]]: Unlike DepartAction, CheckOutAction implies that the agent is informing/confirming the end of a previously reserved service.\\\\n* [[CancelAction]]: Unlike CancelAction, CheckOutAction implies that the agent is informing/confirming the end of a previously reserved service." ;
     rdfs:subClassOf schema:CommunicateAction .
 
 schema:CheckoutPage a rdfs:Class ;
@@ -1152,7 +1152,7 @@ schema:ComputerStore a rdfs:Class ;
 
 schema:ConfirmAction a rdfs:Class ;
     rdfs:label "ConfirmAction" ;
-    rdfs:comment "The act of notifying someone that a future event/action is going to happen as expected.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[CancelAction]]: The antonym of ConfirmAction." ;
+    rdfs:comment "The act of notifying someone that a future event/action is going to happen as expected.\\n\\nRelated actions:\\n\\n* [[CancelAction]]: The antonym of ConfirmAction." ;
     rdfs:subClassOf schema:InformAction .
 
 schema:Consortium a rdfs:Class ;
@@ -1276,14 +1276,14 @@ schema:CreativeWorkSeason a rdfs:Class ;
 
 schema:CreativeWorkSeries a rdfs:Class ;
     rdfs:label "CreativeWorkSeries" ;
-    rdfs:comment """A CreativeWorkSeries in schema.org is a group of related items, typically but not necessarily of the same kind. CreativeWorkSeries are usually organized into some order, often chronological. Unlike [[ItemList]] which is a general purpose data structure for lists of things, the emphasis with CreativeWorkSeries is on published materials (written e.g. books and periodicals, or media such as tv, radio and games).\\\\n\\\\nSpecific subtypes are available for describing [[TVSeries]], [[RadioSeries]], [[MovieSeries]], [[BookSeries]], [[Periodical]] and [[VideoGameSeries]]. In each case, the [[hasPart]] / [[isPartOf]] properties can be used to relate the CreativeWorkSeries to its parts. The general CreativeWorkSeries type serves largely just to organize these more specific and practical subtypes.\\\\n\\\\nIt is common for properties applicable to an item from the series to be usefully applied to the containing group. Schema.org attempts to anticipate some of these cases, but publishers should be free to apply properties of the series parts to the series as a whole wherever they seem appropriate.
+    rdfs:comment """A CreativeWorkSeries in schema.org is a group of related items, typically but not necessarily of the same kind. CreativeWorkSeries are usually organized into some order, often chronological. Unlike [[ItemList]] which is a general purpose data structure for lists of things, the emphasis with CreativeWorkSeries is on published materials (written e.g. books and periodicals, or media such as tv, radio and games).\\n\\nSpecific subtypes are available for describing [[TVSeries]], [[RadioSeries]], [[MovieSeries]], [[BookSeries]], [[Periodical]] and [[VideoGameSeries]]. In each case, the [[hasPart]] / [[isPartOf]] properties can be used to relate the CreativeWorkSeries to its parts. The general CreativeWorkSeries type serves largely just to organize these more specific and practical subtypes.\\n\\nIt is common for properties applicable to an item from the series to be usefully applied to the containing group. Schema.org attempts to anticipate some of these cases, but publishers should be free to apply properties of the series parts to the series as a whole wherever they seem appropriate.
 	  """ ;
     rdfs:subClassOf schema:CreativeWork,
         schema:Series .
 
 schema:CreditCard a rdfs:Class ;
     rdfs:label "CreditCard" ;
-    rdfs:comment """A card payment method of a particular brand or name.  Used to mark up a particular payment method and/or the financial product/service that supplies the card account.\\\\n\\\\nCommonly used values:\\\\n\\\\n* http://purl.org/goodrelations/v1#AmericanExpress\\\\n* http://purl.org/goodrelations/v1#DinersClub\\\\n* http://purl.org/goodrelations/v1#Discover\\\\n* http://purl.org/goodrelations/v1#JCB\\\\n* http://purl.org/goodrelations/v1#MasterCard\\\\n* http://purl.org/goodrelations/v1#VISA
+    rdfs:comment """A card payment method of a particular brand or name.  Used to mark up a particular payment method and/or the financial product/service that supplies the card account.\\n\\nCommonly used values:\\n\\n* http://purl.org/goodrelations/v1#AmericanExpress\\\\n* http://purl.org/goodrelations/v1#DinersClub\\\\n* http://purl.org/goodrelations/v1#Discover\\\\n* http://purl.org/goodrelations/v1#JCB\\\\n* http://purl.org/goodrelations/v1#MasterCard\\\\n* http://purl.org/goodrelations/v1#VISA
        """ ;
     rdfs:subClassOf schema:LoanOrCredit,
         schema:PaymentCard ;
@@ -1461,7 +1461,7 @@ schema:DeliveryEvent a rdfs:Class ;
 
 schema:DeliveryMethod a rdfs:Class ;
     rdfs:label "DeliveryMethod" ;
-    rdfs:comment """A delivery method is a standardized procedure for transferring the product or service to the destination of fulfillment chosen by the customer. Delivery methods are characterized by the means of transportation used, and by the organization or group that is the contracting party for the sending organization or person.\\\\n\\\\nCommonly used values:\\\\n\\\\n* http://purl.org/goodrelations/v1#DeliveryModeDirectDownload\\\\n* http://purl.org/goodrelations/v1#DeliveryModeFreight\\\\n* http://purl.org/goodrelations/v1#DeliveryModeMail\\\\n* http://purl.org/goodrelations/v1#DeliveryModeOwnFleet\\\\n* http://purl.org/goodrelations/v1#DeliveryModePickUp\\\\n* http://purl.org/goodrelations/v1#DHL\\\\n* http://purl.org/goodrelations/v1#FederalExpress\\\\n* http://purl.org/goodrelations/v1#UPS
+    rdfs:comment """A delivery method is a standardized procedure for transferring the product or service to the destination of fulfillment chosen by the customer. Delivery methods are characterized by the means of transportation used, and by the organization or group that is the contracting party for the sending organization or person.\\n\\nCommonly used values:\\n\\n* http://purl.org/goodrelations/v1#DeliveryModeDirectDownload\\\\n* http://purl.org/goodrelations/v1#DeliveryModeFreight\\\\n* http://purl.org/goodrelations/v1#DeliveryModeMail\\\\n* http://purl.org/goodrelations/v1#DeliveryModeOwnFleet\\\\n* http://purl.org/goodrelations/v1#DeliveryModePickUp\\\\n* http://purl.org/goodrelations/v1#DHL\\\\n* http://purl.org/goodrelations/v1#FederalExpress\\\\n* http://purl.org/goodrelations/v1#UPS
         """ ;
     rdfs:subClassOf schema:Enumeration ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
@@ -1853,7 +1853,7 @@ schema:EventAttendanceModeEnumeration a rdfs:Class ;
 
 schema:EventReservation a rdfs:Class ;
     rdfs:label "EventReservation" ;
-    rdfs:comment "A reservation for an event like a concert, sporting event, or lecture.\\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
+    rdfs:comment "A reservation for an event like a concert, sporting event, or lecture.\\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:EventSeries a rdfs:Class ;
@@ -1957,7 +1957,7 @@ schema:FinancialService a rdfs:Class ;
 
 schema:FindAction a rdfs:Class ;
     rdfs:label "FindAction" ;
-    rdfs:comment "The act of finding an object.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[SearchAction]]: FindAction is generally lead by a SearchAction, but not necessarily." ;
+    rdfs:comment "The act of finding an object.\\n\\nRelated actions:\\n\\n* [[SearchAction]]: FindAction is generally lead by a SearchAction, but not necessarily." ;
     rdfs:subClassOf schema:Action .
 
 schema:FireStation a rdfs:Class ;
@@ -1973,7 +1973,7 @@ schema:Flight a rdfs:Class ;
 
 schema:FlightReservation a rdfs:Class ;
     rdfs:label "FlightReservation" ;
-    rdfs:comment "A reservation for air travel.\\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
+    rdfs:comment "A reservation for air travel.\\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:Float a rdfs:Class ;
@@ -1995,7 +1995,7 @@ schema:Florist a rdfs:Class ;
 
 schema:FollowAction a rdfs:Class ;
     rdfs:label "FollowAction" ;
-    rdfs:comment "The act of forming a personal connection with someone/something (object) unidirectionally/asymmetrically to get updates polled from.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[BefriendAction]]: Unlike BefriendAction, FollowAction implies that the connection is *not* necessarily reciprocal.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, FollowAction implies that the follower acts as an active agent constantly/actively polling for updates.\\\\n* [[RegisterAction]]: Unlike RegisterAction, FollowAction implies that the agent is interested in continuing receiving updates from the object.\\\\n* [[JoinAction]]: Unlike JoinAction, FollowAction implies that the agent is interested in getting updates from the object.\\\\n* [[TrackAction]]: Unlike TrackAction, FollowAction refers to the polling of updates of all aspects of animate objects rather than the location of inanimate objects (e.g. you track a package, but you don't follow it)." ;
+    rdfs:comment "The act of forming a personal connection with someone/something (object) unidirectionally/asymmetrically to get updates polled from.\\n\\nRelated actions:\\n\\n* [[BefriendAction]]: Unlike BefriendAction, FollowAction implies that the connection is *not* necessarily reciprocal.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, FollowAction implies that the follower acts as an active agent constantly/actively polling for updates.\\\\n* [[RegisterAction]]: Unlike RegisterAction, FollowAction implies that the agent is interested in continuing receiving updates from the object.\\\\n* [[JoinAction]]: Unlike JoinAction, FollowAction implies that the agent is interested in getting updates from the object.\\\\n* [[TrackAction]]: Unlike TrackAction, FollowAction refers to the polling of updates of all aspects of animate objects rather than the location of inanimate objects (e.g. you track a package, but you don't follow it)." ;
     rdfs:subClassOf schema:InteractAction .
 
 schema:FoodEstablishment a rdfs:Class ;
@@ -2005,7 +2005,7 @@ schema:FoodEstablishment a rdfs:Class ;
 
 schema:FoodEstablishmentReservation a rdfs:Class ;
     rdfs:label "FoodEstablishmentReservation" ;
-    rdfs:comment "A reservation to dine at a food-related business.\\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations." ;
+    rdfs:comment "A reservation to dine at a food-related business.\\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:FoodEvent a rdfs:Class ;
@@ -2120,7 +2120,7 @@ schema:GeospatialGeometry a rdfs:Class ;
 
 schema:GiveAction a rdfs:Class ;
     rdfs:label "GiveAction" ;
-    rdfs:comment "The act of transferring ownership of an object to a destination. Reciprocal of TakeAction.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[TakeAction]]: Reciprocal of GiveAction.\\\\n* [[SendAction]]: Unlike SendAction, GiveAction implies that ownership is being transferred (e.g. I may send my laptop to you, but that doesn't mean I'm giving it to you)." ;
+    rdfs:comment "The act of transferring ownership of an object to a destination. Reciprocal of TakeAction.\\n\\nRelated actions:\\n\\n* [[TakeAction]]: Reciprocal of GiveAction.\\\\n* [[SendAction]]: Unlike SendAction, GiveAction implies that ownership is being transferred (e.g. I may send my laptop to you, but that doesn't mean I'm giving it to you)." ;
     rdfs:subClassOf schema:TransferAction .
 
 schema:GolfCourse a rdfs:Class ;
@@ -2279,7 +2279,7 @@ schema:HobbyShop a rdfs:Class ;
 
 schema:HomeAndConstructionBusiness a rdfs:Class ;
     rdfs:label "HomeAndConstructionBusiness" ;
-    rdfs:comment "A construction business.\\\\n\\\\nA HomeAndConstructionBusiness is a [[LocalBusiness]] that provides services around homes and buildings.\\\\n\\\\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\\\\(s)." ;
+    rdfs:comment "A construction business.\\n\\nA HomeAndConstructionBusiness is a [[LocalBusiness]] that provides services around homes and buildings.\\n\\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\\\\(s)." ;
     rdfs:subClassOf schema:LocalBusiness .
 
 schema:HomeGoodsStore a rdfs:Class ;
@@ -2537,7 +2537,7 @@ schema:JobPosting a rdfs:Class ;
 
 schema:JoinAction a rdfs:Class ;
     rdfs:label "JoinAction" ;
-    rdfs:comment "An agent joins an event/group with participants/friends at a location.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[RegisterAction]]: Unlike RegisterAction, JoinAction refers to joining a group/team of people.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, JoinAction does not imply that you'll be receiving updates.\\\\n* [[FollowAction]]: Unlike FollowAction, JoinAction does not imply that you'll be polling for updates." ;
+    rdfs:comment "An agent joins an event/group with participants/friends at a location.\\n\\nRelated actions:\\n\\n* [[RegisterAction]]: Unlike RegisterAction, JoinAction refers to joining a group/team of people.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, JoinAction does not imply that you'll be receiving updates.\\\\n* [[FollowAction]]: Unlike FollowAction, JoinAction does not imply that you'll be polling for updates." ;
     rdfs:subClassOf schema:InteractAction .
 
 schema:Joint a rdfs:Class ;
@@ -2579,7 +2579,7 @@ schema:LearningResource a rdfs:Class ;
 
 schema:LeaveAction a rdfs:Class ;
     rdfs:label "LeaveAction" ;
-    rdfs:comment "An agent leaves an event / group with participants/friends at a location.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[JoinAction]]: The antonym of LeaveAction.\\\\n* [[UnRegisterAction]]: Unlike UnRegisterAction, LeaveAction implies leaving a group/team of people rather than a service." ;
+    rdfs:comment "An agent leaves an event / group with participants/friends at a location.\\n\\nRelated actions:\\n\\n* [[JoinAction]]: The antonym of LeaveAction.\\\\n* [[UnRegisterAction]]: Unlike UnRegisterAction, LeaveAction implies leaving a group/team of people rather than a service." ;
     rdfs:subClassOf schema:InteractAction .
 
 schema:LegalForceStatus a rdfs:Class ;
@@ -2593,7 +2593,7 @@ schema:LegalForceStatus a rdfs:Class ;
 
 schema:LegalService a rdfs:Class ;
     rdfs:label "LegalService" ;
-    rdfs:comment "A LegalService is a business that provides legally-oriented services, advice and representation, e.g. law firms.\\\\n\\\\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\\\\(s)." ;
+    rdfs:comment "A LegalService is a business that provides legally-oriented services, advice and representation, e.g. law firms.\\n\\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\\\\(s)." ;
     rdfs:subClassOf schema:LocalBusiness .
 
 schema:LegalValueLevel a rdfs:Class ;
@@ -2632,7 +2632,7 @@ schema:LegislativeBuilding a rdfs:Class ;
 
 schema:LendAction a rdfs:Class ;
     rdfs:label "LendAction" ;
-    rdfs:comment "The act of providing an object under an agreement that it will be returned at a later date. Reciprocal of BorrowAction.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[BorrowAction]]: Reciprocal of LendAction." ;
+    rdfs:comment "The act of providing an object under an agreement that it will be returned at a later date. Reciprocal of BorrowAction.\\n\\nRelated actions:\\n\\n* [[BorrowAction]]: Reciprocal of LendAction." ;
     rdfs:subClassOf schema:TransferAction .
 
 schema:Library a rdfs:Class ;
@@ -2727,7 +2727,7 @@ schema:LodgingBusiness a rdfs:Class ;
 
 schema:LodgingReservation a rdfs:Class ;
     rdfs:label "LodgingReservation" ;
-    rdfs:comment "A reservation for lodging at a hotel, motel, inn, etc.\\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations." ;
+    rdfs:comment "A reservation for lodging at a hotel, motel, inn, etc.\\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:LoseAction a rdfs:Class ;
@@ -3228,7 +3228,7 @@ schema:Mountain a rdfs:Class ;
 
 schema:MoveAction a rdfs:Class ;
     rdfs:label "MoveAction" ;
-    rdfs:comment "The act of an agent relocating to a place.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[TransferAction]]: Unlike TransferAction, the subject of the move is a living Person or Organization rather than an inanimate object." ;
+    rdfs:comment "The act of an agent relocating to a place.\\n\\nRelated actions:\\n\\n* [[TransferAction]]: Unlike TransferAction, the subject of the move is a living Person or Organization rather than an inanimate object." ;
     rdfs:subClassOf schema:Action .
 
 schema:Movie a rdfs:Class ;
@@ -3416,7 +3416,7 @@ schema:NoteDigitalDocument a rdfs:Class ;
 schema:Number a rdfs:Class,
         schema:DataType ;
     rdfs:label "Number" ;
-    rdfs:comment "Data type: Number.\\\\n\\\\nUsage guidelines:\\\\n\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." .
+    rdfs:comment "Data type: Number.\\n\\nUsage guidelines:\\n\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." .
 
 schema:NutritionInformation a rdfs:Class ;
     rdfs:label "NutritionInformation" ;
@@ -3458,7 +3458,7 @@ schema:OceanBodyOfWater a rdfs:Class ;
 
 schema:Offer a rdfs:Class ;
     rdfs:label "Offer" ;
-    rdfs:comment "An offer to transfer some rights to an item or to provide a service â€” for example, an offer to sell tickets to an event, to rent the DVD of a movie, to stream a TV show over the internet, to repair a motorcycle, or to loan a book.\\\\n\\\\nNote: As the [[businessFunction]] property, which identifies the form of offer (e.g. sell, lease, repair, dispose), defaults to http://purl.org/goodrelations/v1#Sell; an Offer without a defined businessFunction value can be assumed to be an offer to sell.\\\\n\\\\nFor [GTIN](http://www.gs1.org/barcodes/technical/idkeys/gtin)-related fields, see [Check Digit calculator](http://www.gs1.org/barcodes/support/check_digit_calculator) and [validation guide](http://www.gs1us.org/resources/standards/gtin-validation-guide) from [GS1](http://www.gs1.org/)." ;
+    rdfs:comment "An offer to transfer some rights to an item or to provide a service â€” for example, an offer to sell tickets to an event, to rent the DVD of a movie, to stream a TV show over the internet, to repair a motorcycle, or to loan a book.\\n\\nNote: As the [[businessFunction]] property, which identifies the form of offer (e.g. sell, lease, repair, dispose), defaults to http://purl.org/goodrelations/v1#Sell; an Offer without a defined businessFunction value can be assumed to be an offer to sell.\\n\\nFor [GTIN](http://www.gs1.org/barcodes/technical/idkeys/gtin)-related fields, see [Check Digit calculator](http://www.gs1.org/barcodes/support/check_digit_calculator) and [validation guide](http://www.gs1us.org/resources/standards/gtin-validation-guide) from [GS1](http://www.gs1.org/)." ;
     rdfs:subClassOf schema:Intangible ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsTerms> .
 
@@ -3522,8 +3522,8 @@ schema:OnDemandEvent a rdfs:Class ;
 
 schema:OpeningHoursSpecification a rdfs:Class ;
     rdfs:label "OpeningHoursSpecification" ;
-    rdfs:comment """A structured value providing information about the opening hours of a place or a certain service inside a place.\\\\n\\\\n
-The place is __open__ if the [[opens]] property is specified, and __closed__ otherwise.\\\\n\\\\nIf the value for the [[closes]] property is less than the value for the [[opens]] property then the hour range is assumed to span over the next day.
+    rdfs:comment """A structured value providing information about the opening hours of a place or a certain service inside a place.\\n\\n
+The place is __open__ if the [[opens]] property is specified, and __closed__ otherwise.\\n\\nIf the value for the [[closes]] property is less than the value for the [[opens]] property then the hour range is assumed to span over the next day.
       """ ;
     rdfs:subClassOf schema:StructuredValue ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
@@ -3664,7 +3664,7 @@ schema:PaymentChargeSpecification a rdfs:Class ;
 
 schema:PaymentMethod a rdfs:Class ;
     rdfs:label "PaymentMethod" ;
-    rdfs:comment """A payment method is a standardized procedure for transferring the monetary amount for a purchase. Payment methods are characterized by the legal and technical structures used, and by the organization or group carrying out the transaction.\\\\n\\\\nCommonly used values:\\\\n\\\\n* http://purl.org/goodrelations/v1#ByBankTransferInAdvance\\\\n* http://purl.org/goodrelations/v1#ByInvoice\\\\n* http://purl.org/goodrelations/v1#Cash\\\\n* http://purl.org/goodrelations/v1#CheckInAdvance\\\\n* http://purl.org/goodrelations/v1#COD\\\\n* http://purl.org/goodrelations/v1#DirectDebit\\\\n* http://purl.org/goodrelations/v1#GoogleCheckout\\\\n* http://purl.org/goodrelations/v1#PayPal\\\\n* http://purl.org/goodrelations/v1#PaySwarm
+    rdfs:comment """A payment method is a standardized procedure for transferring the monetary amount for a purchase. Payment methods are characterized by the legal and technical structures used, and by the organization or group carrying out the transaction.\\n\\nCommonly used values:\\n\\n* http://purl.org/goodrelations/v1#ByBankTransferInAdvance\\\\n* http://purl.org/goodrelations/v1#ByInvoice\\\\n* http://purl.org/goodrelations/v1#Cash\\\\n* http://purl.org/goodrelations/v1#CheckInAdvance\\\\n* http://purl.org/goodrelations/v1#COD\\\\n* http://purl.org/goodrelations/v1#DirectDebit\\\\n* http://purl.org/goodrelations/v1#GoogleCheckout\\\\n* http://purl.org/goodrelations/v1#PayPal\\\\n* http://purl.org/goodrelations/v1#PaySwarm
         """ ;
     rdfs:subClassOf schema:Enumeration ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
@@ -3707,7 +3707,7 @@ schema:PerformingGroup a rdfs:Class ;
 
 schema:Periodical a rdfs:Class ;
     rdfs:label "Periodical" ;
-    rdfs:comment "A publication in any medium issued in successive parts bearing numerical or chronological designations and intended, such as a magazine, scholarly journal, or newspaper to continue indefinitely.\\\\n\\\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
+    rdfs:comment "A publication in any medium issued in successive parts bearing numerical or chronological designations and intended, such as a magazine, scholarly journal, or newspaper to continue indefinitely.\\n\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
     rdfs:subClassOf schema:CreativeWorkSeries ;
     ns2:equivalentClass <http://purl.org/ontology/bibo/Periodical> ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_bibex> .
@@ -3800,7 +3800,7 @@ schema:Play a rdfs:Class ;
 
 schema:PlayAction a rdfs:Class ;
     rdfs:label "PlayAction" ;
-    rdfs:comment "The act of playing/exercising/training/performing for enjoyment, leisure, recreation, Competition or exercise.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[ListenAction]]: Unlike ListenAction (which is under ConsumeAction), PlayAction refers to performing for an audience or at an event, rather than consuming music.\\\\n* [[WatchAction]]: Unlike WatchAction (which is under ConsumeAction), PlayAction refers to showing/displaying for an audience or at an event, rather than consuming visual content." ;
+    rdfs:comment "The act of playing/exercising/training/performing for enjoyment, leisure, recreation, Competition or exercise.\\n\\nRelated actions:\\n\\n* [[ListenAction]]: Unlike ListenAction (which is under ConsumeAction), PlayAction refers to performing for an audience or at an event, rather than consuming music.\\\\n* [[WatchAction]]: Unlike WatchAction (which is under ConsumeAction), PlayAction refers to showing/displaying for an audience or at an event, rather than consuming visual content." ;
     rdfs:subClassOf schema:Action .
 
 schema:Playground a rdfs:Class ;
@@ -3947,7 +3947,7 @@ schema:ProductModel a rdfs:Class ;
 
 schema:ProfessionalService a rdfs:Class ;
     rdfs:label "ProfessionalService" ;
-    rdfs:comment """Original definition: "provider of professional services."\\\\n\\\\nThe general [[ProfessionalService]] type for local businesses was deprecated due to confusion with [[Service]]. For reference, the types that it included were: [[Dentist]],
+    rdfs:comment """Original definition: "provider of professional services."\\n\\nThe general [[ProfessionalService]] type for local businesses was deprecated due to confusion with [[Service]]. For reference, the types that it included were: [[Dentist]],
         [[AccountingService]], [[Attorney]], [[Notary]], as well as types for several kinds of [[HomeAndConstructionBusiness]]: [[Electrician]], [[GeneralContractor]],
         [[HousePainter]], [[Locksmith]], [[Plumber]], [[RoofingContractor]]. [[LegalService]] was introduced as a more inclusive supertype of [[Attorney]].""" ;
     rdfs:subClassOf schema:LocalBusiness .
@@ -3988,7 +3988,7 @@ schema:Property a rdfs:Class ;
 
 schema:PropertyValue a rdfs:Class ;
     rdfs:label "PropertyValue" ;
-    rdfs:comment """A property-value pair, e.g. representing a feature of a product or place. Use the 'name' property for the name of the property. If there is an additional human-readable version of the value, put that into the 'description' property.\\\\n\\\\n Always use specific schema.org properties when a) they exist and b) you can populate them. Using PropertyValue as a substitute will typically not trigger the same effect as using the original, specific property.
+    rdfs:comment """A property-value pair, e.g. representing a feature of a product or place. Use the 'name' property for the name of the property. If there is an additional human-readable version of the value, put that into the 'description' property.\\n\\n Always use specific schema.org properties when a) they exist and b) you can populate them. Using PropertyValue as a substitute will typically not trigger the same effect as using the original, specific property.
     """ ;
     rdfs:subClassOf schema:StructuredValue ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
@@ -4024,14 +4024,14 @@ schema:PublicationEvent a rdfs:Class ;
 
 schema:PublicationIssue a rdfs:Class ;
     rdfs:label "PublicationIssue" ;
-    rdfs:comment "A part of a successively published publication such as a periodical or publication volume, often numbered, usually containing a grouping of works such as articles.\\\\n\\\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
+    rdfs:comment "A part of a successively published publication such as a periodical or publication volume, often numbered, usually containing a grouping of works such as articles.\\n\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
     rdfs:subClassOf schema:CreativeWork ;
     ns2:equivalentClass <http://purl.org/ontology/bibo/Issue> ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_bibex> .
 
 schema:PublicationVolume a rdfs:Class ;
     rdfs:label "PublicationVolume" ;
-    rdfs:comment "A part of a successively published publication such as a periodical or multi-volume work, often numbered. It may represent a time span, such as a year.\\\\n\\\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
+    rdfs:comment "A part of a successively published publication such as a periodical or multi-volume work, often numbered. It may represent a time span, such as a year.\\n\\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html)." ;
     rdfs:subClassOf schema:CreativeWork ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_bibex> .
 
@@ -4167,7 +4167,7 @@ schema:RealEstateListing a rdfs:Class ;
 
 schema:ReceiveAction a rdfs:Class ;
     rdfs:label "ReceiveAction" ;
-    rdfs:comment "The act of physically/electronically taking delivery of an object that has been transferred from an origin to a destination. Reciprocal of SendAction.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[SendAction]]: The reciprocal of ReceiveAction.\\\\n* [[TakeAction]]: Unlike TakeAction, ReceiveAction does not imply that the ownership has been transfered (e.g. I can receive a package, but it does not mean the package is now mine)." ;
+    rdfs:comment "The act of physically/electronically taking delivery of an object that has been transferred from an origin to a destination. Reciprocal of SendAction.\\n\\nRelated actions:\\n\\n* [[SendAction]]: The reciprocal of ReceiveAction.\\\\n* [[TakeAction]]: Unlike TakeAction, ReceiveAction does not imply that the ownership has been transfered (e.g. I can receive a package, but it does not mean the package is now mine)." ;
     rdfs:subClassOf schema:TransferAction .
 
 schema:Recipe a rdfs:Class ;
@@ -4202,12 +4202,12 @@ schema:RefundTypeEnumeration a rdfs:Class ;
 
 schema:RegisterAction a rdfs:Class ;
     rdfs:label "RegisterAction" ;
-    rdfs:comment "The act of registering to be a user of a service, product or web page.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[JoinAction]]: Unlike JoinAction, RegisterAction implies you are registering to be a user of a service, *not* a group/team of people.\\\\n* [FollowAction]]: Unlike FollowAction, RegisterAction doesn't imply that the agent is expecting to poll for updates from the object.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, RegisterAction doesn't imply that the agent is expecting updates from the object." ;
+    rdfs:comment "The act of registering to be a user of a service, product or web page.\\n\\nRelated actions:\\n\\n* [[JoinAction]]: Unlike JoinAction, RegisterAction implies you are registering to be a user of a service, *not* a group/team of people.\\\\n* [FollowAction]]: Unlike FollowAction, RegisterAction doesn't imply that the agent is expecting to poll for updates from the object.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, RegisterAction doesn't imply that the agent is expecting updates from the object." ;
     rdfs:subClassOf schema:InteractAction .
 
 schema:RejectAction a rdfs:Class ;
     rdfs:label "RejectAction" ;
-    rdfs:comment "The act of rejecting to/adopting an object.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[AcceptAction]]: The antonym of RejectAction." ;
+    rdfs:comment "The act of rejecting to/adopting an object.\\n\\nRelated actions:\\n\\n* [[AcceptAction]]: The antonym of RejectAction." ;
     rdfs:subClassOf schema:AllocateAction .
 
 schema:RentAction a rdfs:Class ;
@@ -4217,7 +4217,7 @@ schema:RentAction a rdfs:Class ;
 
 schema:RentalCarReservation a rdfs:Class ;
     rdfs:label "RentalCarReservation" ;
-    rdfs:comment "A reservation for a rental car.\\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations." ;
+    rdfs:comment "A reservation for a rental car.\\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:RepaymentSpecification a rdfs:Class ;
@@ -4235,7 +4235,7 @@ schema:ReplaceAction a rdfs:Class ;
 
 schema:ReplyAction a rdfs:Class ;
     rdfs:label "ReplyAction" ;
-    rdfs:comment "The act of responding to a question/message asked/sent by the object. Related to [[AskAction]]\\\\n\\\\nRelated actions:\\\\n\\\\n* [[AskAction]]: Appears generally as an origin of a ReplyAction." ;
+    rdfs:comment "The act of responding to a question/message asked/sent by the object. Related to [[AskAction]]\\n\\nRelated actions:\\n\\n* [[AskAction]]: Appears generally as an origin of a ReplyAction." ;
     rdfs:subClassOf schema:CommunicateAction .
 
 schema:Report a rdfs:Class ;
@@ -4280,7 +4280,7 @@ schema:Researcher a rdfs:Class ;
 
 schema:Reservation a rdfs:Class ;
     rdfs:label "Reservation" ;
-    rdfs:comment "Describes a reservation for travel, dining or an event. Some reservations require tickets. \\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, restaurant reservations, flights, or rental cars, use [[Offer]]." ;
+    rdfs:comment "Describes a reservation for travel, dining or an event. Some reservations require tickets. \\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, restaurant reservations, flights, or rental cars, use [[Offer]]." ;
     rdfs:subClassOf schema:Intangible .
 
 schema:ReservationPackage a rdfs:Class ;
@@ -4295,7 +4295,7 @@ schema:ReservationStatusType a rdfs:Class ;
 
 schema:ReserveAction a rdfs:Class ;
     rdfs:label "ReserveAction" ;
-    rdfs:comment "Reserving a concrete object.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[ScheduleAction]]: Unlike ScheduleAction, ReserveAction reserves concrete objects (e.g. a table, a hotel) towards a time slot / spatial allocation." ;
+    rdfs:comment "Reserving a concrete object.\\n\\nRelated actions:\\n\\n* [[ScheduleAction]]: Unlike ScheduleAction, ReserveAction reserves concrete objects (e.g. a table, a hotel) towards a time slot / spatial allocation." ;
     rdfs:subClassOf schema:PlanAction .
 
 schema:Reservoir a rdfs:Class ;
@@ -4370,7 +4370,7 @@ schema:RiverBodyOfWater a rdfs:Class ;
 
 schema:Role a rdfs:Class ;
     rdfs:label "Role" ;
-    rdfs:comment "Represents additional information about a relationship or property. For example a Role can be used to say that a 'member' role linking some SportsTeam to a player occurred during a particular time period. Or that a Person's 'actor' role in a Movie was for some particular characterName. Such properties can be attached to a Role entity, which is then associated with the main entities using ordinary properties like 'member' or 'actor'.\\\\n\\\\nSee also [blog post](http://blog.schema.org/2014/06/introducing-role.html)." ;
+    rdfs:comment "Represents additional information about a relationship or property. For example a Role can be used to say that a 'member' role linking some SportsTeam to a player occurred during a particular time period. Or that a Person's 'actor' role in a Movie was for some particular characterName. Such properties can be attached to a Role entity, which is then associated with the main entities using ordinary properties like 'member' or 'actor'.\\n\\nSee also [blog post](http://blog.schema.org/2014/06/introducing-role.html)." ;
     rdfs:subClassOf schema:Intangible .
 
 schema:RoofingContractor a rdfs:Class ;
@@ -4421,7 +4421,7 @@ schema:Schedule a rdfs:Class ;
 
 schema:ScheduleAction a rdfs:Class ;
     rdfs:label "ScheduleAction" ;
-    rdfs:comment "Scheduling future actions, events, or tasks.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[ReserveAction]]: Unlike ReserveAction, ScheduleAction allocates future actions (e.g. an event, a task, etc) towards a time slot / spatial allocation." ;
+    rdfs:comment "Scheduling future actions, events, or tasks.\\n\\nRelated actions:\\n\\n* [[ReserveAction]]: Unlike ReserveAction, ScheduleAction allocates future actions (e.g. an event, a task, etc) towards a time slot / spatial allocation." ;
     rdfs:subClassOf schema:PlanAction .
 
 schema:ScholarlyArticle a rdfs:Class ;
@@ -4458,7 +4458,7 @@ schema:SeaBodyOfWater a rdfs:Class ;
 
 schema:SearchAction a rdfs:Class ;
     rdfs:label "SearchAction" ;
-    rdfs:comment "The act of searching for an object.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[FindAction]]: SearchAction generally leads to a FindAction, but not necessarily." ;
+    rdfs:comment "The act of searching for an object.\\n\\nRelated actions:\\n\\n* [[FindAction]]: SearchAction generally leads to a FindAction, but not necessarily." ;
     rdfs:subClassOf schema:Action .
 
 schema:SearchResultsPage a rdfs:Class ;
@@ -4496,7 +4496,7 @@ schema:SellAction a rdfs:Class ;
 
 schema:SendAction a rdfs:Class ;
     rdfs:label "SendAction" ;
-    rdfs:comment "The act of physically/electronically dispatching an object for transfer from an origin to a destination.Related actions:\\\\n\\\\n* [[ReceiveAction]]: The reciprocal of SendAction.\\\\n* [[GiveAction]]: Unlike GiveAction, SendAction does not imply the transfer of ownership (e.g. I can send you my laptop, but I'm not necessarily giving it to you)." ;
+    rdfs:comment "The act of physically/electronically dispatching an object for transfer from an origin to a destination.Related actions:\\n\\n* [[ReceiveAction]]: The reciprocal of SendAction.\\\\n* [[GiveAction]]: Unlike GiveAction, SendAction does not imply the transfer of ownership (e.g. I can send you my laptop, but I'm not necessarily giving it to you)." ;
     rdfs:subClassOf schema:TransferAction .
 
 schema:Series a rdfs:Class ;
@@ -4760,7 +4760,7 @@ schema:StructuredValue a rdfs:Class ;
 
 schema:SubscribeAction a rdfs:Class ;
     rdfs:label "SubscribeAction" ;
-    rdfs:comment "The act of forming a personal connection with someone/something (object) unidirectionally/asymmetrically to get updates pushed to.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[FollowAction]]: Unlike FollowAction, SubscribeAction implies that the subscriber acts as a passive agent being constantly/actively pushed for updates.\\\\n* [[RegisterAction]]: Unlike RegisterAction, SubscribeAction implies that the agent is interested in continuing receiving updates from the object.\\\\n* [[JoinAction]]: Unlike JoinAction, SubscribeAction implies that the agent is interested in continuing receiving updates from the object." ;
+    rdfs:comment "The act of forming a personal connection with someone/something (object) unidirectionally/asymmetrically to get updates pushed to.\\n\\nRelated actions:\\n\\n* [[FollowAction]]: Unlike FollowAction, SubscribeAction implies that the subscriber acts as a passive agent being constantly/actively pushed for updates.\\\\n* [[RegisterAction]]: Unlike RegisterAction, SubscribeAction implies that the agent is interested in continuing receiving updates from the object.\\\\n* [[JoinAction]]: Unlike JoinAction, SubscribeAction implies that the agent is interested in continuing receiving updates from the object." ;
     rdfs:subClassOf schema:InteractAction .
 
 schema:Substance a rdfs:Class ;
@@ -4836,7 +4836,7 @@ schema:Table a rdfs:Class ;
 
 schema:TakeAction a rdfs:Class ;
     rdfs:label "TakeAction" ;
-    rdfs:comment "The act of gaining ownership of an object from an origin. Reciprocal of GiveAction.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[GiveAction]]: The reciprocal of TakeAction.\\\\n* [[ReceiveAction]]: Unlike ReceiveAction, TakeAction implies that ownership has been transfered." ;
+    rdfs:comment "The act of gaining ownership of an object from an origin. Reciprocal of GiveAction.\\n\\nRelated actions:\\n\\n* [[GiveAction]]: The reciprocal of TakeAction.\\\\n* [[ReceiveAction]]: Unlike ReceiveAction, TakeAction implies that ownership has been transfered." ;
     rdfs:subClassOf schema:TransferAction .
 
 schema:TattooParlor a rdfs:Class ;
@@ -4852,7 +4852,7 @@ schema:Taxi a rdfs:Class ;
 
 schema:TaxiReservation a rdfs:Class ;
     rdfs:label "TaxiReservation" ;
-    rdfs:comment "A reservation for a taxi.\\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
+    rdfs:comment "A reservation for a taxi.\\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:TaxiService a rdfs:Class ;
@@ -4987,7 +4987,7 @@ schema:ToyStore a rdfs:Class ;
 
 schema:TrackAction a rdfs:Class ;
     rdfs:label "TrackAction" ;
-    rdfs:comment "An agent tracks an object for updates.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[FollowAction]]: Unlike FollowAction, TrackAction refers to the interest on the location of innanimates objects.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, TrackAction refers to  the interest on the location of innanimate objects." ;
+    rdfs:comment "An agent tracks an object for updates.\\n\\nRelated actions:\\n\\n* [[FollowAction]]: Unlike FollowAction, TrackAction refers to the interest on the location of innanimates objects.\\\\n* [[SubscribeAction]]: Unlike SubscribeAction, TrackAction refers to  the interest on the location of innanimate objects." ;
     rdfs:subClassOf schema:FindAction .
 
 schema:TradeAction a rdfs:Class ;
@@ -4997,7 +4997,7 @@ schema:TradeAction a rdfs:Class ;
 
 schema:TrainReservation a rdfs:Class ;
     rdfs:label "TrainReservation" ;
-    rdfs:comment "A reservation for train travel.\\\\n\\\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
+    rdfs:comment "A reservation for train travel.\\n\\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, use [[Offer]]." ;
     rdfs:subClassOf schema:Reservation .
 
 schema:TrainStation a rdfs:Class ;
@@ -5064,7 +5064,7 @@ schema:USNonprofitType a rdfs:Class ;
 
 schema:UnRegisterAction a rdfs:Class ;
     rdfs:label "UnRegisterAction" ;
-    rdfs:comment "The act of un-registering from a service.\\\\n\\\\nRelated actions:\\\\n\\\\n* [[RegisterAction]]: antonym of UnRegisterAction.\\\\n* [[LeaveAction]]: Unlike LeaveAction, UnRegisterAction implies that you are unregistering from a service you werer previously registered, rather than leaving a team/group of people." ;
+    rdfs:comment "The act of un-registering from a service.\\n\\nRelated actions:\\n\\n* [[RegisterAction]]: antonym of UnRegisterAction.\\\\n* [[LeaveAction]]: Unlike LeaveAction, UnRegisterAction implies that you are unregistering from a service you werer previously registered, rather than leaving a team/group of people." ;
     rdfs:subClassOf schema:InteractAction .
 
 schema:UnitPriceSpecification a rdfs:Class ;
@@ -5273,7 +5273,7 @@ schema:WarrantyPromise a rdfs:Class ;
 
 schema:WarrantyScope a rdfs:Class ;
     rdfs:label "WarrantyScope" ;
-    rdfs:comment """A range of of services that will be provided to a customer free of charge in case of a defect or malfunction of a product.\\\\n\\\\nCommonly used values:\\\\n\\\\n* http://purl.org/goodrelations/v1#Labor-BringIn\\\\n* http://purl.org/goodrelations/v1#PartsAndLabor-BringIn\\\\n* http://purl.org/goodrelations/v1#PartsAndLabor-PickUp
+    rdfs:comment """A range of of services that will be provided to a customer free of charge in case of a defect or malfunction of a product.\\n\\nCommonly used values:\\n\\n* http://purl.org/goodrelations/v1#Labor-BringIn\\\\n* http://purl.org/goodrelations/v1#PartsAndLabor-BringIn\\\\n* http://purl.org/goodrelations/v1#PartsAndLabor-PickUp
       """ ;
     rdfs:subClassOf schema:Enumeration ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
@@ -6826,7 +6826,7 @@ schema:Paperback a schema:BookFormatType ;
 
 schema:ParcelService a schema:DeliveryMethod ;
     rdfs:label "ParcelService" ;
-    rdfs:comment """A private parcel service as the delivery mode available for a certain offer.\\\\n\\\\nCommonly used values:\\\\n\\\\n* http://purl.org/goodrelations/v1#DHL\\\\n* http://purl.org/goodrelations/v1#FederalExpress\\\\n* http://purl.org/goodrelations/v1#UPS
+    rdfs:comment """A private parcel service as the delivery mode available for a certain offer.\\n\\nCommonly used values:\\n\\n* http://purl.org/goodrelations/v1#DHL\\\\n* http://purl.org/goodrelations/v1#FederalExpress\\\\n* http://purl.org/goodrelations/v1#UPS
       """ ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass> .
 
@@ -7775,7 +7775,7 @@ schema:abstract a rdf:Property ;
 
 schema:accelerationTime a rdf:Property ;
     rdfs:label "accelerationTime" ;
-    rdfs:comment "The time needed to accelerate the vehicle from a given start velocity to a given target velocity.\\\\n\\\\nTypical unit code(s): SEC for seconds\\\\n\\\\n* Note: There are unfortunately no standard unit codes for seconds/0..100 km/h or seconds/0..60 mph. Simply use \\"SEC\\" for seconds and indicate the velocities in the [[name]] of the [[QuantitativeValue]], or use [[valueReference]] with a [[QuantitativeValue]] of 0..60 mph or 0..100 km/h to specify the reference speeds." ;
+    rdfs:comment "The time needed to accelerate the vehicle from a given start velocity to a given target velocity.\\n\\nTypical unit code(s): SEC for seconds\\n\\n* Note: There are unfortunately no standard unit codes for seconds/0..100 km/h or seconds/0..60 mph. Simply use \\"SEC\\" for seconds and indicate the velocities in the [[name]] of the [[QuantitativeValue]], or use [[valueReference]] with a [[QuantitativeValue]] of 0..60 mph or 0..100 km/h to specify the reference speeds." ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -8035,7 +8035,7 @@ schema:additionalNumberOfGuests a rdf:Property ;
 
 schema:additionalProperty a rdf:Property ;
     rdfs:label "additionalProperty" ;
-    rdfs:comment """A property-value pair representing an additional characteristics of the entitity, e.g. a product feature or another characteristic for which there is no matching property in schema.org.\\\\n\\\\nNote: Publishers should be aware that applications designed to use specific schema.org properties (e.g. https://schema.org/width, https://schema.org/color, https://schema.org/gtin13, ...) will typically expect such data to be provided using those properties, rather than using the generic property/value mechanism.
+    rdfs:comment """A property-value pair representing an additional characteristics of the entitity, e.g. a product feature or another characteristic for which there is no matching property in schema.org.\\n\\nNote: Publishers should be aware that applications designed to use specific schema.org properties (e.g. https://schema.org/width, https://schema.org/color, https://schema.org/gtin13, ...) will typically expect such data to be provided using those properties, rather than using the generic property/value mechanism.
 """ ;
     schema:domainIncludes schema:Place,
         schema:Product,
@@ -8961,7 +8961,7 @@ schema:branch a rdf:Property ;
 
 schema:branchCode a rdf:Property ;
     rdfs:label "branchCode" ;
-    rdfs:comment """A short textual code (also called "store code") that uniquely identifies a place of business. The code is typically assigned by the parentOrganization and used in structured URLs.\\\\n\\\\nFor example, in the URL http://www.starbucks.co.uk/store-locator/etc/detail/3047 the code "3047" is a branchCode for a particular branch.
+    rdfs:comment """A short textual code (also called "store code") that uniquely identifies a place of business. The code is typically assigned by the parentOrganization and used in structured URLs.\\n\\nFor example, in the URL http://www.starbucks.co.uk/store-locator/etc/detail/3047 the code "3047" is a branchCode for a particular branch.
       """ ;
     schema:domainIncludes schema:Place ;
     schema:rangeIncludes schema:Text .
@@ -9197,7 +9197,7 @@ schema:carbohydrateContent a rdf:Property ;
 
 schema:cargoVolume a rdf:Property ;
     rdfs:label "cargoVolume" ;
-    rdfs:comment "The available volume for cargo or luggage. For automobiles, this is usually the trunk volume.\\\\n\\\\nTypical unit code(s): LTR for liters, FTQ for cubic foot/feet\\\\n\\\\nNote: You can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The available volume for cargo or luggage. For automobiles, this is usually the trunk volume.\\n\\nTypical unit code(s): LTR for liters, FTQ for cubic foot/feet\\n\\nNote: You can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:QuantitativeValue ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#Automotive_Ontology_Working_Group> .
@@ -9496,7 +9496,7 @@ schema:comprisedOf a rdf:Property ;
 
 schema:conditionsOfAccess a rdf:Property ;
     rdfs:label "conditionsOfAccess" ;
-    rdfs:comment "Conditions that affect the availability of, or method(s) of access to, an item. Typically used for real world items such as an [[ArchiveComponent]] held by an [[ArchiveOrganization]]. This property is not suitable for use as a general Web access control mechanism. It is expressed only in natural language.\\\\n\\\\nFor example \\"Available by appointment from the Reading Room\\" or \\"Accessible only from logged-in accounts \\". " ;
+    rdfs:comment "Conditions that affect the availability of, or method(s) of access to, an item. Typically used for real world items such as an [[ArchiveComponent]] held by an [[ArchiveOrganization]]. This property is not suitable for use as a general Web access control mechanism. It is expressed only in natural language.\\n\\nFor example \\"Available by appointment from the Reading Room\\" or \\"Accessible only from logged-in accounts \\". " ;
     schema:domainIncludes schema:CreativeWork ;
     schema:isPartOf <https://pending.schema.org> ;
     schema:rangeIncludes schema:Text ;
@@ -9814,13 +9814,13 @@ schema:cssSelector a rdf:Property ;
 
 schema:currenciesAccepted a rdf:Property ;
     rdfs:label "currenciesAccepted" ;
-    rdfs:comment "The currency accepted.\\\\n\\\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
+    rdfs:comment "The currency accepted.\\n\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
     schema:domainIncludes schema:LocalBusiness ;
     schema:rangeIncludes schema:Text .
 
 schema:currency a rdf:Property ;
     rdfs:label "currency" ;
-    rdfs:comment "The currency in which the monetary amount is expressed.\\\\n\\\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
+    rdfs:comment "The currency in which the monetary amount is expressed.\\n\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
     schema:domainIncludes schema:DatedMoneySpecification,
         schema:ExchangeRateSpecification,
         schema:LoanOrCredit,
@@ -10296,7 +10296,7 @@ schema:discountCode a rdf:Property ;
 
 schema:discountCurrency a rdf:Property ;
     rdfs:label "discountCurrency" ;
-    rdfs:comment "The currency of the discount.\\\\n\\\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
+    rdfs:comment "The currency of the discount.\\n\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
     schema:domainIncludes schema:Order ;
     schema:rangeIncludes schema:Text .
 
@@ -10712,7 +10712,7 @@ schema:eligibleQuantity a rdf:Property ;
 
 schema:eligibleRegion a rdf:Property ;
     rdfs:label "eligibleRegion" ;
-    rdfs:comment """The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.\\\\n\\\\nSee also [[ineligibleRegion]].
+    rdfs:comment """The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.\\n\\nSee also [[ineligibleRegion]].
     """ ;
     rdfs:subPropertyOf schema:areaServed ;
     schema:domainIncludes schema:ActionAccessSpecification,
@@ -10823,7 +10823,7 @@ schema:endOffset a rdf:Property ;
 
 schema:endTime a rdf:Property ;
     rdfs:label "endTime" ;
-    rdfs:comment "The endTime of something. For a reserved event or service (e.g. FoodEstablishmentReservation), the time that it is expected to end. For actions that span a period of time, when the action was performed. e.g. John wrote a book from January to *December*. For media, including audio and video, it's the time offset of the end of a clip within a larger file.\\\\n\\\\nNote that Event uses startDate/endDate instead of startTime/endTime, even when describing dates with times. This situation may be clarified in future revisions." ;
+    rdfs:comment "The endTime of something. For a reserved event or service (e.g. FoodEstablishmentReservation), the time that it is expected to end. For actions that span a period of time, when the action was performed. e.g. John wrote a book from January to *December*. For media, including audio and video, it's the time offset of the end of a clip within a larger file.\\n\\nNote that Event uses startDate/endDate instead of startTime/endTime, even when describing dates with times. This situation may be clarified in future revisions." ;
     schema:domainIncludes schema:Action,
         schema:FoodEstablishmentReservation,
         schema:MediaObject,
@@ -10866,7 +10866,7 @@ schema:energyEfficiencyScaleMin a rdf:Property ;
 
 schema:engineDisplacement a rdf:Property ;
     rdfs:label "engineDisplacement" ;
-    rdfs:comment "The volume swept by all of the pistons inside the cylinders of an internal combustion engine in a single movement. \\\\n\\\\nTypical unit code(s): CMQ for cubic centimeter, LTR for liters, INQ for cubic inches\\\\n* Note 1: You can link to information about how the given value has been determined using the [[valueReference]] property.\\\\n* Note 2: You can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The volume swept by all of the pistons inside the cylinders of an internal combustion engine in a single movement. \\n\\nTypical unit code(s): CMQ for cubic centimeter, LTR for liters, INQ for cubic inches\\\\n* Note 1: You can link to information about how the given value has been determined using the [[valueReference]] property.\\\\n* Note 2: You can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:EngineSpecification ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -10875,7 +10875,7 @@ schema:engineDisplacement a rdf:Property ;
 schema:enginePower a rdf:Property ;
     rdfs:label "enginePower" ;
     rdfs:comment """The power of the vehicle's engine.
-    Typical unit code(s): KWT for kilowatt, BHP for brake horsepower, N12 for metric horsepower (PS, with 1 PS = 735,49875 W)\\\\n\\\\n* Note 1: There are many different ways of measuring an engine's power. For an overview, see  [http://en.wikipedia.org/wiki/Horsepower#Engine_power_test_codes](http://en.wikipedia.org/wiki/Horsepower#Engine_power_test_codes).\\\\n* Note 2: You can link to information about how the given value has been determined using the [[valueReference]] property.\\\\n* Note 3: You can use [[minValue]] and [[maxValue]] to indicate ranges.""" ;
+    Typical unit code(s): KWT for kilowatt, BHP for brake horsepower, N12 for metric horsepower (PS, with 1 PS = 735,49875 W)\\n\\n* Note 1: There are many different ways of measuring an engine's power. For an overview, see  [http://en.wikipedia.org/wiki/Horsepower#Engine_power_test_codes](http://en.wikipedia.org/wiki/Horsepower#Engine_power_test_codes).\\\\n* Note 2: You can link to information about how the given value has been determined using the [[valueReference]] property.\\\\n* Note 3: You can use [[minValue]] and [[maxValue]] to indicate ranges.""" ;
     schema:domainIncludes schema:EngineSpecification ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -11353,7 +11353,7 @@ schema:fromLocation a rdf:Property ;
 
 schema:fuelCapacity a rdf:Property ;
     rdfs:label "fuelCapacity" ;
-    rdfs:comment "The capacity of the fuel tank or in the case of electric cars, the battery. If there are multiple components for storage, this should indicate the total of all storage of the same type.\\\\n\\\\nTypical unit code(s): LTR for liters, GLL of US gallons, GLI for UK / imperial gallons, AMH for ampere-hours (for electrical vehicles)." ;
+    rdfs:comment "The capacity of the fuel tank or in the case of electric cars, the battery. If there are multiple components for storage, this should indicate the total of all storage of the same type.\\n\\nTypical unit code(s): LTR for liters, GLL of US gallons, GLI for UK / imperial gallons, AMH for ampere-hours (for electrical vehicles)." ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -11361,14 +11361,14 @@ schema:fuelCapacity a rdf:Property ;
 
 schema:fuelConsumption a rdf:Property ;
     rdfs:label "fuelConsumption" ;
-    rdfs:comment "The amount of fuel consumed for traveling a particular distance or temporal duration with the given vehicle (e.g. liters per 100 km).\\\\n\\\\n* Note 1: There are unfortunately no standard unit codes for liters per 100 km.  Use [[unitText]] to indicate the unit of measurement, e.g. L/100 km.\\\\n* Note 2: There are two ways of indicating the fuel consumption, [[fuelConsumption]] (e.g. 8 liters per 100 km) and [[fuelEfficiency]] (e.g. 30 miles per gallon). They are reciprocal.\\\\n* Note 3: Often, the absolute value is useful only when related to driving speed (\\"at 80 km/h\\") or usage pattern (\\"city traffic\\"). You can use [[valueReference]] to link the value for the fuel consumption to another value." ;
+    rdfs:comment "The amount of fuel consumed for traveling a particular distance or temporal duration with the given vehicle (e.g. liters per 100 km).\\n\\n* Note 1: There are unfortunately no standard unit codes for liters per 100 km.  Use [[unitText]] to indicate the unit of measurement, e.g. L/100 km.\\\\n* Note 2: There are two ways of indicating the fuel consumption, [[fuelConsumption]] (e.g. 8 liters per 100 km) and [[fuelEfficiency]] (e.g. 30 miles per gallon). They are reciprocal.\\\\n* Note 3: Often, the absolute value is useful only when related to driving speed (\\"at 80 km/h\\") or usage pattern (\\"city traffic\\"). You can use [[valueReference]] to link the value for the fuel consumption to another value." ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:QuantitativeValue ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#Automotive_Ontology_Working_Group> .
 
 schema:fuelEfficiency a rdf:Property ;
     rdfs:label "fuelEfficiency" ;
-    rdfs:comment "The distance traveled per unit of fuel used; most commonly miles per gallon (mpg) or kilometers per liter (km/L).\\\\n\\\\n* Note 1: There are unfortunately no standard unit codes for miles per gallon or kilometers per liter. Use [[unitText]] to indicate the unit of measurement, e.g. mpg or km/L.\\\\n* Note 2: There are two ways of indicating the fuel consumption, [[fuelConsumption]] (e.g. 8 liters per 100 km) and [[fuelEfficiency]] (e.g. 30 miles per gallon). They are reciprocal.\\\\n* Note 3: Often, the absolute value is useful only when related to driving speed (\\"at 80 km/h\\") or usage pattern (\\"city traffic\\"). You can use [[valueReference]] to link the value for the fuel economy to another value." ;
+    rdfs:comment "The distance traveled per unit of fuel used; most commonly miles per gallon (mpg) or kilometers per liter (km/L).\\n\\n* Note 1: There are unfortunately no standard unit codes for miles per gallon or kilometers per liter. Use [[unitText]] to indicate the unit of measurement, e.g. mpg or km/L.\\\\n* Note 2: There are two ways of indicating the fuel consumption, [[fuelConsumption]] (e.g. 8 liters per 100 km) and [[fuelEfficiency]] (e.g. 30 miles per gallon). They are reciprocal.\\\\n* Note 3: Often, the absolute value is useful only when related to driving speed (\\"at 80 km/h\\") or usage pattern (\\"city traffic\\"). You can use [[valueReference]] to link the value for the fuel economy to another value." ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:QuantitativeValue ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#Automotive_Ontology_Working_Group> .
@@ -11966,7 +11966,7 @@ schema:height a rdf:Property ;
 
 schema:highPrice a rdf:Property ;
     rdfs:label "highPrice" ;
-    rdfs:comment "The highest price of all offers available.\\\\n\\\\nUsage guidelines:\\\\n\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
+    rdfs:comment "The highest price of all offers available.\\n\\nUsage guidelines:\\n\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
     schema:domainIncludes schema:AggregateOffer ;
     schema:rangeIncludes schema:Number,
         schema:Text .
@@ -12217,7 +12217,7 @@ schema:industry a rdf:Property ;
 
 schema:ineligibleRegion a rdf:Property ;
     rdfs:label "ineligibleRegion" ;
-    rdfs:comment """The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is not valid, e.g. a region where the transaction is not allowed.\\\\n\\\\nSee also [[eligibleRegion]].
+    rdfs:comment """The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is not valid, e.g. a region where the transaction is not allowed.\\n\\nSee also [[eligibleRegion]].
       """ ;
     schema:domainIncludes schema:ActionAccessSpecification,
         schema:DeliveryChargeSpecification,
@@ -12533,7 +12533,7 @@ schema:itemCondition a rdf:Property ;
 
 schema:itemListElement a rdf:Property ;
     rdfs:label "itemListElement" ;
-    rdfs:comment "For itemListElement values, you can use simple strings (e.g. \\"Peter\\", \\"Paul\\", \\"Mary\\"), existing entities, or use ListItem.\\\\n\\\\nText values are best if the elements in the list are plain strings. Existing entities are best for a simple, unordered list of existing things in your data. ListItem is used with ordered lists when you want to provide additional context about the element in that list or when the same item might be in different places in different lists.\\\\n\\\\nNote: The order of elements in your mark-up is not sufficient for indicating the order or elements.  Use ListItem with a 'position' property in such cases." ;
+    rdfs:comment "For itemListElement values, you can use simple strings (e.g. \\"Peter\\", \\"Paul\\", \\"Mary\\"), existing entities, or use ListItem.\\n\\nText values are best if the elements in the list are plain strings. Existing entities are best for a simple, unordered list of existing things in your data. ListItem is used with ordered lists when you want to provide additional context about the element in that list or when the same item might be in different places in different lists.\\n\\nNote: The order of elements in your mark-up is not sufficient for indicating the order or elements.  Use ListItem with a 'position' property in such cases." ;
     schema:domainIncludes schema:ItemList ;
     schema:rangeIncludes schema:ListItem,
         schema:Text,
@@ -13062,7 +13062,7 @@ schema:loser a rdf:Property ;
 
 schema:lowPrice a rdf:Property ;
     rdfs:label "lowPrice" ;
-    rdfs:comment "The lowest price of all offers available.\\\\n\\\\nUsage guidelines:\\\\n\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
+    rdfs:comment "The lowest price of all offers available.\\n\\nUsage guidelines:\\n\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
     schema:domainIncludes schema:AggregateOffer ;
     schema:rangeIncludes schema:Number,
         schema:Text .
@@ -13400,7 +13400,7 @@ schema:messageAttachment a rdf:Property ;
 
 schema:mileageFromOdometer a rdf:Property ;
     rdfs:label "mileageFromOdometer" ;
-    rdfs:comment "The total distance travelled by the particular vehicle since its initial production, as read from its odometer.\\\\n\\\\nTypical unit code(s): KMT for kilometers, SMI for statute miles" ;
+    rdfs:comment "The total distance travelled by the particular vehicle since its initial production, as read from its odometer.\\n\\nTypical unit code(s): KMT for kilometers, SMI for statute miles" ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:QuantitativeValue ;
     schema:source <http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#Automotive_Ontology_Working_Group> .
@@ -13731,7 +13731,7 @@ schema:numberOfAvailableAccommodationUnits a rdf:Property ;
 
 schema:numberOfAxles a rdf:Property ;
     rdfs:label "numberOfAxles" ;
-    rdfs:comment "The number of axles.\\\\n\\\\nTypical unit code(s): C62" ;
+    rdfs:comment "The number of axles.\\n\\nTypical unit code(s): C62" ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:Number,
         schema:QuantitativeValue ;
@@ -13776,7 +13776,7 @@ schema:numberOfCredits a rdf:Property ;
 
 schema:numberOfDoors a rdf:Property ;
     rdfs:label "numberOfDoors" ;
-    rdfs:comment "The number of doors.\\\\n\\\\nTypical unit code(s): C62" ;
+    rdfs:comment "The number of doors.\\n\\nTypical unit code(s): C62" ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:Number,
         schema:QuantitativeValue ;
@@ -13800,7 +13800,7 @@ schema:numberOfEpisodes a rdf:Property ;
 
 schema:numberOfForwardGears a rdf:Property ;
     rdfs:label "numberOfForwardGears" ;
-    rdfs:comment "The total number of forward gears available for the transmission system of the vehicle.\\\\n\\\\nTypical unit code(s): C62" ;
+    rdfs:comment "The total number of forward gears available for the transmission system of the vehicle.\\n\\nTypical unit code(s): C62" ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:Number,
         schema:QuantitativeValue ;
@@ -13854,7 +13854,7 @@ schema:numberOfPlayers a rdf:Property ;
 
 schema:numberOfPreviousOwners a rdf:Property ;
     rdfs:label "numberOfPreviousOwners" ;
-    rdfs:comment "The number of owners of the vehicle, including the current one.\\\\n\\\\nTypical unit code(s): C62" ;
+    rdfs:comment "The number of owners of the vehicle, including the current one.\\n\\nTypical unit code(s): C62" ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:Number,
         schema:QuantitativeValue ;
@@ -13973,7 +13973,7 @@ schema:offersPrescriptionByMail a rdf:Property ;
 
 schema:openingHours a rdf:Property ;
     rdfs:label "openingHours" ;
-    rdfs:comment "The general opening hours for a business. Opening hours can be specified as a weekly time range, starting with days, then times per day. Multiple days can be listed with commas ',' separating each day. Day or time ranges are specified using a hyphen '-'.\\\\n\\\\n* Days are specified using the following two-letter combinations: \`\`\`Mo\`\`\`, \`\`\`Tu\`\`\`, \`\`\`We\`\`\`, \`\`\`Th\`\`\`, \`\`\`Fr\`\`\`, \`\`\`Sa\`\`\`, \`\`\`Su\`\`\`.\\\\n* Times are specified using 24:00 format. For example, 3pm is specified as \`\`\`15:00\`\`\`, 10am as \`\`\`10:00\`\`\`. \\\\n* Here is an example: <code>&lt;time itemprop=\\"openingHours\\" datetime=&quot;Tu,Th 16:00-20:00&quot;&gt;Tuesdays and Thursdays 4-8pm&lt;/time&gt;</code>.\\\\n* If a business is open 7 days a week, then it can be specified as <code>&lt;time itemprop=&quot;openingHours&quot; datetime=&quot;Mo-Su&quot;&gt;Monday through Sunday, all day&lt;/time&gt;</code>." ;
+    rdfs:comment "The general opening hours for a business. Opening hours can be specified as a weekly time range, starting with days, then times per day. Multiple days can be listed with commas ',' separating each day. Day or time ranges are specified using a hyphen '-'.\\n\\n* Days are specified using the following two-letter combinations: \`\`\`Mo\`\`\`, \`\`\`Tu\`\`\`, \`\`\`We\`\`\`, \`\`\`Th\`\`\`, \`\`\`Fr\`\`\`, \`\`\`Sa\`\`\`, \`\`\`Su\`\`\`.\\\\n* Times are specified using 24:00 format. For example, 3pm is specified as \`\`\`15:00\`\`\`, 10am as \`\`\`10:00\`\`\`. \\\\n* Here is an example: <code>&lt;time itemprop=\\"openingHours\\" datetime=&quot;Tu,Th 16:00-20:00&quot;&gt;Tuesdays and Thursdays 4-8pm&lt;/time&gt;</code>.\\\\n* If a business is open 7 days a week, then it can be specified as <code>&lt;time itemprop=&quot;openingHours&quot; datetime=&quot;Mo-Su&quot;&gt;Monday through Sunday, all day&lt;/time&gt;</code>." ;
     schema:domainIncludes schema:CivicStructure,
         schema:LocalBusiness ;
     schema:rangeIncludes schema:Text .
@@ -14271,7 +14271,7 @@ schema:pattern a rdf:Property ;
 
 schema:payload a rdf:Property ;
     rdfs:label "payload" ;
-    rdfs:comment "The permitted weight of passengers and cargo, EXCLUDING the weight of the empty vehicle.\\\\n\\\\nTypical unit code(s): KGM for kilogram, LBR for pound\\\\n\\\\n* Note 1: Many databases specify the permitted TOTAL weight instead, which is the sum of [[weight]] and [[payload]]\\\\n* Note 2: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 3: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 4: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The permitted weight of passengers and cargo, EXCLUDING the weight of the empty vehicle.\\n\\nTypical unit code(s): KGM for kilogram, LBR for pound\\n\\n* Note 1: Many databases specify the permitted TOTAL weight instead, which is the sum of [[weight]] and [[payload]]\\\\n* Note 2: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 3: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 4: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -14633,7 +14633,7 @@ schema:previousStartDate a rdf:Property ;
 
 schema:price a rdf:Property ;
     rdfs:label "price" ;
-    rdfs:comment """The offer price of a product, or of a price component when attached to PriceSpecification and its subtypes.\\\\n\\\\nUsage guidelines:\\\\n\\\\n* Use the [[priceCurrency]] property (with standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. "USD"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. "BTC"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. "Ithaca HOUR") instead of including [ambiguous symbols](http://en.wikipedia.org/wiki/Dollar_sign#Currencies_that_use_the_dollar_or_peso_sign) such as '$' in the value.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator.\\\\n* Note that both [RDFa](http://www.w3.org/TR/xhtml-rdfa-primer/#using-the-content-attribute) and Microdata syntax allow the use of a "content=" attribute for publishing simple machine-readable values alongside more human-friendly formatting.\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.
+    rdfs:comment """The offer price of a product, or of a price component when attached to PriceSpecification and its subtypes.\\n\\nUsage guidelines:\\n\\n* Use the [[priceCurrency]] property (with standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. "USD"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. "BTC"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. "Ithaca HOUR") instead of including [ambiguous symbols](http://en.wikipedia.org/wiki/Dollar_sign#Currencies_that_use_the_dollar_or_peso_sign) such as '$' in the value.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator.\\\\n* Note that both [RDFa](http://www.w3.org/TR/xhtml-rdfa-primer/#using-the-content-attribute) and Microdata syntax allow the use of a "content=" attribute for publishing simple machine-readable values alongside more human-friendly formatting.\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.
       """ ;
     schema:domainIncludes schema:Offer,
         schema:PriceSpecification,
@@ -14658,7 +14658,7 @@ schema:priceComponentType a rdf:Property ;
 
 schema:priceCurrency a rdf:Property ;
     rdfs:label "priceCurrency" ;
-    rdfs:comment "The currency of the price, or a price component when attached to [[PriceSpecification]] and its subtypes.\\\\n\\\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
+    rdfs:comment "The currency of the price, or a price component when attached to [[PriceSpecification]] and its subtypes.\\n\\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. \\"USD\\"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. \\"BTC\\"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. \\"Ithaca HOUR\\"." ;
     schema:domainIncludes schema:Offer,
         schema:PriceSpecification,
         schema:Reservation,
@@ -15031,7 +15031,7 @@ schema:ratingExplanation a rdf:Property ;
 
 schema:ratingValue a rdf:Property ;
     rdfs:label "ratingValue" ;
-    rdfs:comment "The rating for the content.\\\\n\\\\nUsage guidelines:\\\\n\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
+    rdfs:comment "The rating for the content.\\n\\nUsage guidelines:\\n\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
     schema:domainIncludes schema:Rating ;
     schema:rangeIncludes schema:Number,
         schema:Text .
@@ -15519,7 +15519,7 @@ schema:risks a rdf:Property ;
 
 schema:roofLoad a rdf:Property ;
     rdfs:label "roofLoad" ;
-    rdfs:comment "The permitted total weight of cargo and installations (e.g. a roof rack) on top of the vehicle.\\\\n\\\\nTypical unit code(s): KGM for kilogram, LBR for pound\\\\n\\\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]]\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The permitted total weight of cargo and installations (e.g. a roof rack) on top of the vehicle.\\n\\nTypical unit code(s): KGM for kilogram, LBR for pound\\n\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]]\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:BusOrCoach,
         schema:Car ;
     schema:isPartOf <https://auto.schema.org> ;
@@ -15709,7 +15709,7 @@ schema:seatSection a rdf:Property ;
 
 schema:seatingCapacity a rdf:Property ;
     rdfs:label "seatingCapacity" ;
-    rdfs:comment "The number of persons that can be seated (e.g. in a vehicle), both in terms of the physical space available, and in terms of limitations set by law.\\\\n\\\\nTypical unit code(s): C62 for persons " ;
+    rdfs:comment "The number of persons that can be seated (e.g. in a vehicle), both in terms of the physical space available, and in terms of limitations set by law.\\n\\nTypical unit code(s): C62 for persons " ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:Number,
@@ -16084,7 +16084,7 @@ schema:specialCommitments a rdf:Property ;
 
 schema:specialOpeningHoursSpecification a rdf:Property ;
     rdfs:label "specialOpeningHoursSpecification" ;
-    rdfs:comment """The special opening hours of a certain place.\\\\n\\\\nUse this to explicitly override general opening hours brought in scope by [[openingHoursSpecification]] or [[openingHours]].
+    rdfs:comment """The special opening hours of a certain place.\\n\\nUse this to explicitly override general opening hours brought in scope by [[openingHoursSpecification]] or [[openingHours]].
       """ ;
     schema:domainIncludes schema:Place ;
     schema:rangeIncludes schema:OpeningHoursSpecification .
@@ -16105,7 +16105,7 @@ schema:speechToTextMarkup a rdf:Property ;
 
 schema:speed a rdf:Property ;
     rdfs:label "speed" ;
-    rdfs:comment "The speed range of the vehicle. If the vehicle is powered by an engine, the upper limit of the speed range (indicated by [[maxValue]] should be the maximum speed achievable under regular conditions.\\\\n\\\\nTypical unit code(s): KMH for km/h, HM for mile per hour (0.447 04 m/s), KNT for knot\\\\n\\\\n*Note 1: Use [[minValue]] and [[maxValue]] to indicate the range. Typically, the minimal value is zero.\\\\n* Note 2: There are many different ways of measuring the speed range. You can link to information about how the given value has been determined using the [[valueReference]] property." ;
+    rdfs:comment "The speed range of the vehicle. If the vehicle is powered by an engine, the upper limit of the speed range (indicated by [[maxValue]] should be the maximum speed achievable under regular conditions.\\n\\nTypical unit code(s): KMH for km/h, HM for mile per hour (0.447 04 m/s), KNT for knot\\n\\n*Note 1: Use [[minValue]] and [[maxValue]] to indicate the range. Typically, the minimal value is zero.\\\\n* Note 2: There are many different ways of measuring the speed range. You can link to information about how the given value has been determined using the [[valueReference]] property." ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -16204,7 +16204,7 @@ schema:startOffset a rdf:Property ;
 
 schema:startTime a rdf:Property ;
     rdfs:label "startTime" ;
-    rdfs:comment "The startTime of something. For a reserved event or service (e.g. FoodEstablishmentReservation), the time that it is expected to start. For actions that span a period of time, when the action was performed. e.g. John wrote a book from *January* to December. For media, including audio and video, it's the time offset of the start of a clip within a larger file.\\\\n\\\\nNote that Event uses startDate/endDate instead of startTime/endTime, even when describing dates with times. This situation may be clarified in future revisions." ;
+    rdfs:comment "The startTime of something. For a reserved event or service (e.g. FoodEstablishmentReservation), the time that it is expected to start. For actions that span a period of time, when the action was performed. e.g. John wrote a book from *January* to December. For media, including audio and video, it's the time offset of the start of a clip within a larger file.\\n\\nNote that Event uses startDate/endDate instead of startTime/endTime, even when describing dates with times. This situation may be clarified in future revisions." ;
     schema:domainIncludes schema:Action,
         schema:FoodEstablishmentReservation,
         schema:MediaObject,
@@ -16694,7 +16694,7 @@ schema:tocEntry a rdf:Property ;
 
 schema:tongueWeight a rdf:Property ;
     rdfs:label "tongueWeight" ;
-    rdfs:comment "The permitted vertical load (TWR) of a trailer attached to the vehicle. Also referred to as Tongue Load Rating (TLR) or Vertical Load Rating (VLR)\\\\n\\\\nTypical unit code(s): KGM for kilogram, LBR for pound\\\\n\\\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The permitted vertical load (TWR) of a trailer attached to the vehicle. Also referred to as Tongue Load Rating (TLR) or Vertical Load Rating (VLR)\\n\\nTypical unit code(s): KGM for kilogram, LBR for pound\\n\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -16711,7 +16711,7 @@ schema:tool a rdf:Property ;
 
 schema:torque a rdf:Property ;
     rdfs:label "torque" ;
-    rdfs:comment "The torque (turning force) of the vehicle's engine.\\\\n\\\\nTypical unit code(s): NU for newton metre (N m), F17 for pound-force per foot, or F48 for pound-force per inch\\\\n\\\\n* Note 1: You can link to information about how the given value has been determined (e.g. reference RPM) using the [[valueReference]] property.\\\\n* Note 2: You can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The torque (turning force) of the vehicle's engine.\\n\\nTypical unit code(s): NU for newton metre (N m), F17 for pound-force per foot, or F48 for pound-force per inch\\n\\n* Note 1: You can link to information about how the given value has been determined (e.g. reference RPM) using the [[valueReference]] property.\\\\n* Note 2: You can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:EngineSpecification ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -16734,7 +16734,7 @@ schema:totalPaymentDue a rdf:Property ;
 
 schema:totalPrice a rdf:Property ;
     rdfs:label "totalPrice" ;
-    rdfs:comment "The total price for the reservation or ticket, including applicable taxes, shipping, etc.\\\\n\\\\nUsage guidelines:\\\\n\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
+    rdfs:comment "The total price for the reservation or ticket, including applicable taxes, shipping, etc.\\n\\nUsage guidelines:\\n\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
     schema:domainIncludes schema:Reservation,
         schema:Ticket ;
     schema:rangeIncludes schema:Number,
@@ -16804,7 +16804,7 @@ schema:trailer a rdf:Property ;
 
 schema:trailerWeight a rdf:Property ;
     rdfs:label "trailerWeight" ;
-    rdfs:comment "The permitted weight of a trailer attached to the vehicle.\\\\n\\\\nTypical unit code(s): KGM for kilogram, LBR for pound\\\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The permitted weight of a trailer attached to the vehicle.\\n\\nTypical unit code(s): KGM for kilogram, LBR for pound\\\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -17100,7 +17100,7 @@ schema:validUntil a rdf:Property ;
 
 schema:value a rdf:Property ;
     rdfs:label "value" ;
-    rdfs:comment "The value of the quantitative value or property value node.\\\\n\\\\n* For [[QuantitativeValue]] and [[MonetaryAmount]], the recommended type for values is 'Number'.\\\\n* For [[PropertyValue]], it can be 'Text;', 'Number', 'Boolean', or 'StructuredValue'.\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
+    rdfs:comment "The value of the quantitative value or property value node.\\n\\n* For [[QuantitativeValue]] and [[MonetaryAmount]], the recommended type for values is 'Number'.\\\\n* For [[PropertyValue]], it can be 'Text;', 'Number', 'Boolean', or 'StructuredValue'.\\\\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\\\\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator." ;
     schema:domainIncludes schema:MonetaryAmount,
         schema:PropertyValue,
         schema:QuantitativeValue ;
@@ -17243,7 +17243,7 @@ schema:vehicleModelDate a rdf:Property ;
 
 schema:vehicleSeatingCapacity a rdf:Property ;
     rdfs:label "vehicleSeatingCapacity" ;
-    rdfs:comment "The number of passengers that can be seated in the vehicle, both in terms of the physical space available, and in terms of limitations set by law.\\\\n\\\\nTypical unit code(s): C62 for persons." ;
+    rdfs:comment "The number of passengers that can be seated in the vehicle, both in terms of the physical space available, and in terms of limitations set by law.\\n\\nTypical unit code(s): C62 for persons." ;
     schema:domainIncludes schema:Vehicle ;
     schema:rangeIncludes schema:Number,
         schema:QuantitativeValue ;
@@ -17380,7 +17380,7 @@ schema:weight a rdf:Property ;
 
 schema:weightTotal a rdf:Property ;
     rdfs:label "weightTotal" ;
-    rdfs:comment "The permitted total weight of the loaded vehicle, including passengers and cargo and the weight of the empty vehicle.\\\\n\\\\nTypical unit code(s): KGM for kilogram, LBR for pound\\\\n\\\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
+    rdfs:comment "The permitted total weight of the loaded vehicle, including passengers and cargo and the weight of the empty vehicle.\\n\\nTypical unit code(s): KGM for kilogram, LBR for pound\\n\\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\\\\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\\\\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges." ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;
@@ -17388,7 +17388,7 @@ schema:weightTotal a rdf:Property ;
 
 schema:wheelbase a rdf:Property ;
     rdfs:label "wheelbase" ;
-    rdfs:comment "The distance between the centers of the front and rear wheels.\\\\n\\\\nTypical unit code(s): CMT for centimeters, MTR for meters, INH for inches, FOT for foot/feet" ;
+    rdfs:comment "The distance between the centers of the front and rear wheels.\\n\\nTypical unit code(s): CMT for centimeters, MTR for meters, INH for inches, FOT for foot/feet" ;
     schema:domainIncludes schema:Vehicle ;
     schema:isPartOf <https://auto.schema.org> ;
     schema:rangeIncludes schema:QuantitativeValue ;

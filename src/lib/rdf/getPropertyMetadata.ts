@@ -2,12 +2,11 @@ import { Store } from "rdflib";
 import { NamedNode } from "rdflib/lib/tf-types";
 import { RDFS, SCHEMA } from "./namespaces";
 
-type PropertyMetadataKey =
+export type PropertyMetadataKey =
   | "label"
   | "comment"
   | "domainIncludes"
   | "rangeIncludes"
-  | "supersedes"
   | "supersededBy";
 
 const namesToPredicateNodes: Map<PropertyMetadataKey, NamedNode> = new Map([
@@ -15,7 +14,6 @@ const namesToPredicateNodes: Map<PropertyMetadataKey, NamedNode> = new Map([
   ["comment", RDFS("comment")],
   ["domainIncludes", SCHEMA("domainIncludes")],
   ["rangeIncludes", SCHEMA("rangeIncludes")],
-  ["supersedes", SCHEMA("supersedes")],
   ["supersededBy", SCHEMA("supersededBy")],
 ]);
 

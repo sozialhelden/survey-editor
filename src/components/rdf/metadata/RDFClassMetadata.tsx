@@ -2,9 +2,16 @@ import { Callout, ControlGroup, H4, H5, UL } from "@blueprintjs/core";
 import marked from "marked";
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { getClassMetadataCompact } from "../../../lib/rdf/getClassMetadata";
+import styled from "styled-components";
+import {
+  ClassMetadataKey,
+  getClassMetadataCompact,
+} from "../../../lib/rdf/getClassMetadata";
 import { getFirstClassOrPropertyNodeWithName } from "../../../lib/rdf/getFirstClassOrPropertyNodeWithName";
-import { getPropertyMetadataCompact } from "../../../lib/rdf/getPropertyMetadata";
+import {
+  getPropertyMetadataCompact,
+  PropertyMetadataKey,
+} from "../../../lib/rdf/getPropertyMetadata";
 import StyledMarkdown from "../../core/StyledMarkdown";
 import PrefixedNodeName from "../PrefixedNodeName";
 import { RDFGraphContext } from "../RDFGraphContext";
@@ -34,12 +41,25 @@ function ExternalAnchor(props: React.HTMLProps<HTMLAnchorElement>) {
   );
 }
 
+const ControlGroupWithGapSections = styled(ControlGroup)`
+  > * {
+    margin-top: 0.5rem !important;
+    &:first-child {
+      margin-top: 0 !important;
+    }
+  }
+`;
+
 export function RDFClassMetadata({
   name,
   contextPrefix,
+  visibleSections,
 }: {
   name: string;
   contextPrefix: string;
+  visibleSections?: Partial<
+    Record<ClassMetadataKey | PropertyMetadataKey, boolean>
+  >;
 }) {
   const graph = useContext(RDFGraphContext);
   const node = useMemo(
@@ -76,26 +96,28 @@ export function RDFClassMetadata({
   const basePrefix = name.replace(new RegExp(firstLabel + "$"), "");
 
   return (
-    <ControlGroup
+    <ControlGroupWithGapSections
       vertical={true}
-      style={{ gap: "1rem", textOverflow: "ellipsis", overflow: "hidden" }}
+      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
     >
-      {labels?.map((label) => (
-        <H4>
-          <ExternalAnchor href={name}>
-            <PrefixedNodeName name={name} contextPrefix={contextPrefix} />
-          </ExternalAnchor>
-        </H4>
-      ))}
+      {visibleSections?.label !== false &&
+        labels?.map((label) => (
+          <H4>
+            <ExternalAnchor href={name}>
+              <PrefixedNodeName name={name} contextPrefix={contextPrefix} />
+            </ExternalAnchor>
+          </H4>
+        ))}
 
-      {supersededBy?.map((s) => (
-        <Callout intent="warning">
-          <H5>Deprecated, superseded by:</H5>
-          <ExternalAnchor href={s}>{s}</ExternalAnchor>
-        </Callout>
-      ))}
+      {visibleSections?.supersededBy !== false &&
+        supersededBy?.map((s) => (
+          <Callout intent="warning">
+            <H5>Deprecated, superseded by:</H5>
+            <ExternalAnchor href={s}>{s}</ExternalAnchor>
+          </Callout>
+        ))}
 
-      {range.length > 0 && (
+      {visibleSections?.rangeIncludes !== false && range.length > 0 && (
         <section>
           <H5>Type:</H5>
           <UL>
@@ -110,7 +132,7 @@ export function RDFClassMetadata({
         </section>
       )}
 
-      {domain.length > 0 && (
+      {visibleSections?.domainIncludes !== false && domain.length > 0 && (
         <section>
           <H5>Property of:</H5>
           <UL>
@@ -125,30 +147,36 @@ export function RDFClassMetadata({
         </section>
       )}
 
-      {comments?.map((comment) => (
-        <StyledMarkdown markedOptions={{ renderer: markedRenderer }}>
-          {comment?.replaceAll(
-            /\[\[(\w+)\]\]/g,
-            (_, word) => `[\`${word}\`](${basePrefix}${word})`
-          )}
-        </StyledMarkdown>
-      ))}
+      {visibleSections?.comment !== false &&
+        comments?.map((comment) => (
+          <section>
+            <StyledMarkdown markedOptions={{ renderer: markedRenderer }}>
+              {comment?.replaceAll(
+                /\[\[(\w+)\]\]/g,
+                (_, word) => `[\`${word}\`](${basePrefix}${word})`
+              )}
+            </StyledMarkdown>
+          </section>
+        ))}
 
-      {sources?.map((source) => (
+      {visibleSections?.source !== false && sources && sources?.length > 0 && (
         <section>
-          <H5>Source:</H5>
-          <p>
-            <ExternalAnchor href={source}>{source}</ExternalAnchor>
-          </p>
+          <H5>Sources:</H5>
+          {sources?.map((source) => (
+            <p>
+              <ExternalAnchor href={source}>{source}</ExternalAnchor>
+            </p>
+          ))}
         </section>
-      ))}
+      )}
 
-      {isPartOfs?.map((isPartOf) => (
-        <section>
-          <H5>Part of:</H5>
-          <ExternalAnchor href={isPartOf}>{isPartOf}</ExternalAnchor>
-        </section>
-      ))}
-    </ControlGroup>
+      {visibleSections?.isPartOf !== false &&
+        isPartOfs?.map((isPartOf) => (
+          <section>
+            <H5>Part of:</H5>
+            <ExternalAnchor href={isPartOf}>{isPartOf}</ExternalAnchor>
+          </section>
+        ))}
+    </ControlGroupWithGapSections>
   );
 }

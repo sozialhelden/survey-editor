@@ -2,7 +2,7 @@ import { Store } from "rdflib";
 import { NamedNode } from "rdflib/lib/tf-types";
 import { RDFS, SCHEMA } from "./namespaces";
 
-type ClassMetadataKey =
+export type ClassMetadataKey =
   | "label"
   | "subClassOf"
   | "comment"

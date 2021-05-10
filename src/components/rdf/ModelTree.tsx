@@ -1,23 +1,22 @@
 import {
-  Button,
   ButtonGroup,
   Checkbox,
   ControlGroup,
   ITreeNode,
+  Tag,
   Tree,
 } from "@blueprintjs/core";
 import { Store, sym } from "rdflib";
 import { NamedNode } from "rdflib/lib/tf-types";
 import * as React from "react";
 import { getClassAncestors } from "../../lib/rdf/getClassAncestors";
-import {
-  getClassProperties,
-  getDirectAndIndirectClassProperties,
-} from "../../lib/rdf/getClassProperties";
+import { getClassMetadataCompact } from "../../lib/rdf/getClassMetadata";
+import { getClassProperties } from "../../lib/rdf/getClassProperties";
 import { getPropertyMetadataCompact } from "../../lib/rdf/getPropertyMetadata";
 import isClassNode from "../../lib/rdf/isClassNode";
 import { replaceURIWithPrefix } from "../../lib/rdf/namespaces";
 import ClassNodeButtonWithPopover from "./ClassNodeButtonWithPopover";
+import guessQuestionWording from "./guessQuestionWording";
 import { RDFGraphContext } from "./RDFGraphContext";
 
 interface IRDFNodeWithPath {
@@ -27,25 +26,17 @@ interface IRDFNodeWithPath {
 }
 
 /** The label visible on the right of each tree item. */
-function SecondaryLabel(props: {
-  node: IRDFNodeWithPath;
-  graph: Store;
-  contextPrefix: string;
-}) {
-  const { node, graph } = props;
-  const metadata = React.useMemo(
-    () => getPropertyMetadataCompact(node.node, graph),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [graph, node.node.value]
-  );
-
-  const types = metadata.get("rangeIncludes");
+function SecondaryLabel(props: { types: string[]; contextPrefix: string }) {
   return (
     <ButtonGroup>
-      {types?.map((t) => (
-        <Button outlined={true}>
-          {replaceURIWithPrefix(t).replace(props.contextPrefix + ":", "")}
-        </Button>
+      {props.types?.map((t) => (
+        <>
+          &nbsp;
+          <ClassNodeButtonWithPopover
+            name={t}
+            contextPrefix={props.contextPrefix}
+          />
+        </>
       ))}
     </ButtonGroup>
   );
@@ -70,18 +61,21 @@ export function getNodeTree(
   const ancestors =
     path === "" || !isClass ? getClassAncestors(node, graph) : [];
 
-  const childNodes = ancestors.concat(properties).map((node) => {
-    return getNodeTree(
-      path + "." + node.value,
-      expandedNames,
-      selectedNames,
-      node,
-      contextPrefix,
-      graph,
-      transform,
-      false
-    );
-  });
+  const childNodes = ancestors
+    .reverse()
+    .concat(properties)
+    .map((node) => {
+      return getNodeTree(
+        path + "." + node.value,
+        expandedNames,
+        selectedNames,
+        node,
+        contextPrefix,
+        graph,
+        transform,
+        false
+      );
+    });
 
   return transform(
     {
@@ -103,7 +97,9 @@ export default function ModelTree(props: {}) {
   const [selectedNames, setSelectedNames] = React.useState<Set<string>>(
     new Set([])
   );
+
   const store = React.useContext(RDFGraphContext);
+
   const handleCheckboxChange = React.useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
       const checkbox = event.currentTarget;
@@ -113,7 +109,7 @@ export default function ModelTree(props: {}) {
         throw new Error("data-name must be set on checkbox");
       }
       const ancestors = getClassAncestors(sym(name), store);
-      const properties = getDirectAndIndirectClassProperties(sym(name), store);
+      const properties = getClassProperties(sym(name), store);
       if (checkbox.checked) {
         properties.forEach((p) => {
           selectedNames.add(p.value);
@@ -134,6 +130,14 @@ export default function ModelTree(props: {}) {
     return replaceURIWithPrefix(node.value).split(":")[0];
   }, [node.value]);
 
+  const classMetadata = React.useMemo(
+    () => getClassMetadataCompact(node, store),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store, node.value]
+  );
+
+  const className = classMetadata.get("label")?.[0];
+
   const result = React.useMemo(() => {
     return getNodeTree(
       "",
@@ -150,6 +154,7 @@ export default function ModelTree(props: {}) {
           );
         }
 
+        const isClass = isClassNode(nodeData.node, store);
         const name = nodeData.node.value;
         const directProperties = getClassProperties(sym(name), store);
         const hasSelectedDirectProperties = !!directProperties.find((p) =>
@@ -159,21 +164,54 @@ export default function ModelTree(props: {}) {
           !selectedNames.has(name) && hasSelectedDirectProperties;
         const isSelected = selectedNames.has(nodeData.node.value);
 
+        const propertyMetadata = getPropertyMetadataCompact(
+          nodeData.node,
+          store
+        );
+
+        const propertyName = propertyMetadata.get("label")?.[0];
+
+        const types = propertyMetadata.get("rangeIncludes");
+
         const label = (
           <ControlGroup>
-            <Checkbox
-              inline={true}
-              style={{ margin: "0", alignSelf: "center" }}
-              checked={isSelected}
-              aria-checked={isPartiallySelected ? "mixed" : isSelected}
-              indeterminate={isPartiallySelected}
-              onChange={handleCheckboxChange}
-              data-name={nodeData.node.value}
-            />
+            {!isRoot && (
+              <Checkbox
+                inline={true}
+                style={{ margin: "0", alignSelf: "center" }}
+                checked={isSelected}
+                aria-checked={isPartiallySelected ? "mixed" : isSelected}
+                indeterminate={isPartiallySelected}
+                onChange={handleCheckboxChange}
+                data-name={nodeData.node.value}
+              />
+            )}
+
             <ClassNodeButtonWithPopover
               name={nodeData.node.value}
               contextPrefix={isRoot ? "" : contextPrefix}
-            />
+              visibleSections={{ rangeIncludes: false, domainIncludes: false }}
+            >
+              {propertyMetadata.get("supersededBy")?.length ? (
+                <>
+                  &nbsp;<Tag intent="none">superseded</Tag>
+                </>
+              ) : null}
+            </ClassNodeButtonWithPopover>
+
+            <div style={{ display: "flex", alignItems: "center " }}>
+              {className &&
+                propertyName &&
+                types &&
+                guessQuestionWording(
+                  isClass,
+                  className,
+                  propertyName,
+                  types?.map((t) =>
+                    replaceURIWithPrefix(t).replace(contextPrefix + ":", "")
+                  )
+                )}
+            </div>
           </ControlGroup>
         );
 
@@ -181,12 +219,8 @@ export default function ModelTree(props: {}) {
           ...result,
           label,
           isExpanded: expandedNames.has(nodeData.node.value),
-          secondaryLabel: nodeData && (
-            <SecondaryLabel
-              node={nodeData}
-              graph={store}
-              contextPrefix={contextPrefix}
-            />
+          secondaryLabel: nodeData && types && (
+            <SecondaryLabel types={types} contextPrefix={contextPrefix} />
           ),
         };
 
@@ -200,6 +234,7 @@ export default function ModelTree(props: {}) {
     contextPrefix,
     store,
     handleCheckboxChange,
+    className,
   ]);
 
   return result ? (

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ordinalize } from "inflection";
+import { addIndefiniteArticle } from "../../../../lib/addIndefiniteArticle";
 import { EvaluationError } from "../../../types/Errors";
 import { ODKNode } from "../../../types/ODKNode";
 import ODKNodeValue from "../../../types/ODKNodeValue";
@@ -196,14 +197,6 @@ function evaluateCallExpression(
       e
     );
   }
-}
-
-function addIndefiniteArticle(noun: string) {
-  const article = ["a", "e", "i", "o", "u"].includes(noun.slice(0, 1))
-    ? "an"
-    : "a";
-
-  return `${article} ${noun}`;
 }
 
 function assertBoolean(

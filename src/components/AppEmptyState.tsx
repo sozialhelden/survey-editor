@@ -1,8 +1,7 @@
 import { Button, ControlGroup, NonIdealState } from "@blueprintjs/core";
-import * as ExcelJS from "exceljs";
 import React, { useCallback } from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
-import { loadFormFromExcelWorkbook } from "../xlsform-simple-schema/functions/loadFormFromExcelWorkbook";
+import createEmptyXLSForm from "../xlsform-simple-schema/functions/editing/createEmptyXLSForm";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import ExcelFileInput from "./ExcelFileInput";
 
@@ -24,16 +23,9 @@ export function AppEmptyState({
   );
 
   const loadEmptyXLSForm = useCallback(async () => {
-    const emptyWorkbook = new ExcelJS.Workbook();
-    emptyWorkbook.addWorksheet("survey");
-    emptyWorkbook.addWorksheet("choices");
-    const settingsWorksheet = emptyWorkbook.addWorksheet("settings");
-    settingsWorksheet.addRow(["default_language"]);
-    settingsWorksheet.addRow(["English (en)"]);
-
     setXLSFormWithPatches(
       "Load empty XLSForm document",
-      await loadFormFromExcelWorkbook(emptyWorkbook),
+      await createEmptyXLSForm(),
       [],
       []
     );

@@ -3,6 +3,7 @@ import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
 import useSettingsDialog from "../lib/useSettingsDialog";
+import createEmptyXLSForm from "../xlsform-simple-schema/functions/editing/createEmptyXLSForm";
 import { saveXLSForm } from "../xlsform-simple-schema/functions/editing/saveXLSForm";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import { useWorkbookFromFile } from "./ExcelFileInput";
@@ -29,6 +30,15 @@ export function FileMenuButton({
     setLanguage,
   });
 
+  const loadEmptyXLSForm = React.useCallback(async () => {
+    setXLSFormWithPatches(
+      "Create new, empty XLSForm document",
+      await createEmptyXLSForm(),
+      [],
+      []
+    );
+  }, [setXLSFormWithPatches]);
+
   const closeFile = React.useCallback(() => {
     setXLSFormWithPatches("Close current workbook", undefined, [], []);
   }, [setXLSFormWithPatches]);
@@ -41,7 +51,7 @@ export function FileMenuButton({
 
   const menu = (
     <Menu>
-      <MenuItem text="New File" icon="plus" onClick={showSettingsDialog} />
+      <MenuItem text="New File" icon="plus" onClick={loadEmptyXLSForm} />
       <MenuDivider />
       <label htmlFor="open-file-input">
         <MenuItem icon="import" text="Import File…" />

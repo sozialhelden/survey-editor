@@ -1,22 +1,22 @@
 import { Colors, ControlGroup, Icon, ITreeNode, Tree } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import * as React from "react";
-import { useDarkMode } from "../components/core/DarkModeContainer";
-import HighlightedExpression from "../components/odk/HighlightedExpression/HighlightedODKExpression";
-import FieldPopoverButton from "../components/survey/FieldPopoverButton/FieldPopoverButton";
-import { ODKSurveyContext } from "../lib/ODKSurveyContext";
-import { XLSForm } from "../xlsform-simple-schema";
-import createLiteralExpressionFromValue from "../xlsform-simple-schema/functions/odk-formulas/evaluation/createLiteralExpressionFromValue";
-import { getJSONResult } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeAndChildren";
-import ODKFormulaEvaluationContext from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { XLSForm } from "../../xlsform-simple-schema";
+import createLiteralExpressionFromValue from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/createLiteralExpressionFromValue";
+import { getJSONResult } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeAndChildren";
+import ODKFormulaEvaluationContext from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
 import {
   getNodeAbsolutePath,
   getNodeAbsolutePathString,
-} from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+} from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
 import {
   evaluatableColumnNames,
   ODKNode,
-} from "../xlsform-simple-schema/types/ODKNode";
+} from "../../xlsform-simple-schema/types/ODKNode";
+import { useDarkMode } from "../core/DarkModeContainer";
+import HighlightedExpression from "../odk/HighlightedExpression/HighlightedODKExpression";
+import FieldPopoverButton from "../survey/FieldPopoverButton/FieldPopoverButton";
 
 /** The label visible on the right of each tree item. */
 function SecondaryLabel(props: { node: ODKNode; jsonResult: unknown }) {

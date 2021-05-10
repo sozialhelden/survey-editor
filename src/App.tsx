@@ -8,7 +8,6 @@ import * as RDFLib from "rdflib";
 import * as React from "react";
 import styled from "styled-components";
 import "./App.css";
-import ResultCodeTree from "./code/ResultCodeTree";
 import { AppEmptyState } from "./components/AppEmptyState";
 import { AppNavBar } from "./components/AppNavBar";
 import composeContexts, {
@@ -20,6 +19,7 @@ import DarkModeContainer, {
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import ModelTree from "./components/rdf/ModelTree";
 import { RDFGraphContext } from "./components/rdf/RDFGraphContext";
+import ResultCodeTree from "./components/result-code/ResultCodeTree";
 import { ODKNodeDragAndDropContext } from "./components/survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./components/survey/XLSFormSurvey";
 import XLSFormWorkbook from "./components/table/XLSFormWorkbook";

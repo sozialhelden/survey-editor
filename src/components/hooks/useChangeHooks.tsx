@@ -1,30 +1,30 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import HighlightedExpression from "../components/odk/HighlightedExpression/HighlightedODKExpression";
-import { FieldProps } from "../components/survey/FieldProps";
-import { AppToaster } from "../toaster";
-import { WorksheetName, XLSForm } from "../xlsform-simple-schema";
-import { fieldTypeNames } from "../xlsform-simple-schema/field-types/fieldTypeNames";
-import { addNodeToXLSForm } from "../xlsform-simple-schema/functions/editing/addNodeToXLSForm";
-import { moveNode } from "../xlsform-simple-schema/functions/editing/moveNode";
-import { nestNode } from "../xlsform-simple-schema/functions/editing/nestNode";
-import patchXLSFormCell from "../xlsform-simple-schema/functions/editing/patchXLSFormCell";
-import { removeNodeAndChildren } from "../xlsform-simple-schema/functions/editing/removeNodeAndChildren";
-import { renameNode } from "../xlsform-simple-schema/functions/editing/renameNode";
+import { Patch } from "../../lib/undo/useUndoHistory";
+import { AppToaster } from "../../toaster";
+import { WorksheetName, XLSForm } from "../../xlsform-simple-schema";
+import { fieldTypeNames } from "../../xlsform-simple-schema/field-types/fieldTypeNames";
+import { addNodeToXLSForm } from "../../xlsform-simple-schema/functions/editing/addNodeToXLSForm";
+import { moveNode } from "../../xlsform-simple-schema/functions/editing/moveNode";
+import { nestNode } from "../../xlsform-simple-schema/functions/editing/nestNode";
+import patchXLSFormCell from "../../xlsform-simple-schema/functions/editing/patchXLSFormCell";
+import { removeNodeAndChildren } from "../../xlsform-simple-schema/functions/editing/removeNodeAndChildren";
+import { renameNode } from "../../xlsform-simple-schema/functions/editing/renameNode";
 import spliceRowsInWorksheet, {
   RowSpliceOperation,
-} from "../xlsform-simple-schema/functions/editing/spliceRowsInWorksheet";
-import { ungroupNode } from "../xlsform-simple-schema/functions/editing/ungroupNode";
-import createLiteralExpressionFromValue from "../xlsform-simple-schema/functions/odk-formulas/evaluation/createLiteralExpressionFromValue";
-import getEvaluatedXLSFormResult from "../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeAndChildren";
+} from "../../xlsform-simple-schema/functions/editing/spliceRowsInWorksheet";
+import { ungroupNode } from "../../xlsform-simple-schema/functions/editing/ungroupNode";
+import createLiteralExpressionFromValue from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/createLiteralExpressionFromValue";
+import getEvaluatedXLSFormResult from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/evaluateNodeAndChildren";
 import ODKFormulaEvaluationContext, {
   getEmptyEvaluationContext,
   knownLiteralsWithoutDollarSign,
-} from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import { getNodeIndexPath } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
-import { describeNode } from "../xlsform-simple-schema/types/describeNode";
-import { ODKNode } from "../xlsform-simple-schema/types/ODKNode";
-import { Patch } from "./undo/useUndoHistory";
+} from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
+import { getNodeIndexPath } from "../../xlsform-simple-schema/functions/odk-formulas/evaluation/XPath";
+import { describeNode } from "../../xlsform-simple-schema/types/describeNode";
+import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
+import HighlightedExpression from "../odk/HighlightedExpression/HighlightedODKExpression";
+import { FieldProps } from "../survey/FieldProps";
 
 /** Custom React hooks to change / edit the current survey model. */
 export default function useChangeHooks({

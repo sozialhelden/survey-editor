@@ -8,13 +8,16 @@ import {
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { NodeReferencesMenu } from "../components/survey/FieldPopoverButton/NodeReferencesMenu";
-import { AppToaster } from "../toaster";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { AppToaster } from "../../toaster";
 import findOrReplaceFieldReferences, {
   NodeDependency,
-} from "../xlsform-simple-schema/functions/editing/findOrReplaceFieldReferences";
-import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
-import { ODKSurveyContext } from "./ODKSurveyContext";
+} from "../../xlsform-simple-schema/functions/editing/findOrReplaceFieldReferences";
+import {
+  isGroupNode,
+  ODKNode,
+} from "../../xlsform-simple-schema/types/ODKNode";
+import { NodeReferencesMenu } from "../survey/FieldPopoverButton/NodeReferencesMenu";
 
 /**
  * Custom React hook returning a function to show a nice-looking rename prompt for a field.

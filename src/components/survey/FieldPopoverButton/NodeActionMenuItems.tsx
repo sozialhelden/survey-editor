@@ -1,12 +1,12 @@
 import { MenuDivider, MenuItem } from "@blueprintjs/core";
 import { useCallback, useContext } from "react";
 import { ODKSurveyContext } from "../../../lib/ODKSurveyContext";
-import useNodeDeletionDialog from "../../../lib/useNodeDeletionDialog";
-import useRenameNodeDialog from "../../../lib/useRenameNodeDialog";
 import {
   isGroupNode,
   ODKNode,
 } from "../../../xlsform-simple-schema/types/ODKNode";
+import useNodeDeletionDialog from "../../hooks/useNodeDeletionDialog";
+import useRenameNodeDialog from "../../hooks/useRenameNodeDialog";
 import AddFieldOrGroupMenuItem from "../AddFieldMenuItem";
 
 /**

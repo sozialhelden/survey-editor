@@ -1,7 +1,7 @@
 import { humanize, singularize, underscore } from "inflection";
 import { capitalize, isEqual } from "lodash";
-import { addIndefiniteArticle } from "../../lib/addIndefiniteArticle";
-import { getHumanEnumeration } from "../../lib/getHumanEnumeration";
+import { addIndefiniteArticle } from "../addIndefiniteArticle";
+import { getHumanEnumeration } from "../getHumanEnumeration";
 
 export default function guessQuestionWording(
   isClass: boolean,
@@ -21,9 +21,11 @@ export default function guessQuestionWording(
       return `Let’s collect information about this ${humanClassName}.`;
     }
     if (propertyOrAncestorClassName === "Thing") {
-      return `Let’s start with the basics.`;
+      return `Let’s collect some basic information.`;
     }
-    return `…as ${addIndefiniteArticle(humanPropertyOrAncestorClassName)}`;
+    return `Let’s describe this ${humanClassName} as ${addIndefiniteArticle(
+      humanPropertyOrAncestorClassName
+    )}.`;
   }
 
   const humanPropertyName = humanPropertyOrAncestorClassName;
@@ -50,8 +52,10 @@ export default function guessQuestionWording(
   const simpleMappings: Record<string, () => string> = {
     sameAs: () =>
       `Under which web addresses can a search engine find Linked Data about this ${humanClassName}?`,
-    url: () => `What is the canonical web address of this ${humanClassName}?`,
-    mainEntityOfPage: () => `Which websites describe this ${humanClassName}?`,
+    url: () =>
+      `What is the main web address of this specific ${humanClassName}?`,
+    mainEntityOfPage: () =>
+      `Which websites describe this specific ${humanClassName}?`,
   };
   const simpleMapping = simpleMappings[propertyOrAncestorClassName]?.();
   if (simpleMapping) {

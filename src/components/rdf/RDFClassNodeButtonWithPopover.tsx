@@ -2,15 +2,15 @@ import { Button, Colors } from "@blueprintjs/core";
 import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
 import { ClassMetadataKey } from "../../lib/rdf/getClassMetadata";
 import { PropertyMetadataKey } from "../../lib/rdf/getPropertyMetadata";
-import { useDarkMode } from "../core/DarkModeContainer";
+import { useDarkMode } from "../core/BlueprintDarkModeContainer";
 import ErrorBoundary from "../core/ErrorBoundary";
-import { RDFClassMetadata } from "./metadata/RDFClassMetadata";
-import PrefixedNodeName from "./PrefixedNodeName";
+import { RDFClassMetadata } from "./RDFClassMetadata";
+import RDFPrefixedNodeName from "./RDFPrefixedNodeName";
 
 /**
  * Shows a RDF class node with a popover containing the class meta information.
  */
-export default function ClassNodeButtonWithPopover({
+export default function RDFClassNodeButtonWithPopover({
   name,
   contextPrefix,
   children,
@@ -59,7 +59,7 @@ export default function ClassNodeButtonWithPopover({
             color: violetColor,
           }}
         >
-          {<PrefixedNodeName name={name} contextPrefix={contextPrefix} />}
+          {<RDFPrefixedNodeName name={name} contextPrefix={contextPrefix} />}
           {children}
         </Button>
       </span>

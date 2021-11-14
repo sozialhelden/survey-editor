@@ -13,10 +13,10 @@ import { getClassAncestors } from "../../lib/rdf/getClassAncestors";
 import { getClassMetadataCompact } from "../../lib/rdf/getClassMetadata";
 import { getClassProperties } from "../../lib/rdf/getClassProperties";
 import { getPropertyMetadataCompact } from "../../lib/rdf/getPropertyMetadata";
+import guessQuestionWording from "../../lib/rdf/guessQuestionWording";
 import isClassNode from "../../lib/rdf/isClassNode";
 import { replaceURIWithPrefix } from "../../lib/rdf/namespaces";
-import ClassNodeButtonWithPopover from "./ClassNodeButtonWithPopover";
-import guessQuestionWording from "./guessQuestionWording";
+import RDFClassNodeButtonWithPopover from "./RDFClassNodeButtonWithPopover";
 import { RDFGraphContext } from "./RDFGraphContext";
 
 interface IRDFNodeWithPath {
@@ -32,7 +32,7 @@ function SecondaryLabel(props: { types: string[]; contextPrefix: string }) {
       {props.types?.map((t) => (
         <>
           &nbsp;
-          <ClassNodeButtonWithPopover
+          <RDFClassNodeButtonWithPopover
             name={t}
             contextPrefix={props.contextPrefix}
           />
@@ -89,7 +89,7 @@ export function getNodeTree(
 }
 
 /** Shows a collapsible JSON tree of the survey result data for debugging. */
-export default function ModelTree(props: {}) {
+export default function RDFModelTree(props: {}) {
   const [expandedNames, setExpandedNames] = React.useState<Set<string>>(
     new Set([""])
   );
@@ -187,7 +187,7 @@ export default function ModelTree(props: {}) {
               />
             )}
 
-            <ClassNodeButtonWithPopover
+            <RDFClassNodeButtonWithPopover
               name={nodeData.node.value}
               contextPrefix={isRoot ? "" : contextPrefix}
               visibleSections={{ rangeIncludes: false, domainIncludes: false }}
@@ -197,7 +197,7 @@ export default function ModelTree(props: {}) {
                   &nbsp;<Tag intent="none">superseded</Tag>
                 </>
               ) : null}
-            </ClassNodeButtonWithPopover>
+            </RDFClassNodeButtonWithPopover>
 
             <div style={{ display: "flex", alignItems: "center " }}>
               {className &&

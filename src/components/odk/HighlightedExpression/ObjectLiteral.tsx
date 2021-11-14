@@ -2,8 +2,8 @@ import { Button, Colors } from "@blueprintjs/core";
 import { Classes as PopoverClasses, Popover2 } from "@blueprintjs/popover2";
 import { get, isEmpty } from "lodash";
 import Inspector, { chromeLight } from "react-inspector";
-import { useDarkMode } from "../../core/DarkModeContainer";
-import { RDFClassMetadata } from "../../rdf/metadata/RDFClassMetadata";
+import { useDarkMode } from "../../core/BlueprintDarkModeContainer";
+import { RDFClassMetadata } from "../../rdf/RDFClassMetadata";
 
 /**
  * Shows a JavaScript object literal like Chrome inspector would show it.

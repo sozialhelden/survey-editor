@@ -1,6 +1,6 @@
 import { replaceURIWithPrefix } from "../../lib/rdf/namespaces";
 
-export default function PrefixedNodeName({
+export default function RDFPrefixedNodeName({
   name,
   contextPrefix,
 }: {

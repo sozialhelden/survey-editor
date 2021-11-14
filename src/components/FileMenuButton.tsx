@@ -2,11 +2,11 @@ import { Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
-import useSettingsDialog from "../lib/useSettingsDialog";
 import createEmptyXLSForm from "../xlsform-simple-schema/functions/editing/createEmptyXLSForm";
 import { saveXLSForm } from "../xlsform-simple-schema/functions/editing/saveXLSForm";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import { useWorkbookFromFile } from "./ExcelFileInput";
+import useSettingsDialog from "./hooks/useSettingsDialog";
 
 /** Button showing a 'File' menu */
 export function FileMenuButton({

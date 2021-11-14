@@ -13,6 +13,10 @@ export default function NoSurveyFieldsState() {
     context.onAddNode({ position: "after", group: true, fieldType: "text" });
   }, [context]);
 
+  const addLinkedDataModel = useCallback(() => {
+    context.onAddNode({ position: "after", group: true, fieldType: "text" });
+  }, [context]);
+
   const actions = (
     <>
       <p>
@@ -25,6 +29,13 @@ export default function NoSurveyFieldsState() {
       </p>
       <p>
         <Button text="Add a group of fields" intent="none" onClick={addGroup} />
+      </p>
+      <p>
+        <Button
+          text="Add a Linked Data model"
+          intent="none"
+          onClick={addLinkedDataModel}
+        />
       </p>
     </>
   );

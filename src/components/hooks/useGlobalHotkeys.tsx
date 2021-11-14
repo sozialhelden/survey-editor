@@ -1,6 +1,6 @@
 import React from "react";
-import { XLSForm } from "../xlsform-simple-schema/index";
-import { UndoContextType } from "./undo/createUndoHistoryContext";
+import { UndoContextType } from "../../lib/undo/createUndoHistoryContext";
+import { XLSForm } from "../../xlsform-simple-schema/types/XLSForm";
 
 export function useGlobalHotkeys(undoContext: UndoContextType<XLSForm>) {
   return React.useMemo(

@@ -1,10 +1,10 @@
 import * as React from "react";
 import SimpleSchema from "simpl-schema";
+import useChangeHooks from "../components/hooks/useChangeHooks";
 import { XLSForm } from "../xlsform-simple-schema";
 import ODKFormulaEvaluationContext, {
   getEmptyEvaluationContext,
 } from "../xlsform-simple-schema/functions/odk-formulas/evaluation/ODKFormulaEvaluationContext";
-import useChangeHooks from "./useChangeHooks";
 
 /** Provides the current XLSForm survey, its evaluation results, and its metadata. */
 export type ODKSurveyContextType = {

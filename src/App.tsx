@@ -10,15 +10,17 @@ import styled from "styled-components";
 import "./App.css";
 import { AppEmptyState } from "./components/AppEmptyState";
 import { AppNavBar } from "./components/AppNavBar";
+import BlueprintDarkModeContainer, {
+  useDarkMode,
+} from "./components/core/BlueprintDarkModeContainer";
 import composeContexts, {
   ContextAndValue,
 } from "./components/core/composeContexts";
-import DarkModeContainer, {
-  useDarkMode,
-} from "./components/core/DarkModeContainer";
+import useChangeHooks from "./components/hooks/useChangeHooks";
+import { useGlobalHotkeys } from "./components/hooks/useGlobalHotkeys";
 import OverflowScrollContainer from "./components/OverflowScrollContainer";
-import ModelTree from "./components/rdf/ModelTree";
 import { RDFGraphContext } from "./components/rdf/RDFGraphContext";
+import RDFModelTree from "./components/rdf/RDFModelTree";
 import ResultCodeTree from "./components/result-code/ResultCodeTree";
 import { ODKNodeDragAndDropContext } from "./components/survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./components/survey/XLSFormSurvey";
@@ -29,8 +31,6 @@ import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import loadSchemaOrgGraph from "./lib/rdf/loadSchemaOrgGraph";
 import { UndoContext } from "./lib/undo/UndoContext";
 import useUndoHistory from "./lib/undo/useUndoHistory";
-import useChangeHooks from "./lib/useChangeHooks";
-import { useGlobalHotkeys } from "./lib/useGlobalHotkeys";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 import { XLSForm } from "./xlsform-simple-schema/index";
 
@@ -78,6 +78,7 @@ function App() {
   const isDarkMode = useDarkMode();
   const hotkeys = useGlobalHotkeys(undoContext);
   const setXLSFormWithPatches = undoContext.setDocumentWithPatches;
+
   const rdfStore = React.useMemo(() => {
     const store = RDFLib.graph();
     loadSchemaOrgGraph(store);
@@ -91,6 +92,7 @@ function App() {
     debug: viewOptions.debug,
   });
 
+  // Allow debugging from the console
   (window as any).xlsForm = xlsForm;
   (window as any).setXLSFormWithPatches = setXLSFormWithPatches;
 
@@ -121,12 +123,14 @@ function App() {
     />
   );
 
+  // First visible state when there is no data loaded yet.
   const appEmptyState = !xlsForm && (
     <OverflowScrollContainer>
       <AppEmptyState {...{ setXLSFormWithPatches, setLanguage }} />
     </OverflowScrollContainer>
   );
 
+  // The panel showing an Excel workbook view of the XLSForm data
   const excelPanel = xlsForm && language && viewOptions.table && (
     <XLSFormWorkbook
       xlsForm={xlsForm}
@@ -136,6 +140,7 @@ function App() {
     />
   );
 
+  // The panel showing the survey itself
   const surveyPanel = xlsForm && language && (
     <OverflowScrollContainer
       style={{
@@ -156,6 +161,7 @@ function App() {
     </OverflowScrollContainer>
   );
 
+  // The panel showing the output/result data of the survey
   const treePanel = xlsForm && language && viewOptions.json && (
     <OverflowScrollContainer
       className={"bp3-code-block"}
@@ -165,9 +171,10 @@ function App() {
     </OverflowScrollContainer>
   );
 
+  // The panel showing the Linked Data vocabulary graph
   const modelPanel = viewOptions.graph && (
     <OverflowScrollContainer style={{ padding: "1rem", margin: "0" }}>
-      <ModelTree />
+      <RDFModelTree />
     </OverflowScrollContainer>
   );
 
@@ -207,13 +214,13 @@ function App() {
     <HotkeysProvider>
       <HotkeysTarget2 hotkeys={hotkeys}>
         {({ handleKeyDown, handleKeyUp }) => (
-          <DarkModeContainer
+          <BlueprintDarkModeContainer
             style={{ height: "100%", display: "flex", flexDirection: "column" }}
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
           >
             {composeContexts(contexts, navbarAndBody)}
-          </DarkModeContainer>
+          </BlueprintDarkModeContainer>
         )}
       </HotkeysTarget2>
     </HotkeysProvider>

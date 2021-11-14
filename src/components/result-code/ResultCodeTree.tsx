@@ -14,7 +14,7 @@ import {
   evaluatableColumnNames,
   ODKNode,
 } from "../../xlsform-simple-schema/types/ODKNode";
-import { useDarkMode } from "../core/DarkModeContainer";
+import { useDarkMode } from "../core/BlueprintDarkModeContainer";
 import HighlightedExpression from "../odk/HighlightedExpression/HighlightedODKExpression";
 import FieldPopoverButton from "../survey/FieldPopoverButton/FieldPopoverButton";
 

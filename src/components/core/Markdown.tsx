@@ -12,27 +12,6 @@ interface IProps extends React.HTMLProps<HTMLDivElement> {
   inline?: boolean;
 }
 
-function MarkdownDivOrSpan(props: IProps) {
-  if (typeof props.children !== "string") {
-    return (
-      <Callout intent="danger">Markdown content must be a string.</Callout>
-    );
-  }
-  let html = props.marked?.(unindent(props.children));
-  if (props.inline) {
-    html = html.replaceAll(/<\/?p>/g, "");
-  }
-  const DivOrSpan = props.inline ? "span" : "div";
-  return (
-    <DivOrSpan
-      {...omit(props, "children", "marked", "inline")}
-      dangerouslySetInnerHTML={{
-        __html: html,
-      }}
-    />
-  );
-}
-
 // Use this code to load the component lazily at runtime.
 // const Markdown = LoadableMap({
 //   loader: {
@@ -72,11 +51,32 @@ function Markdown(props: {
     [props.markedOptions]
   );
   return (
-    <MarkdownDivOrSpan
-      {...omit(props, "markedOptions", "inline")}
-      marked={markedFn}
-    />
+    <MarkdownDivOrSpan {...omit(props, "markedOptions")} marked={markedFn} />
   );
 }
 
 export default Markdown;
+
+/**
+ * Internal component used by the <Markdown> React component.
+ */
+function MarkdownDivOrSpan(props: IProps) {
+  if (typeof props.children !== "string") {
+    return (
+      <Callout intent="danger">Markdown content must be a string.</Callout>
+    );
+  }
+  let html = props.marked?.(unindent(props.children));
+  if (props.inline) {
+    html = html.replaceAll(/<\/?p>/g, "");
+  }
+  const DivOrSpan = props.inline ? "span" : "div";
+  return (
+    <DivOrSpan
+      {...omit(props, "children", "marked", "inline")}
+      dangerouslySetInnerHTML={{
+        __html: html,
+      }}
+    />
+  );
+}

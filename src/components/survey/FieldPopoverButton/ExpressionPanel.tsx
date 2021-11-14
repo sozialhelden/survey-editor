@@ -1,6 +1,5 @@
 import { Callout, Colors, Icon } from "@blueprintjs/core";
 import * as React from "react";
-import { useDarkMode } from "../../../components/core/DarkModeContainer";
 import StyledMarkdown from "../../../components/core/StyledMarkdown";
 import HighlightedExpression from "../../../components/odk/HighlightedExpression/HighlightedODKExpression";
 import { alpha } from "../../../lib/colors";
@@ -15,6 +14,7 @@ import {
   EvaluatableColumnName,
   ODKNode,
 } from "../../../xlsform-simple-schema/types/ODKNode";
+import { useDarkMode } from "../../core/BlueprintDarkModeContainer";
 import { DefaultValueExplanation } from "./DefaultValueExplanation";
 import {
   StyledCalloutWithCode,

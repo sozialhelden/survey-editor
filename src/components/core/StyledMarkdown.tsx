@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import Markdown from "./Markdown";
 
+/**
+ * Like <Markdown>, but using some opinionated minimal default CSS.
+ */
 const StyledMarkdown = styled(Markdown)`
   h1,
   h2,

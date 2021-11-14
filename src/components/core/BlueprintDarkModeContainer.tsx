@@ -8,18 +8,10 @@ function getDarkModeSetting(): boolean {
   );
 }
 
-export default function DarkModeContainer(props: HTMLDivProps) {
-  const isDarkMode = useDarkMode();
-  return (
-    <div
-      {...props}
-      className={isDarkMode ? `${props.className} bp3-dark` : props.className}
-    >
-      {props.children}
-    </div>
-  );
-}
-
+/**
+ * A React Hook returning a boolean value that is `true` when the user switched on dark mode,
+ * `false` otherwise.
+ */
 export function useDarkMode() {
   const [isDarkMode, setIsDarkMode] = React.useState(getDarkModeSetting());
 
@@ -37,4 +29,23 @@ export function useDarkMode() {
   }, [handleChange]);
 
   return isDarkMode;
+}
+
+/**
+ * A React component wrapper with a Blueprint CSS class that controls if the container's children
+ * are rendered in dark-mode style or not.
+ *
+ * Wrap your Blueprint.js components in this React component to adapt them to the user's dark mode
+ * setting automatically.
+ */
+export default function BlueprintDarkModeContainer(props: HTMLDivProps) {
+  const isDarkMode = useDarkMode();
+  return (
+    <div
+      {...props}
+      className={isDarkMode ? `${props.className} bp3-dark` : props.className}
+    >
+      {props.children}
+    </div>
+  );
 }

@@ -7,13 +7,13 @@ import ReactMapGL, { GeolocateControl, ViewportProps } from "react-map-gl";
 import styled from "styled-components";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
-import { useDarkMode } from "../../../components/core/DarkModeContainer";
 import { alpha } from "../../../lib/colors";
 import { ODKSurveyContext } from "../../../lib/ODKSurveyContext";
 import {
   assertSchemaOrgPointGeometry,
   SchemaOrgPointGeometry,
 } from "../../../xlsform-simple-schema/functions/schema-creation/geometry/SchemaOrgGeometry";
+import { useDarkMode } from "../../core/BlueprintDarkModeContainer";
 import { FieldProps } from "../FieldProps";
 
 (mapboxgl as any).workerClass = MapboxWorker;

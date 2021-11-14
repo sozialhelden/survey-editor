@@ -6,16 +6,17 @@ import styled from "styled-components";
 import {
   ClassMetadataKey,
   getClassMetadataCompact,
-} from "../../../lib/rdf/getClassMetadata";
-import { getFirstClassOrPropertyNodeWithName } from "../../../lib/rdf/getFirstClassOrPropertyNodeWithName";
+} from "../../lib/rdf/getClassMetadata";
+import { getFirstClassOrPropertyNodeWithName } from "../../lib/rdf/getFirstClassOrPropertyNodeWithName";
 import {
   getPropertyMetadataCompact,
   PropertyMetadataKey,
-} from "../../../lib/rdf/getPropertyMetadata";
-import StyledMarkdown from "../../core/StyledMarkdown";
-import PrefixedNodeName from "../PrefixedNodeName";
-import { RDFGraphContext } from "../RDFGraphContext";
+} from "../../lib/rdf/getPropertyMetadata";
+import StyledMarkdown from "../core/StyledMarkdown";
+import { RDFGraphContext } from "./RDFGraphContext";
+import RDFPrefixedNodeName from "./RDFPrefixedNodeName";
 
+/** Create a customized Markdown renderer that renders external links that open a new tab */
 function getMarkedRendererWithExternalLinks() {
   const renderer = new marked.Renderer();
   renderer.link = function (href, title, text) {
@@ -26,6 +27,7 @@ function getMarkedRendererWithExternalLinks() {
   return renderer;
 }
 
+/** Concatenates anything that is Iterable. */
 function* concat<T, U>(
   arg0: Iterable<T> | undefined,
   arg1: Iterable<U> | undefined
@@ -62,6 +64,7 @@ export function RDFClassMetadata({
   >;
 }) {
   const graph = useContext(RDFGraphContext);
+
   const node = useMemo(
     () => graph && getFirstClassOrPropertyNodeWithName(name, graph),
     [graph, name]
@@ -104,7 +107,7 @@ export function RDFClassMetadata({
         labels?.map((label) => (
           <H4>
             <ExternalAnchor href={name}>
-              <PrefixedNodeName name={name} contextPrefix={contextPrefix} />
+              <RDFPrefixedNodeName name={name} contextPrefix={contextPrefix} />
             </ExternalAnchor>
           </H4>
         ))}
@@ -124,7 +127,7 @@ export function RDFClassMetadata({
             {range.map((r) => (
               <li>
                 <ExternalAnchor href={r}>
-                  <PrefixedNodeName name={r} contextPrefix={contextPrefix} />
+                  <RDFPrefixedNodeName name={r} contextPrefix={contextPrefix} />
                 </ExternalAnchor>
               </li>
             ))}
@@ -139,7 +142,7 @@ export function RDFClassMetadata({
             {domain.map((d) => (
               <li>
                 <ExternalAnchor href={d}>
-                  <PrefixedNodeName name={d} contextPrefix={contextPrefix} />
+                  <RDFPrefixedNodeName name={d} contextPrefix={contextPrefix} />
                 </ExternalAnchor>
               </li>
             ))}

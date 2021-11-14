@@ -2,6 +2,10 @@ import { Callout } from "@blueprintjs/core";
 import * as React from "react";
 import Markdown from "./Markdown";
 
+/**
+ * A React component that shows an error message if one of its children throw an error while
+ * rendering.
+ */
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
   { error: Error | null }

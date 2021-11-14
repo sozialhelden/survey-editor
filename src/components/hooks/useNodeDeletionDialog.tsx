@@ -1,8 +1,11 @@
 import { Alert, Intent } from "@blueprintjs/core";
 import { useCallback, useContext, useState } from "react";
-import { AppToaster } from "../toaster";
-import { isGroupNode, ODKNode } from "../xlsform-simple-schema/types/ODKNode";
-import { ODKSurveyContext } from "./ODKSurveyContext";
+import { ODKSurveyContext } from "../../lib/ODKSurveyContext";
+import { AppToaster } from "../../toaster";
+import {
+  isGroupNode,
+  ODKNode,
+} from "../../xlsform-simple-schema/types/ODKNode";
 
 /**
  * Custom React hook returning a function to show a nice looking field deletion confirmation

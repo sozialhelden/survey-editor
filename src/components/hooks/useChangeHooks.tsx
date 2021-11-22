@@ -159,9 +159,6 @@ export default function useChangeHooks({
         return;
       }
 
-      // const removeCount = sumBy(operations, (op) => op.numberOfRowsToRemove);
-      // const addCount = sumBy(operations, (op) => op.rowsToAdd.length);
-      // const description: string = `Change rows (${addCount} added / ${removeCount} removed)`;
       setXLSFormWithPatches(
         description,
         ...spliceRowsInWorksheet(xlsForm, worksheetName, operations)
@@ -253,7 +250,13 @@ export default function useChangeHooks({
 
       setXLSFormWithPatches(
         description,
-        ...addNodeToXLSForm({ xlsForm, group, node, position, fieldType })
+        ...addNodeToXLSForm({
+          xlsForm,
+          group,
+          position,
+          relativeToNode: node,
+          fieldType,
+        })
       );
     },
     [setXLSFormWithPatches, xlsForm]

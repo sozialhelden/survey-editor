@@ -15,15 +15,15 @@ import spliceRowsInWorksheet from "./spliceRowsInWorksheet";
 export function addNodeToXLSForm({
   xlsForm,
   group,
-  node,
   position,
+  relativeToNode,
   fieldType,
   name,
   groupName,
 }: {
   xlsForm: XLSForm;
   group: boolean;
-  node?: ODKNode;
+  relativeToNode?: ODKNode;
   position: "after" | "before" | "inside";
   fieldType: keyof typeof fieldTypeNames;
   name?: string;
@@ -40,17 +40,17 @@ export function addNodeToXLSForm({
   const rowsToInsert = group ? [beginMarkerRow, row, endMarkerRow] : [row];
 
   let rowIndex = 0;
-  const currentNodeIsGroup = node && isGroupNode(node);
-  if (node && currentNodeIsGroup) {
+  const currentNodeIsGroup = relativeToNode && isGroupNode(relativeToNode);
+  if (relativeToNode && currentNodeIsGroup) {
     rowIndex = {
-      after: getLastRowIndexOfNode(xlsForm, node) + 1,
-      before: node.rowIndex,
-      inside: node.rowIndex + 1,
+      after: getLastRowIndexOfNode(xlsForm, relativeToNode) + 1,
+      before: relativeToNode.rowIndex,
+      inside: relativeToNode.rowIndex + 1,
     }[position];
   } else {
     rowIndex = {
-      after: node ? node.rowIndex + 1 : 0,
-      before: node ? node.rowIndex : 0,
+      after: relativeToNode ? relativeToNode.rowIndex + 1 : 0,
+      before: relativeToNode ? relativeToNode.rowIndex : 0,
       inside: 0,
     }[position];
   }

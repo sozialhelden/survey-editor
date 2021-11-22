@@ -91,7 +91,7 @@ describe("addNodeToXLSForm()", () => {
         group: false,
         position: "before",
         fieldType: "text",
-        node: withFirstField.rootSurveyGroup.children[0],
+        relativeToNode: withFirstField.rootSurveyGroup.children[0],
         name: "field_before_start_field",
       })[0];
 
@@ -101,7 +101,7 @@ describe("addNodeToXLSForm()", () => {
         group: true,
         position: "after",
         fieldType: "text",
-        node: withSecondField.rootSurveyGroup.children[1],
+        relativeToNode: withSecondField.rootSurveyGroup.children[1],
         name: "first_field_inside_group",
         groupName: "group_after_start_field",
       })[0];
@@ -112,7 +112,7 @@ describe("addNodeToXLSForm()", () => {
         group: false,
         position: "inside",
         fieldType: "text",
-        node: withThirdGroupedField.rootSurveyGroup.children[2],
+        relativeToNode: withThirdGroupedField.rootSurveyGroup.children[2],
         name: "second_field_inside_group",
       })[0];
 

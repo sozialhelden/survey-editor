@@ -13,9 +13,13 @@ export default function NoSurveyFieldsState() {
     context.onAddNode({ position: "after", group: true, fieldType: "text" });
   }, [context]);
 
-  const addLinkedDataModel = useCallback(() => {
-    context.onAddNode({ position: "after", group: true, fieldType: "text" });
-  }, [context]);
+  // const addLinkedDataBlock = useCallback(() => {
+  //   context.onSpliceRows(
+  //     "survey",
+  //     getRowsForRDFClass("https://schema.org/Hotel", context.evaluationContext?.survey, xlsForm),
+  //     "Add ‘Hotel’ Linked Data block"
+  //   );
+  // }, [context]);
 
   const actions = (
     <>
@@ -31,11 +35,11 @@ export default function NoSurveyFieldsState() {
         <Button text="Add a group of fields" intent="none" onClick={addGroup} />
       </p>
       <p>
-        <Button
-          text="Add a Linked Data model"
+        {/* <Button
+          text="Add a Linked Data block"
           intent="none"
-          onClick={addLinkedDataModel}
-        />
+          onClick={addLinkedDataBlock}
+        /> */}
       </p>
     </>
   );

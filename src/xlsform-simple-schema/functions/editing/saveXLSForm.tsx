@@ -21,9 +21,17 @@ export function generateExcelWorkbook(xlsForm: XLSForm) {
     const excelWorksheet = workbook.addWorksheet(worksheetName);
     const rows = [...(internalWorksheet?.rows || [])];
 
-    const columnNames = normalizeColumnNames(
-      internalWorksheet.columnNames
-    ).map((cn) => cn.replace(/::/g, "."));
+    const internalColumnNames = internalWorksheet.columnNames.flatMap((cn) => {
+      if (localizableColumnNames.includes(cn)) {
+        return [...xlsForm.languages.keys()].map((l) => `${cn}::${l}`);
+      } else {
+        return cn;
+      }
+    });
+
+    const columnNames = normalizeColumnNames(internalColumnNames).map((cn) =>
+      cn.replace(/::/g, ".")
+    );
 
     excelWorksheet.columns = columnNames.map((columnName) => ({
       header: columnName.replace(/\./g, "::").replace(/__DOLLAR_SIGN__/g, "$"),

@@ -29,7 +29,7 @@ declare module "simpl-schema" {
     extendAutoValueContext?: boolean;
   }
 
-  export type AutoValueFunctionSelf<DocT> = {
+  export type AutoValueFunctionSelf = {
     key: string;
     closestSubschemaFieldName: string | null;
     isSet: boolean;
@@ -65,7 +65,7 @@ declare module "simpl-schema" {
     value: any;
   };
 
-  type AutoValueFunction<T> = (this: AutoValueFunctionSelf<T>) => any;
+  type AutoValueFunction<T> = (this: AutoValueFunctionSelf) => any;
 
   interface ValidationFunctionSelf<T> {
     value: any;
@@ -113,7 +113,6 @@ declare module "simpl-schema" {
     | ((this: ContextT) => ValueT);
 
   export type EvaluatedSchemaDefinition<
-    T,
     CustomExtensionT extends Record<string, ValueOrFunction<unknown>>
   > = {
     type: ArrayLike<{ type: SchemaType }>;
@@ -371,7 +370,7 @@ declare module "simpl-schema" {
       key: string,
       propList?: any,
       functionContext?: T
-    ): Partial<EvaluatedSchemaDefinition<T, CustomExtensionT>>;
+    ): Partial<EvaluatedSchemaDefinition<CustomExtensionT>>;
 
     /**
      * Returns a string identifying the best guess data type for a key. For keys

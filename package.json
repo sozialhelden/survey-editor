@@ -67,11 +67,12 @@
     "package:build:mjs": "tsc --project tsconfig.package.json -d --outDir dist/mjs && mv dist/mjs/package-index.jsx dist/mjs/package-index.mjsx",
     "package:build:cjs": "tsc --project tsconfig.package.json -m commonjs --outDir dist/cjs",
     "package:build": "rimraf dist && npm run package:build:mjs && npm run package:build:cjs && rm -f dist/*.spec.*",
-    "package:deploy": "npm run build && npm run package:test-dist && npm publish --access public",
+    "package:deploy": "npm run package:build && npm run package:test:dist && npm publish --access public",
     "package:test:dev": "jest --watch",
-    "package:test:dist": "npm run lint && npm run test -- --coverage --no-cache",
+    "package:test:dist": "npm run lint && jest --coverage --no-cache",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "prettier": "npx prettier --fix src/**/*.ts test/**/*.ts --write --single-quote"
+    "prettier": "npx prettier --fix src/**/*.ts test/**/*.ts --write --single-quote",
+    "lint": "eslint --ext .ts,.js,.jsx src"
   },
   "eslintConfig": {
     "extends": [

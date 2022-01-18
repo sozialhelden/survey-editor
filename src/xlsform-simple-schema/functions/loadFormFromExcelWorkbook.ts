@@ -1,4 +1,4 @@
-import Excel from "exceljs";
+import * as Excel from "exceljs";
 import { loadXLSFormFromRows, XLSForm } from "../types/XLSForm";
 import {
   loadChoicesRow,

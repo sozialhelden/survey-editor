@@ -1,8 +1,8 @@
 import { Callout } from "@blueprintjs/core";
 import { omit } from "lodash";
-import marked from "marked";
 import * as React from "react";
 import unindent from "./unindent";
+const marked = require("marked");
 
 interface IProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode;

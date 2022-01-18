@@ -80,7 +80,7 @@ export default function XLSFormWorksheet(props: Props) {
   );
 
   const columnNameRenderer = React.useMemo(
-    () => (name: string, index?: number) => {
+    () => (name: string, _index?: number) => {
       if (localizableColumnNames.includes(name)) {
         return (
           <>

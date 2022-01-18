@@ -87,7 +87,7 @@ export function loadXLSFormFromRows(
   const { node: rootSurveyGroup } = nestSurvey({
     rows: survey.rows,
     defaultLanguage,
-    onRow: (row, node) => flatNodes.push(node),
+    onRow: (_, node) => flatNodes.push(node),
   });
 
   const xlsForm: XLSForm = {

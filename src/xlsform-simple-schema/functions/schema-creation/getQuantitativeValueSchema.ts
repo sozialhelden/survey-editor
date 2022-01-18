@@ -24,11 +24,11 @@ export const getQuantitativeValueSchema = (
     optional: true,
   },
   [`${key}.unitCode`]: {
-    type: Text,
+    type: String,
     optional: true,
   },
   [`${key}.unitText`]: {
-    type: Text,
+    type: String,
     optional: true,
   },
   [`${key}.value`]: {

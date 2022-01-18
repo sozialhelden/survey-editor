@@ -1,4 +1,4 @@
-declare module 'simpl-schema' {
+declare module "simpl-schema" {
   // import { Mongo } from 'meteor/mongo';
   // Type definitions for simpl-schema
 
@@ -108,9 +108,14 @@ declare module 'simpl-schema' {
   }
 
   type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
-  type ValueOrFunction<ValueT, ContextT> = ValueT | ((this: ContextT) => ValueT);
+  type ValueOrFunction<ValueT, ContextT = any> =
+    | ValueT
+    | ((this: ContextT) => ValueT);
 
-  export type EvaluatedSchemaDefinition<T, CustomExtensionT extends Record<string, ValueOrFunction<unknown>>> = {
+  export type EvaluatedSchemaDefinition<
+    T,
+    CustomExtensionT extends Record<string, ValueOrFunction<unknown>>
+  > = {
     type: ArrayLike<{ type: SchemaType }>;
     label?: ValueOrFunction<string>;
     optional?: ValueOrFunction<boolean>;
@@ -133,9 +138,9 @@ declare module 'simpl-schema' {
     upsert?: boolean;
     clean?: boolean;
     filter?: boolean;
-    upsertextendedCustomContext?: boolean;
-    keys?: string[],
-    ignore?: (keyof SimpleSchema.ErrorTypes)[],
+    extendedCustomContext?: boolean;
+    keys?: string[];
+    ignore?: string[];
   }
 
   interface SimpleSchemaValidationContext {
@@ -255,27 +260,29 @@ declare module 'simpl-schema' {
 
     constructor(
       schema: { [key: string]: SchemaDefinition<any> | SchemaType } | any[],
-      options?: any | { humanizeAutoLabels?: boolean; tracker?: any; check?: any }
+      options?:
+        | any
+        | { humanizeAutoLabels?: boolean; tracker?: any; check?: any }
     );
 
     static ErrorTypes: {
-      REQUIRED: 'required';
-      MIN_STRING: 'minString';
-      MAX_STRING: 'maxString';
-      MIN_NUMBER: 'minNumber';
-      MAX_NUMBER: 'maxNumber';
-      MIN_NUMBER_EXCLUSIVE: 'minNumberExclusive';
-      MAX_NUMBER_EXCLUSIVE: 'maxNumberExclusive';
-      MIN_DATE: 'minDate';
-      MAX_DATE: 'maxDate';
-      BAD_DATE: 'badDate';
-      MIN_COUNT: 'minCount';
-      MAX_COUNT: 'maxCount';
-      MUST_BE_INTEGER: 'noDecimal';
-      VALUE_NOT_ALLOWED: 'notAllowed';
-      EXPECTED_TYPE: 'expectedType';
-      FAILED_REGULAR_EXPRESSION: 'regEx';
-      KEY_NOT_IN_SCHEMA: 'keyNotInSchema';
+      REQUIRED: "required";
+      MIN_STRING: "minString";
+      MAX_STRING: "maxString";
+      MIN_NUMBER: "minNumber";
+      MAX_NUMBER: "maxNumber";
+      MIN_NUMBER_EXCLUSIVE: "minNumberExclusive";
+      MAX_NUMBER_EXCLUSIVE: "maxNumberExclusive";
+      MIN_DATE: "minDate";
+      MAX_DATE: "maxDate";
+      BAD_DATE: "badDate";
+      MIN_COUNT: "minCount";
+      MAX_COUNT: "maxCount";
+      MUST_BE_INTEGER: "noDecimal";
+      VALUE_NOT_ALLOWED: "notAllowed";
+      EXPECTED_TYPE: "expectedType";
+      FAILED_REGULAR_EXPRESSION: "regEx";
+      KEY_NOT_IN_SCHEMA: "keyNotInSchema";
     };
 
     /**
@@ -335,7 +342,9 @@ declare module 'simpl-schema' {
      * if you want the evaluated definition, where any properties that are functions
      * have been run to produce a result.
      */
-    schema<T>(key?: string): SchemaDefinition<T> | { [key: string]: SchemaDefinition<T> };
+    schema<T>(
+      key?: string
+    ): SchemaDefinition<T> | { [key: string]: SchemaDefinition<T> };
 
     /**
      * @returns {Object} The entire schema object with subschemas merged. This is the
@@ -347,7 +356,6 @@ declare module 'simpl-schema' {
      */
     mergedSchema(): { [key: string]: SchemaDefinition<any> };
 
-
     /**
      * Returns the evaluated definition for one key in the schema
      *
@@ -356,9 +364,12 @@ declare module 'simpl-schema' {
      * @param {Object} [functionContext] The context to use when evaluating schema options that are functions
      * @returns {Object} The schema definition for the requested key
      */
-    getDefinition<T = undefined, CustomExtensionT extends Record<string, ValueOrFunction<unknown>>>(
+    getDefinition<
+      T = undefined,
+      CustomExtensionT extends Record<string, ValueOrFunction<unknown>> = {}
+    >(
       key: string,
-      propList?: PropList,
+      propList?: any,
       functionContext?: T
     ): Partial<EvaluatedSchemaDefinition<T, CustomExtensionT>>;
 
@@ -375,16 +386,16 @@ declare module 'simpl-schema' {
     getQuickTypeForKey(
       key: string
     ):
-      | 'string'
-      | 'number'
-      | 'boolean'
-      | 'date'
-      | 'object'
-      | 'stringArray'
-      | 'numberArray'
-      | 'booleanArray'
-      | 'dateArray'
-      | 'objectArray'
+      | "string"
+      | "number"
+      | "boolean"
+      | "date"
+      | "object"
+      | "stringArray"
+      | "numberArray"
+      | "booleanArray"
+      | "dateArray"
+      | "objectArray"
       | undefined;
 
     /**
@@ -472,9 +483,14 @@ declare module 'simpl-schema' {
      *
      * Returns a Promise that resolves with the errors
      */
-    validateAndReturnErrorsPromise(obj: any, options?: ValidationOption): Promise<ArrayLike<Error>>;
+    validateAndReturnErrorsPromise(
+      obj: any,
+      options?: ValidationOption
+    ): Promise<ArrayLike<Error>>;
 
-    validator(options?: ValidationOption): (args: { [key: string]: any }) => void;
+    validator(
+      options?: ValidationOption
+    ): (args: { [key: string]: any }) => void;
   }
 
   export default SimpleSchema;

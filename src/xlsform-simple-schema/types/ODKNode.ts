@@ -34,7 +34,7 @@ export type ODKNode =
   | {
       row: QuestionRow & (IBeginRepeatMarkerRow | IBeginGroupMarkerRow);
       type: string;
-      typeParameters: string[];
+      typeParameters: readonly string[];
       appearance?: AppearanceAttributeFlags;
       children: ODKNode[];
       indentationLevel: number;
@@ -43,7 +43,7 @@ export type ODKNode =
   | {
       row: QuestionRow;
       type: string;
-      typeParameters: string[];
+      typeParameters: readonly string[];
       appearance?: AppearanceAttributeFlags;
       children: ODKNode[];
       indentationLevel: number;

@@ -264,15 +264,15 @@ export default function useChangeHooks({
 
   const onMoveNode = React.useCallback(
     ({
-      sourcePath,
+      // sourcePath,
       sourceNode,
       destinationNode,
-      position,
-    }: {
-      sourcePath: string;
+    }: // position,
+    {
+      // sourcePath: string;
       sourceNode: ODKNode;
       destinationNode: ODKNode;
-      position: "before" | "after" | "inside";
+      // position: "before" | "after" | "inside";
     }) => {
       if (!xlsForm || !context || !language) {
         return;

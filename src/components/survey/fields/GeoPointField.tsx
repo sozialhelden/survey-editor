@@ -1,6 +1,6 @@
 import { Colors, ControlGroup, NumericInput } from "@blueprintjs/core";
 import { throttle } from "lodash";
-import mapboxgl from "mapbox-gl";
+import * as mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as React from "react";
 import ReactMapGL, { GeolocateControl, ViewportProps } from "react-map-gl";
@@ -22,7 +22,7 @@ if (!process.env.REACT_APP_MAPBOX_ACCESS_TOKEN) {
     `Please define the REACT_APP_MAPBOX_ACCESS_TOKEN environment variable.`
   );
 }
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+(mapboxgl as any).accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const FieldContainer = styled.section`
   .mapboxgl-ctrl-group.geolocateControl {
@@ -122,7 +122,7 @@ function GeoPointField(props: Props) {
   );
 
   const setViewportCallback = React.useCallback(
-    (viewState, interactionState) => {
+    (viewState, _interactionState) => {
       setViewport({ ...viewport, ...viewState });
       if (!viewport.longitude || !viewport.latitude) {
         return;
@@ -137,7 +137,7 @@ function GeoPointField(props: Props) {
   );
 
   const changeLatitude = React.useCallback(
-    (newLatitudeNumber: number, newLatitudeString: string) => {
+    (newLatitudeNumber: number, _newLatitudeString: string) => {
       if (!viewport.longitude || !viewport.latitude) {
         return;
       }
@@ -152,7 +152,7 @@ function GeoPointField(props: Props) {
   );
 
   const changeLongitude = React.useCallback(
-    (newLongitudeNumber: number, newLongitudeString: string) => {
+    (newLongitudeNumber: number, _newLongitudeString: string) => {
       if (!viewport.longitude || !viewport.latitude) {
         return;
       }

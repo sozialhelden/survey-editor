@@ -47,7 +47,7 @@ export default function HighlightedExpression(props: {
         props.expression.kind
       } ${isErroneousExpression ? "has-error" : ""}`}
     >
-      {props.expression.children.map((expressionOrToken, i) => {
+      {props.expression.children.map((expressionOrToken) => {
         if (expressionOrToken instanceof Expression) {
           return (
             <HighlightedExpression
@@ -66,7 +66,7 @@ export default function HighlightedExpression(props: {
               expression={props.expression}
               parentExpression={props.parentExpression}
               node={props.node}
-              stackDepth={(props.stackDepth || 0) + 1}
+              // stackDepth={(props.stackDepth || 0) + 1}
             />
           );
         }

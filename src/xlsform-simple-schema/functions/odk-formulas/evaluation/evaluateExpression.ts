@@ -197,6 +197,8 @@ function evaluateCallExpression(
       e
     );
   }
+
+  return undefined;
 }
 
 function assertBoolean(

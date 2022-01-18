@@ -46,7 +46,7 @@ Edit the survey structure:
 
 ## Development
 
-### Available Scripts
+### Available Scripts for developing the app
 
 In the project directory, you can run:
 
@@ -66,12 +66,30 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 #### `yarn build`
 
 Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+It bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### Available Scripts for developing the package
+
+#### `npm run package:build`
+
+Builds all variants of the npm package.
+
+#### `npm run package:deploy`
+
+Publishes the npm package.
+
+#### `npm run package:test:dev`
+
+Runs tests for the npm package _source_ while watching for changed files.
+
+#### `npm run package:test:prod`
+
+Runs tests for the npm package _distribution code_.
 
 ### Create React App (CRA)
 

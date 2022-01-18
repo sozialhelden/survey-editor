@@ -1,5 +1,5 @@
 import { Alignment, Navbar } from "@blueprintjs/core";
-import React from "react";
+import * as React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
 import { XLSForm } from "../xlsform-simple-schema/index";
 import { EditMenuButton } from "./EditMenuButton";

@@ -6,7 +6,7 @@ import {
   MenuItem,
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
-import React from "react";
+import * as React from "react";
 import { UndoContext } from "../lib/undo/UndoContext";
 import Markdown from "./core/Markdown";
 

@@ -10,7 +10,7 @@ export default function EditableSurveyTitle() {
   const [editedSurveyName, setEditedSurveyName] = React.useState<string>();
 
   const onChangeSurveyName = React.useCallback(
-    (text: string) => {
+    (_: string) => {
       if (editedSurveyName === undefined || editedSurveyName === "") {
         return;
       }

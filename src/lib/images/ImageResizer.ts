@@ -26,7 +26,7 @@ Converted to TypeScript, added some error handling, use blobs instead of data UR
 
 */
 
-import ExifReader from "exifreader";
+import * as ExifReader from "exifreader";
 
 export type Configuration = {
   quality: number;

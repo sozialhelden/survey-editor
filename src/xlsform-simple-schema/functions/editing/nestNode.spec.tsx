@@ -1,23 +1,19 @@
-import { AssertionError } from "assert";
-import loadFormFromXLSXFile from "../loadFormFromXLSXFile";
-import { findNodeByPathRelativeToScope } from "../odk-formulas/evaluation/XPath";
+// async function getTestData() {
+//   const xlsForm = await loadFormFromXLSXFile(
+//     "src/xlsform-simple-schema/test-data/wheelmap-survey.xlsx"
+//   );
+//   const node = findNodeByPathRelativeToScope(
+//     ["data", "outside", "category", "category_top"],
+//     xlsForm.rootSurveyGroup
+//   );
+//   if (!node || node instanceof Array) {
+//     throw new AssertionError({
+//       message: "Function should return a singular ODKNode",
+//     });
+//   }
 
-async function getTestData() {
-  const xlsForm = await loadFormFromXLSXFile(
-    "src/xlsform-simple-schema/test-data/wheelmap-survey.xlsx"
-  );
-  const node = findNodeByPathRelativeToScope(
-    ["data", "outside", "category", "category_top"],
-    xlsForm.rootSurveyGroup
-  );
-  if (!node || node instanceof Array) {
-    throw new AssertionError({
-      message: "Function should return a singular ODKNode",
-    });
-  }
-
-  return { xlsForm, node };
-}
+//   return { xlsForm, node };
+// }
 
 describe("nestNode()", () => {
   test.todo("nests a field in a new group");

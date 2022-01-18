@@ -1,4 +1,4 @@
-import { enablePatches, produceWithPatches } from "immer";
+import { castDraft, enablePatches, produceWithPatches } from "immer";
 import { uniq } from "lodash";
 import { Patch } from "../../../lib/undo/useUndoHistory";
 import {
@@ -60,18 +60,21 @@ export default function spliceRowsInWorksheet(
   };
 
   // Reload the whole XLSForm from the new row array
-  return produceWithPatches(xlsForm, (draft) =>
-    loadXLSFormFromRows(
-      worksheetName === "survey"
-        ? (newWorksheet as SurveyWorksheet)
-        : surveyWorksheet,
-      xlsForm?.worksheets.settings?.rows[0]?.default_language || "English (en)",
-      worksheetName === "settings"
-        ? (newWorksheet as SettingsWorksheet)
-        : xlsForm?.worksheets.settings,
-      worksheetName === "choices"
-        ? (newWorksheet as ChoicesWorksheet)
-        : xlsForm?.worksheets.choices
+  return castDraft(
+    produceWithPatches(xlsForm, (_draft) =>
+      loadXLSFormFromRows(
+        worksheetName === "survey"
+          ? (newWorksheet as SurveyWorksheet)
+          : surveyWorksheet,
+        xlsForm?.worksheets.settings?.rows[0]?.default_language ||
+          "English (en)",
+        worksheetName === "settings"
+          ? (newWorksheet as SettingsWorksheet)
+          : xlsForm?.worksheets.settings,
+        worksheetName === "choices"
+          ? (newWorksheet as ChoicesWorksheet)
+          : xlsForm?.worksheets.choices
+      )
     )
   );
 }

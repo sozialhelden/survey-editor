@@ -1,6 +1,6 @@
 import { Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
-import React from "react";
+import * as React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
 import createEmptyXLSForm from "../xlsform-simple-schema/functions/editing/createEmptyXLSForm";
 import { saveXLSForm } from "../xlsform-simple-schema/functions/editing/saveXLSForm";

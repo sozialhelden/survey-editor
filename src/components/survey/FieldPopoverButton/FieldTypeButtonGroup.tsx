@@ -87,7 +87,7 @@ export function FieldTypeButtonGroup({
                 observeParents={true}
                 minVisibleItems={2}
                 collapseFrom={Boundary.END}
-                items={node.typeParameters}
+                items={[...node.typeParameters]}
                 visibleItemRenderer={(p) => <Code>{p}</Code>}
                 overflowRenderer={(overflowItems) => (
                   <span>{`+${overflowItems.length}`}</span>

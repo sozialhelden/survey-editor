@@ -1,5 +1,4 @@
 import { Callout, ControlGroup, H4, H5, UL } from "@blueprintjs/core";
-import marked from "marked";
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import styled from "styled-components";
@@ -15,11 +14,12 @@ import {
 import StyledMarkdown from "../core/StyledMarkdown";
 import { RDFGraphContext } from "./RDFGraphContext";
 import RDFPrefixedNodeName from "./RDFPrefixedNodeName";
+const marked = require("marked");
 
 /** Create a customized Markdown renderer that renders external links that open a new tab */
 function getMarkedRendererWithExternalLinks() {
   const renderer = new marked.Renderer();
-  renderer.link = function (href, title, text) {
+  renderer.link = function (href: string, title: string, text: string) {
     return `<a target="rdfssource" rel="noopener noreferrer" href="${href}"${
       title != null ? ` title="${title}"` : ""
     }>${text}</a>`;
@@ -104,7 +104,7 @@ export function RDFClassMetadata({
       style={{ textOverflow: "ellipsis", overflow: "hidden" }}
     >
       {visibleSections?.label !== false &&
-        labels?.map((label) => (
+        labels?.map(() => (
           <H4>
             <ExternalAnchor href={name}>
               <RDFPrefixedNodeName name={name} contextPrefix={contextPrefix} />

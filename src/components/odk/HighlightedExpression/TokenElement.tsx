@@ -87,13 +87,13 @@ export function TokenElement({
   expression,
   parentExpression,
   node,
-  stackDepth,
-}: {
+}: // stackDepth,
+{
   token: Token;
   expression?: Expression;
   parentExpression?: Expression;
   node: ODKNode;
-  stackDepth?: number;
+  // stackDepth?: number;
 }) {
   const className = `token token-${TokenType[token.type]}`;
   const context = React.useContext(ODKSurveyContext);

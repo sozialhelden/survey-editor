@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Navbar } from "@blueprintjs/core";
-import React from "react";
+import * as React from "react";
 
 export type ViewOption = "table" | "debug" | "json" | "graph";
 const defaultViewOptions: Record<ViewOption, boolean> = {

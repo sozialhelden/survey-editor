@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { UndoContextType } from "../../lib/undo/createUndoHistoryContext";
 import { XLSForm } from "../../xlsform-simple-schema/types/XLSForm";
 

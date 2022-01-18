@@ -1,5 +1,5 @@
 import { Button, ControlGroup, NonIdealState } from "@blueprintjs/core";
-import React, { useCallback } from "react";
+import * as React from "react";
 import { Patch } from "../lib/undo/useUndoHistory";
 import createEmptyXLSForm from "../xlsform-simple-schema/functions/editing/createEmptyXLSForm";
 import { XLSForm } from "../xlsform-simple-schema/index";
@@ -22,7 +22,7 @@ export function AppEmptyState({
     <ExcelFileInput {...{ setXLSFormWithPatches, setLanguage }} />
   );
 
-  const loadEmptyXLSForm = useCallback(async () => {
+  const loadEmptyXLSForm = React.useCallback(async () => {
     setXLSFormWithPatches(
       "Load empty XLSForm document",
       await createEmptyXLSForm(),

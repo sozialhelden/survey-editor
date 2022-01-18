@@ -15,7 +15,7 @@ function getDarkModeSetting(): boolean {
 export function useDarkMode() {
   const [isDarkMode, setIsDarkMode] = React.useState(getDarkModeSetting());
 
-  const handleChange = React.useCallback((e) => {
+  const handleChange = React.useCallback(() => {
     setIsDarkMode(getDarkModeSetting());
   }, []);
 

@@ -1,11 +1,10 @@
 import { Button, Classes, Dialog } from "@blueprintjs/core";
 import { useCallback, useState } from "react";
-import { ODKNode } from "../../xlsform-simple-schema/types/ODKNode";
 
 /**
  * Custom React hook returning a function to show a dialog for managing languages.
  */
-export default function useLanguagesDialog(node?: ODKNode) {
+export default function useLanguagesDialog(/* node?: ODKNode */) {
   // const context = useContext(ODKSurveyContext);
   const [isDialogOpen, setDialogOpen] = useState(false);
 

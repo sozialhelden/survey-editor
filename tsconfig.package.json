@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "declaration": true,
+    "sourceMap": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "sourceRoot": "src",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictFunctionTypes": true,
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "removeComments": true,
+    "strictNullChecks": true,
+    "jsx": "preserve"
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

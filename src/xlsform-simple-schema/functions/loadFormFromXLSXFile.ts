@@ -1,4 +1,4 @@
-import Excel from "exceljs";
+import * as Excel from "exceljs";
 import { XLSForm } from "../types/XLSForm";
 import { loadFormFromExcelWorkbook } from "./loadFormFromExcelWorkbook";
 

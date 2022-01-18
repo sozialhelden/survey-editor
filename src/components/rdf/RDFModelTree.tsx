@@ -89,7 +89,7 @@ export function getNodeTree(
 }
 
 /** Shows a collapsible JSON tree of the survey result data for debugging. */
-export default function RDFModelTree(props: {}) {
+export default function RDFModelTree() {
   const [expandedNames, setExpandedNames] = React.useState<Set<string>>(
     new Set([""])
   );

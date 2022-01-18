@@ -231,6 +231,7 @@ export function getScopedAncestors(
     }
     stack.pop();
   }
+  return undefined;
 }
 
 /**

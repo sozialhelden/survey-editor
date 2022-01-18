@@ -57,7 +57,7 @@ export function useWorkbookFromFile({
             "Buffer was not defined as Buffer object after reading."
           );
         }
-        wb.xlsx.load(buffer).then((workbook) => {
+        wb.xlsx.load(buffer).then(() => {
           onLoadWorkbook(wb);
         });
       };

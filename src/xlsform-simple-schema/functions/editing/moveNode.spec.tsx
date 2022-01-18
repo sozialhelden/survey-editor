@@ -126,13 +126,11 @@ describe("moveNode()", () => {
   describe("moving a group", () => {
     let newXLSForm: XLSForm;
     let insideNode: ODKNode;
-    let outsideNode: ODKNode;
     let subCategoryNode: ODKNode;
 
     beforeEach(async () => {
       const { xlsForm, ...testData } = await getTestData();
       insideNode = testData.insideNode;
-      outsideNode = testData.outsideNode;
       subCategoryNode = testData.subCategoryNode;
       const result = moveNode({
         xlsForm,

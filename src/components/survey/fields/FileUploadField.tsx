@@ -9,16 +9,12 @@ import {
   Spinner,
 } from "@blueprintjs/core";
 import * as React from "react";
-import { uuid as getUUID } from "uuidv4";
-import {
-  createImageObjectFromFile,
-  createImageObjectFromRemoteImage,
-  uploadPhoto,
-} from "../../../lib/images/uploadPhoto";
+import { v4 as getUUID } from "uuid";
 import { ODKSurveyContext } from "../../../lib/ODKSurveyContext";
 import { AppToaster } from "../../../toaster";
 import { ImageObject } from "../../../xlsform-simple-schema/functions/schema-creation/MediaSchemas";
 import { FieldProps } from "../FieldProps";
+import ImageUploadContext from "./ImageUploadContext";
 
 type Props = FieldProps & {
   onInputChange: (event: React.FormEvent<HTMLInputElement>) => void;
@@ -97,14 +93,22 @@ function showUploadingState(uuid: string) {
   );
 }
 
-function showPersistentErrorToast(message: string, uuid: string) {
+function showPersistentErrorToast(message: string, uuid?: string) {
   AppToaster.show({ message, intent: "danger", timeout: 0 }, uuid);
 }
 
+/**
+ * Displays an image file upload field. Use ImageUploadContext to provide the upload mechanism.
+ */
 export default function FileUploadField(props: Props) {
   const { value, schemaKey, relevant, readonly } = props;
 
   const context = React.useContext(ODKSurveyContext);
+  const {
+    createImageObjectFromFile,
+    createImageObjectFromRemoteImage,
+    uploadPhoto,
+  } = React.useContext(ImageUploadContext);
   const { onChangeAnswer } = context;
   const [uuid] = React.useState(getUUID());
 
@@ -121,34 +125,38 @@ export default function FileUploadField(props: Props) {
   }, [onChangeAnswer, props]);
 
   const onInputChange = React.useCallback(
-    (event: React.FormEvent<HTMLInputElement>) => {
-      const file = event.currentTarget.files?.[0];
-      if (!file) {
-        onRemoveImage();
-        return;
-      }
-
-      showUploadingState(uuid);
-
-      onChangeAnswer(createImageObjectFromFile(file), props);
-
-      uploadPhoto(uuid, file)
-        .then((response) => {
-          onChangeAnswer(createImageObjectFromRemoteImage(response), props);
-          AppToaster.show(
-            { message: "Upload successful!", intent: "success", timeout: 5000 },
-            uuid
-          );
-        })
-        .catch((reason) => {
-          debugger;
-          const message = `Sorry, your upload failed: ${reason}`;
-          console.error(message);
-          showPersistentErrorToast(message, uuid);
+    async (event: React.FormEvent<HTMLInputElement>) => {
+      try {
+        const file = event.currentTarget.files?.[0];
+        if (!file) {
           onRemoveImage();
-        });
+          return;
+        }
+        showUploadingState(uuid);
+        onChangeAnswer(createImageObjectFromFile(file), props);
+        const response = await uploadPhoto(uuid, file);
+        onChangeAnswer(createImageObjectFromRemoteImage(response), props);
+        AppToaster.show(
+          { message: "Upload successful!", intent: "success", timeout: 5000 },
+          uuid
+        );
+      } catch (error) {
+        debugger;
+        const message = `Sorry, your upload failed: ${error}`;
+        console.error(message);
+        showPersistentErrorToast(message);
+        onRemoveImage();
+      }
     },
-    [uuid, onChangeAnswer, props, onRemoveImage]
+    [
+      uuid,
+      onChangeAnswer,
+      createImageObjectFromFile,
+      props,
+      uploadPhoto,
+      createImageObjectFromRemoteImage,
+      onRemoveImage,
+    ]
   );
 
   const image = value && (

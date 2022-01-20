@@ -18,3 +18,5 @@ describe("XLSForm", () => {
     // expect(cache.size()).toBe(2);
   });
 });
+
+export {};

@@ -2,7 +2,7 @@ import {
   Colors,
   FocusStyleManager,
   HotkeysProvider,
-  HotkeysTarget2
+  HotkeysTarget2,
 } from "@blueprintjs/core";
 import * as mapboxgl from "mapbox-gl";
 import * as RDFLib from "rdflib";
@@ -14,10 +14,10 @@ import "./App.css";
 import { AppEmptyState } from "./components/AppEmptyState";
 import { AppNavBar } from "./components/AppNavBar";
 import BlueprintDarkModeContainer, {
-  useDarkMode
+  useDarkMode,
 } from "./components/core/BlueprintDarkModeContainer";
 import composeContexts, {
-  ContextAndValue
+  ContextAndValue,
 } from "./components/core/composeContexts";
 import useChangeHooks from "./components/hooks/useChangeHooks";
 import { useGlobalHotkeys } from "./components/hooks/useGlobalHotkeys";
@@ -25,11 +25,15 @@ import OverflowScrollContainer from "./components/OverflowScrollContainer";
 import { RDFGraphContext } from "./components/rdf/RDFGraphContext";
 import RDFModelTree from "./components/rdf/RDFModelTree";
 import ResultCodeTree from "./components/result-code/ResultCodeTree";
+import ImageUploadContext from "./components/survey/fields/ImageUploadContext";
 import { ODKNodeDragAndDropContext } from "./components/survey/useNodeDragAndDrop";
 import XLSFormSurvey from "./components/survey/XLSFormSurvey";
 import XLSFormWorkbook from "./components/table/XLSFormWorkbook";
 import useViewOptionsButton from "./components/useViewOptionsButton";
 import { alpha } from "./lib/colors";
+import { createImageObjectFromAccessibilityCloudImage } from "./lib/images/createImageObjectFromAccessibilityCloudImage";
+import { createImageObjectFromFile } from "./lib/images/createImageObjectFromFile";
+import { uploadPhoto } from "./lib/images/uploadPhoto";
 import { ODKSurveyContext } from "./lib/ODKSurveyContext";
 import loadSchemaOrgGraph from "./lib/rdf/loadSchemaOrgGraph";
 import { UndoContext } from "./lib/undo/UndoContext";
@@ -37,6 +41,13 @@ import useUndoHistory from "./lib/undo/useUndoHistory";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 import { XLSForm } from "./xlsform-simple-schema/index";
 (mapboxgl as any).workerClass = MapboxWorker;
+
+if (!process.env.REACT_APP_MAPBOX_ACCESS_TOKEN) {
+  throw new Error(
+    `Please define the REACT_APP_MAPBOX_ACCESS_TOKEN environment variable.`
+  );
+}
+(mapboxgl as any).accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -182,9 +193,19 @@ function App() {
     </OverflowScrollContainer>
   );
 
+  const imageUploadContext = React.useMemo(
+    () => ({
+      uploadPhoto,
+      createImageObjectFromFile,
+      createImageObjectFromRemoteImage: createImageObjectFromAccessibilityCloudImage,
+    }),
+    []
+  );
+
   const contexts: ContextAndValue<any>[] = [
     [RDFGraphContext, rdfStore],
     [UndoContext, undoContext],
+    [ImageUploadContext, imageUploadContext],
     [ODKNodeDragAndDropContext, { onDropNode: changeHooks.onMoveNode }],
     [
       ODKSurveyContext,

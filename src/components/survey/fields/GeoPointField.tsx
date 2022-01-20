@@ -1,6 +1,5 @@
 import { Colors, ControlGroup, NumericInput } from "@blueprintjs/core";
 import { throttle } from "lodash";
-import * as mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as React from "react";
 import ReactMapGL, { GeolocateControl, ViewportProps } from "react-map-gl";
@@ -9,19 +8,10 @@ import { alpha } from "../../../lib/colors";
 import { ODKSurveyContext } from "../../../lib/ODKSurveyContext";
 import {
   assertSchemaOrgPointGeometry,
-  SchemaOrgPointGeometry
+  SchemaOrgPointGeometry,
 } from "../../../xlsform-simple-schema/functions/schema-creation/geometry/SchemaOrgGeometry";
 import { useDarkMode } from "../../core/BlueprintDarkModeContainer";
 import { FieldProps } from "../FieldProps";
-
-
-
-if (!process.env.REACT_APP_MAPBOX_ACCESS_TOKEN) {
-  throw new Error(
-    `Please define the REACT_APP_MAPBOX_ACCESS_TOKEN environment variable.`
-  );
-}
-(mapboxgl as any).accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const FieldContainer = styled.section`
   .mapboxgl-ctrl-group.geolocateControl {

@@ -1,4 +1,3 @@
-import { ImageObject } from "../../xlsform-simple-schema/functions/schema-creation/MediaSchemas";
 import { AccessibilityCloudImage } from "./AccessibilityCloudImage";
 import { readAndCompressImage } from "./ImageResizer";
 
@@ -20,9 +19,9 @@ export function getImageSourceUrl(
   image: AccessibilityCloudImage,
   size: number
 ) {
-  return `${
-    process.env.REACT_APP_ACCESSIBILITY_CLOUD_BASE_URL || ""
-  }/images/scale/${image.remotePath}?fitw=${size}&fith=${size}`;
+  return `${baseUrl || ""}/images/scale/${
+    image.remotePath
+  }?fitw=${size}&fith=${size}`;
 }
 
 export function getAccessibilityCloudImageUrl(
@@ -34,37 +33,6 @@ export function getAccessibilityCloudImageUrl(
   return `${
     useCache ? baseUrl : uncachedBaseUrl
   }/images.json?context=${context}&surveyResultId=${objectId}&appToken=${appToken}`;
-}
-
-/** @returns a Schema.org JSON-LD object for a given remotely stored image. */
-export function createImageObjectFromRemoteImage(
-  image: AccessibilityCloudImage
-): ImageObject {
-  return {
-    "@type": "https://schema.org/ImageObject",
-    contentSize: String(image.contentSize),
-    contentUrl: getImageSourceUrl(image, 1600),
-    encodingFormat: "image/jpeg",
-    height: `${image.dimensions.height}px`,
-    width: `${image.dimensions.width}px`,
-    thumbnail: {
-      "@type": "https://schema.org/ImageObject",
-      contentUrl: getImageSourceUrl(image, 256),
-      encodingFormat: "image/jpeg",
-      height: `256px`,
-      width: `256px`,
-    },
-  };
-}
-
-/** @returns a Schema.org JSON-LD object for a given local File object. */
-export function createImageObjectFromFile(file: File): ImageObject {
-  return {
-    "@type": "https://schema.org/ImageObject",
-    contentSize: String(file.size),
-    contentUrl: URL.createObjectURL(file),
-    encodingFormat: "image/jpeg",
-  };
 }
 
 /**

@@ -7,5 +7,8 @@
 // const linkElement = screen.getByText(/Open an Excel file to start/i);
 // expect(linkElement).toBeInTheDocument();
 // });
+describe("<App />", () => {
+  test.todo("renders empty state on start");
+});
 
-test.todo("renders empty state on start");
+export {};

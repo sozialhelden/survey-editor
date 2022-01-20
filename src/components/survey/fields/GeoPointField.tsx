@@ -5,18 +5,17 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import * as React from "react";
 import ReactMapGL, { GeolocateControl, ViewportProps } from "react-map-gl";
 import styled from "styled-components";
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
 import { alpha } from "../../../lib/colors";
 import { ODKSurveyContext } from "../../../lib/ODKSurveyContext";
 import {
   assertSchemaOrgPointGeometry,
-  SchemaOrgPointGeometry,
+  SchemaOrgPointGeometry
 } from "../../../xlsform-simple-schema/functions/schema-creation/geometry/SchemaOrgGeometry";
 import { useDarkMode } from "../../core/BlueprintDarkModeContainer";
 import { FieldProps } from "../FieldProps";
 
-(mapboxgl as any).workerClass = MapboxWorker;
+
+
 if (!process.env.REACT_APP_MAPBOX_ACCESS_TOKEN) {
   throw new Error(
     `Please define the REACT_APP_MAPBOX_ACCESS_TOKEN environment variable.`

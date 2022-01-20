@@ -2,19 +2,22 @@ import {
   Colors,
   FocusStyleManager,
   HotkeysProvider,
-  HotkeysTarget2,
+  HotkeysTarget2
 } from "@blueprintjs/core";
+import * as mapboxgl from "mapbox-gl";
 import * as RDFLib from "rdflib";
 import * as React from "react";
 import styled from "styled-components";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
 import "./App.css";
 import { AppEmptyState } from "./components/AppEmptyState";
 import { AppNavBar } from "./components/AppNavBar";
 import BlueprintDarkModeContainer, {
-  useDarkMode,
+  useDarkMode
 } from "./components/core/BlueprintDarkModeContainer";
 import composeContexts, {
-  ContextAndValue,
+  ContextAndValue
 } from "./components/core/composeContexts";
 import useChangeHooks from "./components/hooks/useChangeHooks";
 import { useGlobalHotkeys } from "./components/hooks/useGlobalHotkeys";
@@ -33,6 +36,7 @@ import { UndoContext } from "./lib/undo/UndoContext";
 import useUndoHistory from "./lib/undo/useUndoHistory";
 import { createSurveySchemaFromXLSForm } from "./xlsform-simple-schema/functions/schema-creation/createSurveySchemaFromXLSForm";
 import { XLSForm } from "./xlsform-simple-schema/index";
+(mapboxgl as any).workerClass = MapboxWorker;
 
 FocusStyleManager.onlyShowFocusOnTabs();
 

@@ -24,7 +24,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-map-gl": "^6.1.18",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^6.0.0",
     "simpl-schema": "^1.10.2",
     "styled-components": "^5.2.1",
     "swr": "^0.5.4",

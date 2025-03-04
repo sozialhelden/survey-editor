@@ -30,7 +30,7 @@
     "swr": "^0.5.4",
     "uniforms": "^3.1.0",
     "uniforms-bridge-json-schema": "^3.1.0",
-    "uniforms-bridge-simple-schema-2": "^3.1.0",
+    "uniforms-bridge-simple-schema-2": "^4.0.0",
     "uniforms-semantic": "^3.1.0",
     "uniforms-unstyled": "^3.1.0",
     "uuid": "^8.3.2",

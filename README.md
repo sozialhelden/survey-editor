@@ -1,3 +1,5 @@
+# ARCHIVED in March 2026
+
 # [XLSForm](http://xlsform.org) survey editor
 
 **⚠️ This is experimental - Please don't expect anything from this app. It has accessibility issues, and probably still some bugs.**
